@@ -1,0 +1,60 @@
+<script lang="ts">
+  import { page } from '$app/stores';
+  import * as Accordion from '$lib/components/ui/accordion';
+  import { cn } from '$lib/utils';
+  import { sidebarItem } from './SidebarItem';
+</script>
+
+<div
+  class="sticky left-0 top-0 z-10 hidden h-screen w-72 flex-col border-r-2 border-black bg-white shadow-xl md:flex"
+>
+  <!-- Logo -->
+  <div class="flex w-full items-center border-b-2 border-black px-4 py-3">
+    <img src="/hrj.png" alt="logo" class="h-12" />
+  </div>
+
+  <div class="p-4">
+    <Accordion.Root>
+      <div class="flex flex-col gap-2">
+        {#each sidebarItem as item, i}
+          {#if !item.child}
+            <a
+              href={item.href}
+              class={cn(
+                $page.url.pathname == item.href ? 'text-foreground' : 'text-gray-500',
+                'flex items-center gap-3 py-2 hover:text-foreground'
+              )}
+            >
+              <svelte:component this={item.icon} />
+              <div class="flex items-center font-medium">{item.title}</div>
+            </a>
+          {:else}
+            <Accordion.Item value={'item-' + i}>
+              <Accordion.Trigger class="py-2 text-gray-500 hover:text-foreground">
+                <div class="flex items-center gap-3">
+                  <svelte:component this={item.icon} />
+                  {item.title}
+                </div>
+              </Accordion.Trigger>
+              <div class="pl-9">
+                {#each item.child as child}
+                  <Accordion.Content>
+                    <a
+                      href={child.href}
+                      class={cn(
+                        $page.url.pathname == child.href ? 'text-foregorund' : 'text-gray-500',
+                        'font-medium hover:text-foreground'
+                      )}
+                    >
+                      {child.title}
+                    </a>
+                  </Accordion.Content>
+                {/each}
+              </div>
+            </Accordion.Item>
+          {/if}
+        {/each}
+      </div>
+    </Accordion.Root>
+  </div>
+</div>
