@@ -10,13 +10,14 @@
   <div class="flex flex-1 flex-col bg-background">
     <Topbar />
     <div class="container h-full w-full bg-slate-100 py-4">
-      {#if $navigating}
+      <!-- {#if $navigating}
         <div class="flex h-full w-full items-center justify-center">
           <Loader2 class="animate-spin" size="50" />
         </div>
       {:else}
         <slot />
-      {/if}
+      {/if} -->
+      <slot />
     </div>
   </div>
 </div>
