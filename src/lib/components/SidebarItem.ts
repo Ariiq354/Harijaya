@@ -15,12 +15,12 @@ export const sidebarItem = [
         title: 'Daftar Pemasok'
       },
       {
-        href: '/dashboard/fakturPembelian',
-        title: 'Faktur Pembelian'
-      },
-      {
         href: '/dashboard/pemesananPembelian',
         title: 'Pemesanan Pembelian'
+      },
+      {
+        href: '/dashboard/fakturPembelian',
+        title: 'Faktur Pembelian'
       }
     ]
   },

@@ -69,7 +69,7 @@
         </div>
       </Sheet.Content>
     </Sheet.Root>
-    <form method="post" action="/login?/logout" use:enhance>
+    <form method="post" action="/?/logout" use:enhance>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
           <Button variant="outline" class="rounded-full p-2">
