@@ -11,8 +11,8 @@
   import DataTableRenderNama from './data-table-render-nama.svelte';
 
   type customType = selectJurnal & {
-    akunDebit: selectAkun;
-    akunKredit: selectAkun;
+    akunDebit: selectAkun | null;
+    akunKredit: selectAkun | null;
   };
 
   export let data: customType[];
