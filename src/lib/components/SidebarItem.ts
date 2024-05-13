@@ -1,10 +1,24 @@
-import { BriefcaseBusiness, LayoutDashboard, ShoppingCart, Wallet } from 'lucide-svelte';
+import { BriefcaseBusiness, HandCoins, LayoutDashboard, ShoppingCart, Wallet } from 'lucide-svelte';
 
 export const sidebarItem = [
   {
     href: '/dashboard',
     icon: LayoutDashboard,
     title: 'Dashboard'
+  },
+  {
+    icon: HandCoins,
+    title: 'Finance',
+    child: [
+      {
+        href: '/dashboard/daftarAkun',
+        title: 'Daftar Akun'
+      },
+      {
+        href: '/dashboard/inputJurnal',
+        title: 'Input Jurnal'
+      }
+    ]
   },
   {
     icon: ShoppingCart,

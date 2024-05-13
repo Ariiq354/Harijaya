@@ -22,7 +22,7 @@
       } else {
         loading = false;
         invalidateAll();
-        toast.success('Pemasok Dihapus');
+        toast.success('Jurnal Dihapus');
       }
     };
   };
@@ -53,7 +53,7 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
-    <DropdownMenu.Item href={`/dashboard/daftarPemasok/${id}`}>
+    <DropdownMenu.Item href={`/dashboard/inputJurnal/${id}`}>
       <Edit class="mr-2 h-4 w-4" />
       Edit
     </DropdownMenu.Item>
