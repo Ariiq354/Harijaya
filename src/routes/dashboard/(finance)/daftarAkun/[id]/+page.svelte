@@ -105,7 +105,7 @@
                   <Select.Item value="aktiva tetap" label="Aktiva tetap" />
                   <Select.Item value="biaya lainnya" label="Biaya lainnya" />
                   <Select.Item value="biaya usaha" label="Biaya usaha" />
-                  <Select.Item value="kas dan setara kas" label="Kas dan setara kas" />
+                  <Select.Item value="kas & setara kas" label="Kas & setara kas" />
                   <Select.Item value="modal usaha" label="Modal usaha" />
                   <Select.Item value="persediaan barang" label="Persediaan barang" />
                   <Select.Item value="pendapatan lainnya" label="Pendapatan lainnya" />

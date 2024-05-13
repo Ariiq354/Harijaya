@@ -35,10 +35,7 @@
     }),
     table.column({
       accessor: 'kategori',
-      header: 'Kategori Akun',
-      cell: ({ value }) => {
-        return value.charAt(0).toUpperCase() + value.slice(1);
-      }
+      header: 'Kategori Akun'
     }),
     table.column({
       accessor: ({ id }) => id,
@@ -102,7 +99,7 @@
             <Table.Row {...rowAttrs}>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs}>
+                  <Table.Cell {...attrs} class="capitalize">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

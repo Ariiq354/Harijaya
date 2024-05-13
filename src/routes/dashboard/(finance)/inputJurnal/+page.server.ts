@@ -5,7 +5,12 @@ import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const jurnalData = await db.query.jurnalTable.findMany();
+  const jurnalData = await db.query.jurnalTable.findMany({
+    with: {
+      akunDebit: true,
+      akunKredit: true
+    }
+  });
 
   return {
     jurnalData

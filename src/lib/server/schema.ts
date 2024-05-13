@@ -69,6 +69,19 @@ export const pemesananPembelianTable = sqliteTable('pemesanan_pembelian', {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
 
+// Relations
+
+export const jurnalRelations = relations(jurnalTable, ({ one }) => ({
+  akunDebit: one(akunTable, {
+    fields: [jurnalTable.akunDebit],
+    references: [akunTable.id]
+  }),
+  akunKredit: one(akunTable, {
+    fields: [jurnalTable.akunKredit],
+    references: [akunTable.id]
+  })
+}));
+
 // Type exports
 export type selectJurnal = typeof jurnalTable.$inferSelect;
 

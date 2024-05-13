@@ -1,15 +1,21 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectJurnal } from '$lib/server/schema';
+  import type { selectJurnal, selectAkun } from '$lib/server/schema';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import DataTableRenderNama from './data-table-render-nama.svelte';
 
-  export let data: selectJurnal[];
+  type customType = selectJurnal & {
+    akunDebit: selectAkun;
+    akunKredit: selectAkun;
+  };
+
+  export let data: customType[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -34,8 +40,21 @@
       header: 'Tgl. Transaksi'
     }),
     table.column({
-      accessor: 'akunDebit',
-      header: 'Nama Akun'
+      accessor: ({ akunDebit, akunKredit }) => ({
+        akunDebit,
+        akunKredit
+      }),
+      header: 'Nama Akun',
+      cell: ({ value }) => {
+        if (!value.akunDebit || !value.akunKredit) {
+          return 'Akun tidak ada';
+        } else {
+          return createRender(DataTableRenderNama, {
+            akunDebit: value.akunDebit,
+            akunKredit: value.akunKredit
+          });
+        }
+      }
     }),
     table.column({
       accessor: 'nominal',
