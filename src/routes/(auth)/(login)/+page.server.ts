@@ -62,6 +62,6 @@ export const actions: Actions = {
       ...sessionCookie.attributes
     });
 
-    redirect(302, '/login');
+    redirect(302, '/');
   }
 };

@@ -10,6 +10,11 @@
   import Button from './ui/button/button.svelte';
 
   let isOpen = false;
+  let form: HTMLFormElement;
+
+  function submitForm() {
+    form.submit();
+  }
 </script>
 
 <div class="sticky top-0 z-10 border-b-2 border-black bg-white">
@@ -69,20 +74,20 @@
         </div>
       </Sheet.Content>
     </Sheet.Root>
-    <form method="post" action="/?/logout" use:enhance>
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger>
-          <Button variant="outline" class="rounded-full p-2">
-            <User />
-          </Button>
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content align="end">
-          <DropdownMenu.Item>
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger>
+        <Button variant="outline" class="rounded-full p-2">
+          <User />
+        </Button>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content align="end">
+        <form bind:this={form} method="post" action="/?/logout" use:enhance>
+          <DropdownMenu.Item on:click={submitForm}>
             <LogOut class="mr-2 h-4 w-4" />
-            <span>Log out</span>
+            Log out
           </DropdownMenu.Item>
-        </DropdownMenu.Content>
-      </DropdownMenu.Root>
-    </form>
+        </form>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   </div>
 </div>
