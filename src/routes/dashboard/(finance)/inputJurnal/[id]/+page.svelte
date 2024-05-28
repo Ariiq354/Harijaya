@@ -66,7 +66,7 @@
         <h1 class="text-3xl font-bold">Buat Jurnal</h1>
       {/if}
     </div>
-    <Button variant="outline" href="/dashboard/inputJurnal" class="p-2 shadow-lg">
+    <Button variant="outline" href="/dashboard/inputJurnal" class="p-2 shadow-lg" title="go back">
       <ArrowLeft />
     </Button>
   </div>
@@ -172,7 +172,7 @@
           </Form.Field>
         </div>
 
-        <Form.Button disabled={$submitting} class="col-span-2 mt-4">
+        <Form.Button disabled={$submitting} class="col-span-2 mt-4" title="submit form">
           {#if $submitting}
             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           {/if}

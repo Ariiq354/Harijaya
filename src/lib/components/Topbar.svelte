@@ -76,7 +76,7 @@
     </Sheet.Root>
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button variant="outline" class="rounded-full p-2">
+        <Button variant="outline" class="rounded-full p-2" title="User Menu">
           <User />
         </Button>
       </DropdownMenu.Trigger>

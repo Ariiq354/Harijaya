@@ -59,7 +59,7 @@
         <h1 class="text-3xl font-bold">Buat Akun</h1>
       {/if}
     </div>
-    <Button variant="outline" href="/dashboard/daftarAkun" class="p-2 shadow-lg">
+    <Button variant="outline" href="/dashboard/daftarAkun" class="p-2 shadow-lg" title="go back">
       <ArrowLeft />
     </Button>
   </div>
@@ -128,7 +128,7 @@
           <Form.FieldErrors />
         </Form.Field>
 
-        <Form.Button disabled={$submitting} class="col-span-2 mt-4">
+        <Form.Button disabled={$submitting} class="col-span-2 mt-4" title="submit">
           {#if $submitting}
             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           {/if}

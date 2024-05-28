@@ -145,6 +145,7 @@
       size="sm"
       on:click={() => ($pageIndex = $pageIndex - 1)}
       disabled={!$hasPreviousPage}
+      title="previous data"
     >
       <ChevronLeft size="20" />
     </Button>
@@ -153,6 +154,7 @@
       size="sm"
       disabled={!$hasNextPage}
       on:click={() => ($pageIndex = $pageIndex + 1)}
+      title="next data"
     >
       <ChevronRight size="20" />
     </Button>

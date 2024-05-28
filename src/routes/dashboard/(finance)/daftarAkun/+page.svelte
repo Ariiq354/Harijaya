@@ -25,7 +25,12 @@
     <div class="flex flex-col gap-1">
       <h1 class="text-3xl font-bold">Daftar Akun</h1>
     </div>
-    <Button href="/dashboard/daftarAkun/new" variant="outline" class="p-2 shadow-lg">
+    <Button
+      href="/dashboard/daftarAkun/new"
+      variant="outline"
+      class="p-2 shadow-lg"
+      title="add data"
+    >
       <Plus />
     </Button>
   </div>
