@@ -1,11 +1,13 @@
 import { db } from '$lib/server';
 import { pemasokTable } from '$lib/server/schema';
 import { fail } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const pemasokData = await db.query.pemasokTable.findMany();
+  const pemasokData = await db.query.pemasokTable.findMany({
+    orderBy: [desc(pemasokTable.createdAt)]
+  });
 
   return {
     pemasokData

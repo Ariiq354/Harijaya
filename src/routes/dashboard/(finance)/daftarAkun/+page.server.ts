@@ -1,11 +1,13 @@
 import { db } from '$lib/server';
 import { akunTable } from '$lib/server/schema';
 import { fail } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const akunData = await db.query.akunTable.findMany();
+  const akunData = await db.query.akunTable.findMany({
+    orderBy: [desc(akunTable.createdAt)]
+  });
 
   return {
     akunData

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectPemasok } from '$lib/server/schema';
+  import type { selectBarang } from '$lib/server/schema';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
@@ -9,7 +9,7 @@
   import { Input } from '$lib/components/ui/input';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-  export let data: selectPemasok[];
+  export let data: selectBarang[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -27,23 +27,19 @@
   const columns = table.createColumns([
     table.column({
       accessor: 'name',
-      header: 'Nama Supplier'
+      header: 'Nama Produk'
     }),
     table.column({
-      accessor: 'address',
-      header: 'Alamat'
+      accessor: 'deskripsi',
+      header: 'Deskripsi'
     }),
     table.column({
-      accessor: 'email',
-      header: 'Email'
+      accessor: 'satuan',
+      header: 'Satuan'
     }),
     table.column({
-      accessor: 'npwp',
-      header: 'NPWP'
-    }),
-    table.column({
-      accessor: 'phone',
-      header: 'Phone'
+      accessor: 'harga',
+      header: 'Harga'
     }),
     table.column({
       accessor: ({ id }) => id,

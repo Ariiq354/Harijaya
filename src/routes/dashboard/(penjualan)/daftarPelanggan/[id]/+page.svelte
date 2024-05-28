@@ -3,11 +3,12 @@
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
   import { Button } from '$lib/components/ui/button';
   import * as Form from '$lib/components/ui/form';
+  import * as Select from '$lib/components/ui/select';
   import { Input } from '$lib/components/ui/input';
   import * as Card from '$lib/components/ui/card';
   import { ArrowLeft, Loader2 } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
-  import { superForm } from 'sveltekit-superforms';
+  import SuperDebug, { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
@@ -19,7 +20,7 @@
     async onUpdate({ form }) {
       if (form.valid) {
         toast.success('Submit berhasil');
-        await goto('/dashboard/daftarPemasok');
+        await goto('/dashboard/daftarPelanggan');
       }
     },
     onError(event) {
@@ -37,27 +38,29 @@
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Page>Daftar Pemasok</Breadcrumb.Page>
+        <Breadcrumb.Page>Daftar Pelanggan</Breadcrumb.Page>
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-1">
       {#if $formData.id}
-        <h1 class="text-3xl font-bold">Edit Pemasok</h1>
+        <h1 class="text-3xl font-bold">Edit Pelanggan</h1>
       {:else}
-        <h1 class="text-3xl font-bold">Buat Pemasok</h1>
+        <h1 class="text-3xl font-bold">Buat Pelanggan</h1>
       {/if}
     </div>
-    <Button variant="outline" href="/dashboard/daftarPemasok" class="p-2 shadow-lg">
+    <Button variant="outline" href="/dashboard/daftarPelanggan" class="p-2 shadow-lg">
       <ArrowLeft />
     </Button>
   </div>
   <hr class="border-black" />
 
+  <SuperDebug data={$formData} />
+
   <Card.Root class="pt-4">
     <Card.Content>
-      <form method="POST" use:enhance class="grid grid-cols-2 gap-4">
+      <form method="POST" use:enhance class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Form.Field {form} name="id" class="hidden">
           <Form.Control let:attrs>
             <input hidden name={attrs.name} bind:value={$formData.id} />
@@ -65,15 +68,8 @@
         </Form.Field>
         <Form.Field {form} name="name">
           <Form.Control let:attrs>
-            <Form.Label>Nama Pemasok</Form.Label>
+            <Form.Label>Nama Pelanggan</Form.Label>
             <Input {...attrs} bind:value={$formData.name} />
-          </Form.Control>
-          <Form.FieldErrors />
-        </Form.Field>
-        <Form.Field {form} name="npwp">
-          <Form.Control let:attrs>
-            <Form.Label>NPWP</Form.Label>
-            <Input {...attrs} bind:value={$formData.npwp} />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
@@ -81,6 +77,13 @@
           <Form.Control let:attrs>
             <Form.Label>Email</Form.Label>
             <Input type="email" {...attrs} bind:value={$formData.email} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="npwp">
+          <Form.Control let:attrs>
+            <Form.Label>NPWP</Form.Label>
+            <Input {...attrs} bind:value={$formData.npwp} />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
@@ -95,27 +98,6 @@
           <Form.Control let:attrs>
             <Form.Label>Address</Form.Label>
             <Input {...attrs} bind:value={$formData.address} />
-          </Form.Control>
-          <Form.FieldErrors />
-        </Form.Field>
-        <Form.Field {form} name="noRekening">
-          <Form.Control let:attrs>
-            <Form.Label>No. Rekening</Form.Label>
-            <Input {...attrs} bind:value={$formData.noRekening} />
-          </Form.Control>
-          <Form.FieldErrors />
-        </Form.Field>
-        <Form.Field {form} name="namaBank">
-          <Form.Control let:attrs>
-            <Form.Label>Nama Bank</Form.Label>
-            <Input {...attrs} bind:value={$formData.namaBank} />
-          </Form.Control>
-          <Form.FieldErrors />
-        </Form.Field>
-        <Form.Field {form} name="atasNama">
-          <Form.Control let:attrs>
-            <Form.Label>Atas Nama</Form.Label>
-            <Input {...attrs} bind:value={$formData.atasNama} />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>

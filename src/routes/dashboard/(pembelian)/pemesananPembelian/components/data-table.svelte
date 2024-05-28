@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectPemasok } from '$lib/server/schema';
+  import type { selectPemesananPembelian } from '$lib/server/schema';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
@@ -9,7 +9,13 @@
   import { Input } from '$lib/components/ui/input';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-  export let data: selectPemasok[];
+  type itemType = selectPemesananPembelian & {
+    supplier: {
+      name: string | null;
+    } | null;
+  };
+
+  export let data: itemType[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -26,24 +32,33 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'name',
-      header: 'Nama Supplier'
+      accessor: 'noPemesanan',
+      header: 'No. Pemesanan'
     }),
     table.column({
-      accessor: 'address',
-      header: 'Alamat'
+      accessor: 'tanggal',
+      header: 'Tgl. Pemesanan'
     }),
     table.column({
-      accessor: 'email',
-      header: 'Email'
+      accessor: ({ supplier }) => supplier?.name,
+      header: 'Nama Pemasok'
     }),
     table.column({
-      accessor: 'npwp',
-      header: 'NPWP'
+      accessor: 'total',
+      header: 'Total'
     }),
     table.column({
-      accessor: 'phone',
-      header: 'Phone'
+      accessor: 'status',
+      header: 'Status',
+      cell: ({ value }) => {
+        if (value === 3) {
+          return 'Pengiriman';
+        } else if (value === 2) {
+          return 'Penagihan';
+        } else {
+          return 'Disetujui';
+        }
+      }
     }),
     table.column({
       accessor: ({ id }) => id,

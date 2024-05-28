@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MoreHorizontal, Loader2 } from 'lucide-svelte';
+  import { MoreHorizontal, Loader2, PenLine } from 'lucide-svelte';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Button } from '$lib/components/ui/button';
   import { Copy, Edit, Trash } from 'lucide-svelte';
@@ -23,7 +23,7 @@
         loading = false;
         isOpen = false;
         invalidateAll();
-        toast.success('Akun Dihapus');
+        toast.success('Faktur Dihapus');
       }
     };
   };
@@ -54,9 +54,17 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
-    <DropdownMenu.Item href={`/dashboard/daftarAkun/${id}`}>
+    <DropdownMenu.Item href={`/dashboard/pemesananPembelian/${id}`}>
       <Edit class="mr-2 h-4 w-4" />
       Edit
+    </DropdownMenu.Item>
+    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
+      <PenLine class="mr-2 h-4 w-4" />
+      Buat Faktur
+    </DropdownMenu.Item>
+    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
+      <PenLine class="mr-2 h-4 w-4" />
+      Buat Surat Jalan
     </DropdownMenu.Item>
     <DropdownMenu.Item on:click={() => (isOpen = true)}>
       <Trash class="mr-2 h-4 w-4" />

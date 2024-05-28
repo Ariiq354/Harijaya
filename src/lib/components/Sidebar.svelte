@@ -9,8 +9,9 @@
   class="sticky left-0 top-0 z-10 hidden h-screen w-72 flex-col border-r-2 border-black bg-white shadow-xl md:flex"
 >
   <!-- Logo -->
-  <div class="flex w-full items-center border-b-2 border-black px-4 py-3">
-    <img src="/hrj.png" alt="logo" class="h-12" />
+  <div class="flex w-full items-center border-b-2 border-black px-4 py-5 text-2xl">
+    <!-- <img src="/hrj.png" alt="logo" class="h-12" /> -->
+    HARIJAYA
   </div>
 
   <div class="p-4">

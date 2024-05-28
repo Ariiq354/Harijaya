@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectPemasok } from '$lib/server/schema';
+  import type { selectFaktur, selectPemesananPembelian } from '$lib/server/schema';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
@@ -9,7 +9,20 @@
   import { Input } from '$lib/components/ui/input';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-  export let data: selectPemasok[];
+  type itemType = {
+    id: string;
+    noFaktur: string;
+    tanggal: string;
+    total: number;
+    pemesananPembelian: {
+      noPemesanan: string;
+      supplier: {
+        name: string;
+      } | null;
+    };
+  };
+
+  export let data: itemType[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -26,40 +39,24 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'name',
-      header: 'Nama Supplier'
+      accessor: 'noFaktur',
+      header: 'No. Faktur'
     }),
     table.column({
-      accessor: 'address',
-      header: 'Alamat'
+      accessor: ({ pemesananPembelian }) => pemesananPembelian.supplier?.name,
+      header: 'Supplier'
     }),
     table.column({
-      accessor: 'email',
-      header: 'Email'
+      accessor: 'tanggal',
+      header: 'Tgl. Faktur'
     }),
     table.column({
-      accessor: 'npwp',
-      header: 'NPWP'
+      accessor: ({ pemesananPembelian }) => pemesananPembelian.noPemesanan,
+      header: 'No Pemesanan'
     }),
     table.column({
-      accessor: 'phone',
-      header: 'Phone'
-    }),
-    table.column({
-      accessor: ({ id }) => id,
-      header: 'Action',
-      cell: ({ value }) => {
-        return createRender(DataTableActions, { id: value });
-      },
-      plugins: {
-        sort: {
-          disable: true
-        },
-
-        filter: {
-          exclude: true
-        }
-      }
+      accessor: 'total',
+      header: 'Total'
     })
   ]);
 

@@ -71,6 +71,7 @@
         {#each $headerRows as headerRow}
           <Subscribe rowAttrs={headerRow.attrs()}>
             <Table.Row>
+              <Table.Head>No.</Table.Head>
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
                   <Table.Head {...attrs}>
@@ -94,9 +95,10 @@
         {/each}
       </Table.Header>
       <Table.Body {...$tableBodyAttrs}>
-        {#each $pageRows as row (row.id)}
+        {#each $pageRows as row, i (row.id)}
           <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
             <Table.Row {...rowAttrs}>
+              <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
                   <Table.Cell {...attrs} class="capitalize">

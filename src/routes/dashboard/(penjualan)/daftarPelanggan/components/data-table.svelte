@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectPemasok } from '$lib/server/schema';
+  import type { selectPelanggan } from '$lib/server/schema';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
@@ -9,7 +9,7 @@
   import { Input } from '$lib/components/ui/input';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-  export let data: selectPemasok[];
+  export let data: selectPelanggan[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -27,24 +27,9 @@
   const columns = table.createColumns([
     table.column({
       accessor: 'name',
-      header: 'Nama Supplier'
+      header: 'Nama klien'
     }),
-    table.column({
-      accessor: 'address',
-      header: 'Alamat'
-    }),
-    table.column({
-      accessor: 'email',
-      header: 'Email'
-    }),
-    table.column({
-      accessor: 'npwp',
-      header: 'NPWP'
-    }),
-    table.column({
-      accessor: 'phone',
-      header: 'Phone'
-    }),
+
     table.column({
       accessor: ({ id }) => id,
       header: 'Action',
@@ -79,7 +64,7 @@
         {#each $headerRows as headerRow}
           <Subscribe rowAttrs={headerRow.attrs()}>
             <Table.Row>
-              <Table.Head>No.</Table.Head>
+              <Table.Head class="w-fit">No.</Table.Head>
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
                   <Table.Head {...attrs}>

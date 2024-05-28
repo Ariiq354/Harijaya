@@ -17,22 +17,22 @@
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Page>Daftar Pelanggan</Breadcrumb.Page>
+        <Breadcrumb.Page>Daftar Barang</Breadcrumb.Page>
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-1">
-      <h1 class="text-3xl font-bold">Daftar Pelanggan</h1>
+      <h1 class="text-3xl font-bold">Daftar Barang</h1>
     </div>
-    <Button href="/dashboard/daftarPelanggan/new" variant="outline" class="p-2 shadow-lg">
+    <Button href="/dashboard/daftarBarang/new" variant="outline" class="p-2 shadow-lg">
       <Plus />
     </Button>
   </div>
   <hr class="border-black" />
   <Card.Root>
     <Card.Content>
-      {#await data.pelangganData}
+      {#await data.barangData}
         Loading data...
       {:then data}
         <DataTable {data} />

@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { pemasokTable } from '$lib/server/schema';
+import { pelangganTable } from '$lib/server/schema';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
@@ -10,8 +10,8 @@ import { formSchema } from './schema';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
-  const data = await db.query.pemasokTable.findFirst({
-    where: eq(pemasokTable.id, id)
+  const data = await db.query.pelangganTable.findFirst({
+    where: eq(pelangganTable.id, id)
   });
 
   return {
@@ -33,29 +33,23 @@ export const actions: Actions = {
     }
 
     await db
-      .insert(pemasokTable)
+      .insert(pelangganTable)
       .values({
         id: form.data.id,
         name: form.data.name,
         npwp: form.data.npwp,
-        phone: form.data.phone,
         address: form.data.address,
         email: form.data.email,
-        atasNama: form.data.atasNama,
-        noRekening: form.data.noRekening,
-        namaBank: form.data.namaBank
+        phone: form.data.phone
       })
       .onConflictDoUpdate({
-        target: pemasokTable.id,
+        target: pelangganTable.id,
         set: {
           name: form.data.name,
           npwp: form.data.npwp,
-          phone: form.data.phone,
           address: form.data.address,
           email: form.data.email,
-          atasNama: form.data.atasNama,
-          noRekening: form.data.noRekening,
-          namaBank: form.data.namaBank
+          phone: form.data.phone
         }
       });
 

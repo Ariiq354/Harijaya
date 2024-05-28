@@ -8,7 +8,7 @@ export const sidebarItem = [
   },
   {
     icon: HandCoins,
-    title: 'Finance',
+    title: 'Keuangan',
     child: [
       {
         href: '/dashboard/daftarAkun',
@@ -43,8 +43,8 @@ export const sidebarItem = [
     title: 'Penjualan',
     child: [
       {
-        href: '/dashboard/daftarProduk',
-        title: 'Daftar Produk'
+        href: '/dashboard/daftarBarang',
+        title: 'Daftar Barang'
       },
       {
         href: '/dashboard/daftarPelanggan',

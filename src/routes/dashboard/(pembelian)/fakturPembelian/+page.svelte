@@ -1,1 +1,37 @@
-<div>ini Faktur pembelian</div>
+<script lang="ts">
+  import * as Breadcrumb from '$lib/components/ui/breadcrumb';
+  import { Button } from '$lib/components/ui/button';
+  import * as Card from '$lib/components/ui/card';
+  import { Plus } from 'lucide-svelte';
+  import type { PageData } from './$types';
+  import DataTable from './components/data-table.svelte';
+
+  export let data: PageData;
+</script>
+
+<div class="flex flex-col gap-4">
+  <Breadcrumb.Root>
+    <Breadcrumb.List>
+      <Breadcrumb.Item>
+        <Breadcrumb.Link href="/dashboard">Dashboard</Breadcrumb.Link>
+      </Breadcrumb.Item>
+      <Breadcrumb.Separator />
+      <Breadcrumb.Item>
+        <Breadcrumb.Page>Faktur Pembelian</Breadcrumb.Page>
+      </Breadcrumb.Item>
+    </Breadcrumb.List>
+  </Breadcrumb.Root>
+  <div class="flex flex-col">
+    <h1 class="mt-1 text-3xl font-bold">Faktur Pembelian</h1>
+  </div>
+  <hr class="border-black" />
+  <Card.Root>
+    <Card.Content>
+      {#await data.pemesananPembelianData}
+        Loading data...
+      {:then data}
+        <DataTable {data} />
+      {/await}
+    </Card.Content>
+  </Card.Root>
+</div>

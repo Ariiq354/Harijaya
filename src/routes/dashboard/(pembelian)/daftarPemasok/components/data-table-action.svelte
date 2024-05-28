@@ -21,6 +21,7 @@
         toast.error(result.data?.message!);
       } else {
         loading = false;
+        isOpen = false;
         invalidateAll();
         toast.success('Pemasok Dihapus');
       }

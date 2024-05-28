@@ -1,20 +1,16 @@
 import { db } from '$lib/server';
-import { jurnalTable } from '$lib/server/schema';
+import { barangTable } from '$lib/server/schema';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const jurnalData = await db.query.jurnalTable.findMany({
-    with: {
-      akunDebit: true,
-      akunKredit: true
-    },
-    orderBy: [desc(jurnalTable.createdAt)]
+  const barangData = await db.query.barangTable.findMany({
+    orderBy: [desc(barangTable.createdAt)]
   });
 
   return {
-    jurnalData
+    barangData
   };
 };
 
@@ -26,7 +22,7 @@ export const actions: Actions = {
     }
 
     try {
-      await db.delete(jurnalTable).where(eq(jurnalTable.id, id));
+      await db.delete(barangTable).where(eq(barangTable.id, id));
     } catch (error) {
       return fail(500, { message: 'something went wrong' });
     }

@@ -1,28 +1,39 @@
-import { fail, superValidate } from 'sveltekit-superforms';
+import { db } from '$lib/server';
+import { pemesananPembelianTable } from '$lib/server/schema';
+import { fail } from '@sveltejs/kit';
+import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
-import { zod } from 'sveltekit-superforms/adapters';
-import { formSchema } from './schema';
-import { testTags } from '$lib/stores';
-import { get } from 'svelte/store';
 
 export const load: PageServerLoad = async () => {
-  const form = await superValidate(zod(formSchema));
-  return { form };
+  const pemesananPembelianData = await db.query.pemesananPembelianTable.findMany({
+    orderBy: desc(pemesananPembelianTable.createdAt),
+    with: {
+      supplier: {
+        columns: {
+          name: true
+        }
+      }
+    }
+  });
+
+  return {
+    pemesananPembelianData
+  };
 };
 
 export const actions: Actions = {
-  default: async (event) => {
-    const form = await superValidate(event, zod(formSchema));
-    if (!form.valid) {
-      return fail(400, {
-        form
-      });
+  delete: async ({ url }) => {
+    const id = url.searchParams.get('id');
+    if (!id) {
+      return fail(400, { message: 'invalid request' });
     }
 
-    console.log(form.data);
+    try {
+      await db.delete(pemesananPembelianTable).where(eq(pemesananPembelianTable.id, id));
+    } catch (error) {
+      return fail(500, { message: 'something went wrong' });
+    }
 
-    return {
-      form
-    };
+    return;
   }
 };

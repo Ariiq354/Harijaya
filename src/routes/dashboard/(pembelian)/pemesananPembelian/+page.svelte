@@ -1,52 +1,42 @@
 <script lang="ts">
-  import SuperDebug, { superForm } from 'sveltekit-superforms';
-  import type { PageData } from './$types';
-  import { zodClient } from 'sveltekit-superforms/adapters';
-  import { formSchema } from './schema';
+  import * as Breadcrumb from '$lib/components/ui/breadcrumb';
   import { Button } from '$lib/components/ui/button';
+  import * as Card from '$lib/components/ui/card';
+  import { Plus } from 'lucide-svelte';
+  import type { PageData } from './$types';
+  import DataTable from './components/data-table.svelte';
 
   export let data: PageData;
-
-  const form = superForm(data.form, {
-    dataType: 'json',
-    validators: zodClient(formSchema)
-  });
-  const { form: formData, enhance, submitting } = form;
-
-  function addItem() {
-    $formData.tags = [
-      ...$formData.tags,
-      {
-        name: '',
-        description: '',
-        time: ''
-      }
-    ];
-  }
-
-  function deleteItem(i: number) {
-    $formData.tags.splice(i, 1);
-    $formData.tags = [...$formData.tags];
-  }
 </script>
 
-<SuperDebug data={$formData} />
-
-<Button on:click={addItem}>Add</Button>
-
-<form method="POST" use:enhance>
-  {#each $formData.tags as _, i}
-    <div class="border p-2">
-      <input type="text" name="name" bind:value={$formData.tags[i].name} placeholder="name" />
-      <input
-        type="text"
-        name="description"
-        bind:value={$formData.tags[i].description}
-        placeholder="description"
-      />
-      <input type="date" name="time" bind:value={$formData.tags[i].time} placeholder="date" />
+<div class="flex flex-col gap-4">
+  <Breadcrumb.Root>
+    <Breadcrumb.List>
+      <Breadcrumb.Item>
+        <Breadcrumb.Link href="/dashboard">Dashboard</Breadcrumb.Link>
+      </Breadcrumb.Item>
+      <Breadcrumb.Separator />
+      <Breadcrumb.Item>
+        <Breadcrumb.Page>Pemesanan Pembelian</Breadcrumb.Page>
+      </Breadcrumb.Item>
+    </Breadcrumb.List>
+  </Breadcrumb.Root>
+  <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-1">
+      <h1 class="text-3xl font-bold">Pemesanan Pembelian</h1>
     </div>
-    <Button variant="destructive" on:click={() => deleteItem(i)}>Delete</Button>
-  {/each}
-  <button type="submit">submit</button>
-</form>
+    <Button href="/dashboard/pemesananPembelian/new" variant="outline" class="p-2 shadow-lg">
+      <Plus />
+    </Button>
+  </div>
+  <hr class="border-black" />
+  <Card.Root>
+    <Card.Content>
+      {#await data.pemesananPembelianData}
+        Loading data...
+      {:then data}
+        <DataTable {data} />
+      {/await}
+    </Card.Content>
+  </Card.Root>
+</div>
