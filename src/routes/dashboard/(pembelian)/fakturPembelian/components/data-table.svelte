@@ -56,7 +56,10 @@
     }),
     table.column({
       accessor: 'total',
-      header: 'Total'
+      header: 'Total',
+      cell: ({ value }) => {
+        return value.toLocaleString('id-ID');
+      }
     })
   ]);
 
@@ -106,7 +109,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs}>
+                  <Table.Cell {...attrs} class="numberFaktur">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

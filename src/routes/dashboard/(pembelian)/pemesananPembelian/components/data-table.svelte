@@ -45,7 +45,10 @@
     }),
     table.column({
       accessor: 'total',
-      header: 'Total'
+      header: 'Total',
+      cell: ({ value }) => {
+        return value.toLocaleString('id-ID');
+      }
     }),
     table.column({
       accessor: 'status',
@@ -124,7 +127,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs}>
+                  <Table.Cell {...attrs} class="number">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>
