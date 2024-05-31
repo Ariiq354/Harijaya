@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { fakturPemesananTable, pemesananPembelianTable } from '$lib/server/schema';
+import { fakturPemesananTable } from '$lib/server/schema';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -42,7 +42,7 @@ export const actions: Actions = {
     }
 
     try {
-      await db.delete(pemesananPembelianTable).where(eq(pemesananPembelianTable.id, id));
+      await db.delete(fakturPemesananTable).where(eq(fakturPemesananTable.id, id));
     } catch (error) {
       return fail(500, { message: 'something went wrong' });
     }

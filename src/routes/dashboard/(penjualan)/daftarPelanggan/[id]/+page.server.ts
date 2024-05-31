@@ -40,7 +40,10 @@ export const actions: Actions = {
         npwp: form.data.npwp,
         address: form.data.address,
         email: form.data.email,
-        phone: form.data.phone
+        phone: form.data.phone,
+        namaBank: form.data.namaBank,
+        noRekening: form.data.noRekening,
+        atasNama: form.data.atasNama
       })
       .onConflictDoUpdate({
         target: pelangganTable.id,
@@ -49,7 +52,10 @@ export const actions: Actions = {
           npwp: form.data.npwp,
           address: form.data.address,
           email: form.data.email,
-          phone: form.data.phone
+          phone: form.data.phone,
+          namaBank: form.data.namaBank,
+          noRekening: form.data.noRekening,
+          atasNama: form.data.atasNama
         }
       });
 

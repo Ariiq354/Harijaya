@@ -101,6 +101,27 @@
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
+        <Form.Field {form} name="namaBank">
+          <Form.Control let:attrs>
+            <Form.Label>Nama Bank</Form.Label>
+            <Input {...attrs} bind:value={$formData.namaBank} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="noRekening">
+          <Form.Control let:attrs>
+            <Form.Label>No Rekening</Form.Label>
+            <Input {...attrs} bind:value={$formData.noRekening} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="atasNama">
+          <Form.Control let:attrs>
+            <Form.Label>Atas Nama</Form.Label>
+            <Input {...attrs} bind:value={$formData.atasNama} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
 
         <Form.Button disabled={$submitting} class="col-span-2 mt-4">
           {#if $submitting}

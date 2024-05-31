@@ -1,3 +1,52 @@
-import type { PageServerLoad } from './$types';
+import { db } from '$lib/server';
+import { fakturPenjualanTable } from '$lib/server/schema';
+import { fail } from '@sveltejs/kit';
+import { desc, eq } from 'drizzle-orm';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {};
+export const load: PageServerLoad = async () => {
+  const pemesananPenjualanData = await db.query.fakturPenjualanTable.findMany({
+    columns: {
+      id: true,
+      noFaktur: true,
+      tanggal: true,
+      total: true
+    },
+    orderBy: desc(fakturPenjualanTable.createdAt),
+    with: {
+      pemesananPenjualan: {
+        columns: {
+          noPenjualan: true
+        },
+        with: {
+          pelanggan: {
+            columns: {
+              name: true
+            }
+          }
+        }
+      }
+    }
+  });
+
+  return {
+    pemesananPenjualanData
+  };
+};
+
+export const actions: Actions = {
+  delete: async ({ url }) => {
+    const id = url.searchParams.get('id');
+    if (!id) {
+      return fail(400, { message: 'invalid request' });
+    }
+
+    try {
+      await db.delete(fakturPenjualanTable).where(eq(fakturPenjualanTable.id, id));
+    } catch (error) {
+      return fail(500, { message: 'something went wrong' });
+    }
+
+    return;
+  }
+};

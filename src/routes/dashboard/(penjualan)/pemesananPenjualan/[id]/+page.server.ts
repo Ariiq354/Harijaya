@@ -1,5 +1,6 @@
 import { db } from '$lib/server';
-import { pemasokTable, pemesananPembelianTable, pemesananProdukTable } from '$lib/server/schema';
+import { pemesananPenjualanTable, penjualanProdukTable } from '$lib/server/schema';
+import { currentDate } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { eq, like, sql } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
@@ -7,15 +8,14 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
-import { currentDate } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
   let trx;
-  const supplier = await db.query.pemasokTable.findMany();
+  const pelanggan = await db.query.pelangganTable.findMany();
   const barang = await db.query.barangTable.findMany();
-  const data = await db.query.pemesananPembelianTable.findFirst({
-    where: eq(pemesananPembelianTable.id, id),
+  const data = await db.query.pemesananPenjualanTable.findFirst({
+    where: eq(pemesananPenjualanTable.id, id),
     with: {
       produk: true
     }
@@ -26,23 +26,23 @@ export const load: PageServerLoad = async ({ params }) => {
       .select({
         num: sql<string>`
         CASE
-          WHEN MAX(CAST(SUBSTR(${pemesananPembelianTable.noPemesanan}, -3) AS INTEGER)) ISNULL then '001'
-          ELSE SUBSTR('00' || (MAX(CAST(SUBSTR(${pemesananPembelianTable.noPemesanan}, -3) AS INTEGER)) + 1), -3)
+          WHEN MAX(CAST(SUBSTR(${pemesananPenjualanTable.noPenjualan}, -3) AS INTEGER)) ISNULL then '001'
+          ELSE SUBSTR('00' || (MAX(CAST(SUBSTR(${pemesananPenjualanTable.noPenjualan}, -3) AS INTEGER)) + 1), -3)
         END`
       })
-      .from(pemesananPembelianTable)
+      .from(pemesananPenjualanTable)
       .where(
-        like(pemesananPembelianTable.noPemesanan, sql`'PO-' || strftime('%Y%m%d', 'now') || '-%'`)
+        like(pemesananPenjualanTable.noPenjualan, sql`'SO-' || strftime('%Y%m%d', 'now') || '-%'`)
       );
 
-    trx = 'PO-' + currentDate() + '-' + num[0].num;
+    trx = 'SO-' + currentDate() + '-' + num[0].num;
   } else {
-    trx = data.noPemesanan;
+    trx = data.noPenjualan;
   }
 
   return {
     form: await superValidate(data, zod(formSchema)),
-    supplier,
+    pelanggan,
     trx,
     barang
   };
@@ -62,26 +62,28 @@ export const actions: Actions = {
     }
 
     await db
-      .insert(pemesananPembelianTable)
+      .insert(pemesananPenjualanTable)
       .values({
         id: form.data.id,
-        supplierId: form.data.supplierId,
-        noPemesanan: form.data.noPemesanan,
+        pelangganId: form.data.pelangganId,
+        noPenjualan: form.data.noPenjualan,
         tanggal: form.data.tanggal,
         userId: event.locals.user!.id,
         lampiran: form.data.lampiran,
         total: form.data.total,
+        pembulatan: form.data.pembulatan,
         ppn: form.data.ppn
       })
       .onConflictDoUpdate({
-        target: pemesananPembelianTable.id,
+        target: pemesananPenjualanTable.id,
         set: {
-          supplierId: form.data.supplierId,
-          noPemesanan: form.data.noPemesanan,
+          pelangganId: form.data.pelangganId,
+          noPenjualan: form.data.noPenjualan,
           tanggal: form.data.tanggal,
           userId: event.locals.user!.id,
           lampiran: form.data.lampiran,
           total: form.data.total,
+          pembulatan: form.data.pembulatan,
           ppn: form.data.ppn
         }
       });
@@ -92,17 +94,17 @@ export const actions: Actions = {
       }
 
       await db
-        .insert(pemesananProdukTable)
+        .insert(penjualanProdukTable)
         .values({
           id: v.id,
-          pemesananId: form.data.id,
+          penjualanId: form.data.id,
           barangId: v.barangId,
           kuantitas: v.kuantitas
         })
         .onConflictDoUpdate({
-          target: pemesananProdukTable.id,
+          target: penjualanProdukTable.id,
           set: {
-            pemesananId: form.data.id,
+            penjualanId: form.data.id,
             barangId: v.barangId,
             kuantitas: v.kuantitas
           }

@@ -132,6 +132,58 @@ export const pelangganTable = sqliteTable('pelanggan', {
   phone: text('phone').notNull(),
   npwp: text('npwp').notNull(),
   address: text('address').notNull(),
+  namaBank: text('nama_bank').notNull(),
+  atasNama: text('atas_nama').notNull(),
+  noRekening: text('no_rekening').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const pemesananPenjualanTable = sqliteTable('pemesanan_penjualan', {
+  id: text('id').notNull().primaryKey(),
+  pelangganId: text('pelanggan_id').references(() => pelangganTable.id, { onDelete: 'set null' }),
+  noPenjualan: text('no_penjualan').notNull(),
+  tanggal: text('tanggal').notNull(),
+  userId: text('user_id').references(() => userTable.id, { onDelete: 'set null' }),
+  lampiran: text('lampiran').notNull(),
+  ppn: int('ppn', { mode: 'boolean' }).notNull(), // 0: tidak, 1: iya
+  pembulatan: int('pembulatan').notNull(),
+  total: int('total').notNull(),
+  status: int('status').notNull().default(1), // 1: disetujui, 2: penagihan, 3: pengiriman
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const penjualanProdukTable = sqliteTable('penjualan_produk', {
+  id: text('id').notNull().primaryKey(),
+  penjualanId: text('penjualan_id')
+    .notNull()
+    .references(() => pemesananPenjualanTable.id, { onDelete: 'cascade' }),
+  barangId: text('barang_id').references(() => barangTable.id, { onDelete: 'set null' }),
+  kuantitas: int('kuantitas').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const fakturPenjualanTable = sqliteTable('faktur_penjualan', {
+  id: text('id').notNull().primaryKey(),
+  penjualanId: text('penjualan_id')
+    .notNull()
+    .references(() => pemesananPenjualanTable.id, { onDelete: 'cascade' }),
+  noFaktur: text('no_faktur').notNull(),
+  tanggal: text('tanggal').notNull(),
+  pelangganId: text('pelanggan_id').references(() => pelangganTable.id, { onDelete: 'set null' }),
+  catatan: text('catatan').notNull(),
+  biayaKirim: int('biaya_kirim').notNull(),
+  biayaLainnya: int('biaya_lainnya').notNull(),
+  pembulatan: int('pembulatan').notNull(),
+  total: int('total').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
     .default(sql`(CURRENT_TIMESTAMP)`)
@@ -203,6 +255,36 @@ export const fakturPemesananRelations = relations(fakturPemesananTable, ({ one }
   })
 }));
 
+export const pemesananPenjualanRelations = relations(pemesananPenjualanTable, ({ one, many }) => ({
+  pelanggan: one(pelangganTable, {
+    fields: [pemesananPenjualanTable.pelangganId],
+    references: [pelangganTable.id]
+  }),
+  produk: many(penjualanProdukTable)
+}));
+
+export const penjualanProdukRelations = relations(penjualanProdukTable, ({ one }) => ({
+  pemesananPenjualan: one(pemesananPenjualanTable, {
+    fields: [penjualanProdukTable.penjualanId],
+    references: [pemesananPenjualanTable.id]
+  }),
+  barang: one(barangTable, {
+    fields: [penjualanProdukTable.barangId],
+    references: [barangTable.id]
+  })
+}));
+
+export const fakturPenjualanRelations = relations(fakturPenjualanTable, ({ one }) => ({
+  pemesananPenjualan: one(pemesananPenjualanTable, {
+    fields: [fakturPenjualanTable.penjualanId],
+    references: [pemesananPenjualanTable.id]
+  }),
+  pelanggan: one(pelangganTable, {
+    fields: [fakturPenjualanTable.pelangganId],
+    references: [pelangganTable.id]
+  })
+}));
+
 // Type exports
 export type selectJurnal = typeof jurnalTable.$inferSelect;
 
@@ -210,10 +292,14 @@ export type selectAkun = typeof akunTable.$inferSelect;
 
 export type selectPemasok = typeof pemasokTable.$inferSelect;
 
-export type selectPemesananPembelian = typeof pemesananPembelianTable.$inferSelect;
-
 export type selectBarang = typeof barangTable.$inferSelect;
 
 export type selectPelanggan = typeof pelangganTable.$inferSelect;
 
+export type selectPemesananPembelian = typeof pemesananPembelianTable.$inferSelect;
+
 export type selectFaktur = typeof fakturPemesananTable.$inferSelect;
+
+export type selectPemesananPenjualan = typeof pemesananPenjualanTable.$inferSelect;
+
+export type selectFakturPenjualan = typeof fakturPenjualanTable.$inferSelect;
