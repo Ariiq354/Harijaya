@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { jurnalTable } from '$lib/server/schema';
+import { jurnalTable } from '$lib/server/schema/keuangan';
 import { fail } from '@sveltejs/kit';
 import { eq, like, max, sql } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';

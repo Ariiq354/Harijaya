@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { fakturPenjualanTable, pemesananPenjualanTable } from '$lib/server/schema';
+import { fakturPenjualanTable, pemesananPenjualanTable } from '$lib/server/schema/penjualan';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';

@@ -1,5 +1,9 @@
 import { db } from '$lib/server';
-import { pemasokTable, pemesananPembelianTable, pemesananProdukTable } from '$lib/server/schema';
+import {
+  supplierTable,
+  pemesananPembelianTable,
+  pembelianProdukTable
+} from '$lib/server/schema/pembelian';
 import { fail } from '@sveltejs/kit';
 import { eq, like, sql } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
@@ -12,7 +16,7 @@ import { currentDate } from '$lib/utils';
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
   let trx;
-  const supplier = await db.query.pemasokTable.findMany();
+  const supplier = await db.query.supplierTable.findMany();
   const barang = await db.query.barangTable.findMany();
   const data = await db.query.pemesananPembelianTable.findFirst({
     where: eq(pemesananPembelianTable.id, id),
@@ -26,18 +30,18 @@ export const load: PageServerLoad = async ({ params }) => {
       .select({
         num: sql<string>`
         CASE
-          WHEN MAX(CAST(SUBSTR(${pemesananPembelianTable.noPemesanan}, -3) AS INTEGER)) ISNULL then '001'
-          ELSE SUBSTR('00' || (MAX(CAST(SUBSTR(${pemesananPembelianTable.noPemesanan}, -3) AS INTEGER)) + 1), -3)
+          WHEN MAX(CAST(SUBSTR(${pemesananPembelianTable.noPembelian}, -3) AS INTEGER)) ISNULL then '001'
+          ELSE SUBSTR('00' || (MAX(CAST(SUBSTR(${pemesananPembelianTable.noPembelian}, -3) AS INTEGER)) + 1), -3)
         END`
       })
       .from(pemesananPembelianTable)
       .where(
-        like(pemesananPembelianTable.noPemesanan, sql`'PO-' || strftime('%Y%m%d', 'now') || '-%'`)
+        like(pemesananPembelianTable.noPembelian, sql`'PO-' || strftime('%Y%m%d', 'now') || '-%'`)
       );
 
     trx = 'PO-' + currentDate() + '-' + num[0].num;
   } else {
-    trx = data.noPemesanan;
+    trx = data.noPembelian;
   }
 
   return {
@@ -66,7 +70,7 @@ export const actions: Actions = {
       .values({
         id: form.data.id,
         supplierId: form.data.supplierId,
-        noPemesanan: form.data.noPemesanan,
+        noPembelian: form.data.noPembelian,
         tanggal: form.data.tanggal,
         userId: event.locals.user!.id,
         lampiran: form.data.lampiran,
@@ -77,7 +81,7 @@ export const actions: Actions = {
         target: pemesananPembelianTable.id,
         set: {
           supplierId: form.data.supplierId,
-          noPemesanan: form.data.noPemesanan,
+          noPembelian: form.data.noPembelian,
           tanggal: form.data.tanggal,
           userId: event.locals.user!.id,
           lampiran: form.data.lampiran,
@@ -92,17 +96,17 @@ export const actions: Actions = {
       }
 
       await db
-        .insert(pemesananProdukTable)
+        .insert(pembelianProdukTable)
         .values({
           id: v.id,
-          pemesananId: form.data.id,
+          pembelianId: form.data.id,
           barangId: v.barangId,
           kuantitas: v.kuantitas
         })
         .onConflictDoUpdate({
-          target: pemesananProdukTable.id,
+          target: pembelianProdukTable.id,
           set: {
-            pemesananId: form.data.id,
+            pembelianId: form.data.id,
             barangId: v.barangId,
             kuantitas: v.kuantitas
           }

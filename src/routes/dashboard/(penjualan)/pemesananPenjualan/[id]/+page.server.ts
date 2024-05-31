@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { pemesananPenjualanTable, penjualanProdukTable } from '$lib/server/schema';
+import { pemesananPenjualanTable, penjualanProdukTable } from '$lib/server/schema/penjualan';
 import { currentDate } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { eq, like, sql } from 'drizzle-orm';

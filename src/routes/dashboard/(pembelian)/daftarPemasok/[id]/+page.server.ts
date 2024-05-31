@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { pemasokTable } from '$lib/server/schema';
+import { supplierTable } from '$lib/server/schema/pembelian';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
@@ -10,8 +10,8 @@ import { formSchema } from './schema';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
-  const data = await db.query.pemasokTable.findFirst({
-    where: eq(pemasokTable.id, id)
+  const data = await db.query.supplierTable.findFirst({
+    where: eq(supplierTable.id, id)
   });
 
   return {
@@ -33,7 +33,7 @@ export const actions: Actions = {
     }
 
     await db
-      .insert(pemasokTable)
+      .insert(supplierTable)
       .values({
         id: form.data.id,
         name: form.data.name,
@@ -46,7 +46,7 @@ export const actions: Actions = {
         namaBank: form.data.namaBank
       })
       .onConflictDoUpdate({
-        target: pemasokTable.id,
+        target: supplierTable.id,
         set: {
           name: form.data.name,
           npwp: form.data.npwp,

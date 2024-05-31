@@ -98,7 +98,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div class="flex w-full flex-col gap-2 py-2">
             <Label>No. Pemesanan</Label>
-            <Input readonly value={data.pemesananPembelian?.noPemesanan} />
+            <Input readonly value={data.pemesananPembelian?.noPembelian} />
           </div>
           <div class="flex w-full flex-col gap-2 py-2">
             <Label>Tanggal Pemesanan</Label>

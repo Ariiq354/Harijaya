@@ -1,8 +1,6 @@
 <script lang="ts">
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
-  import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
-  import { Plus } from 'lucide-svelte';
   import type { PageData } from './$types';
   import DataTable from './components/data-table.svelte';
 

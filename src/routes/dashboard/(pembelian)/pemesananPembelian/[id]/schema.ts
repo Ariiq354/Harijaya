@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const formSchema = z.object({
   id: z.string(),
   supplierId: z.string().min(1, { message: 'Data tidak boleh kosong!' }).nullable(),
-  noPemesanan: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
+  noPembelian: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   tanggal: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   lampiran: z.string(),
   total: z.coerce.number(),

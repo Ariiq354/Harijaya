@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { barangTable } from '$lib/server/schema';
+import { barangTable } from '$lib/server/schema/penjualan';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';

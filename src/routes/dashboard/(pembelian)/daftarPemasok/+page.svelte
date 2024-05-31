@@ -17,13 +17,13 @@
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Page>Daftar Pemasok</Breadcrumb.Page>
+        <Breadcrumb.Page>Daftar Supplier</Breadcrumb.Page>
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-1">
-      <h1 class="text-3xl font-bold">Daftar Pemasok</h1>
+      <h1 class="text-3xl font-bold">Daftar Supplier</h1>
     </div>
     <Button href="/dashboard/daftarPemasok/new" variant="outline" class="p-2 shadow-lg">
       <Plus />

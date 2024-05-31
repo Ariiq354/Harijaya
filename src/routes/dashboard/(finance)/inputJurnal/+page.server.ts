@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { jurnalTable } from '$lib/server/schema';
+import { jurnalTable } from '$lib/server/schema/keuangan';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';

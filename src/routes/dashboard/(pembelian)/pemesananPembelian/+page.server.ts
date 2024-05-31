@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { pemesananPembelianTable } from '$lib/server/schema';
+import { pemesananPembelianTable } from '$lib/server/schema/pembelian';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';

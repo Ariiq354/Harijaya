@@ -35,7 +35,7 @@
     }
   });
   const { form: formData, enhance, submitting } = form;
-  $formData.noPemesanan = data.trx;
+  $formData.noPembelian = data.trx;
 
   function tambahData() {
     $formData.produk = [
@@ -160,10 +160,10 @@
         </div>
         <hr class="my-4" />
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Form.Field {form} name="noPemesanan">
+          <Form.Field {form} name="noPembelian">
             <Form.Control let:attrs>
-              <Form.Label>No. Pemesanan</Form.Label>
-              <Input readonly {...attrs} bind:value={$formData.noPemesanan} />
+              <Form.Label>No. Pembelian</Form.Label>
+              <Input readonly {...attrs} bind:value={$formData.noPembelian} />
             </Form.Control>
             <Form.FieldErrors />
           </Form.Field>

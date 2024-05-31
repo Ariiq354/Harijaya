@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectPemesananPembelian } from '$lib/server/schema';
+  import type { selectPemesananPembelian } from '$lib/server/schema/pembelian';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
@@ -32,8 +32,8 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'noPemesanan',
-      header: 'No. Pemesanan'
+      accessor: 'noPembelian',
+      header: 'No. Pembelian'
     }),
     table.column({
       accessor: 'tanggal',

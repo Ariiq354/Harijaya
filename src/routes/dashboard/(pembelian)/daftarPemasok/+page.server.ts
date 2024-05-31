@@ -1,12 +1,12 @@
 import { db } from '$lib/server';
-import { pemasokTable } from '$lib/server/schema';
+import { supplierTable } from '$lib/server/schema/pembelian';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const pemasokData = await db.query.pemasokTable.findMany({
-    orderBy: [desc(pemasokTable.createdAt)]
+  const pemasokData = await db.query.supplierTable.findMany({
+    orderBy: [desc(supplierTable.createdAt)]
   });
 
   return {
@@ -22,7 +22,7 @@ export const actions: Actions = {
     }
 
     try {
-      await db.delete(pemasokTable).where(eq(pemasokTable.id, id));
+      await db.delete(supplierTable).where(eq(supplierTable.id, id));
     } catch (error) {
       return fail(500, { message: 'something went wrong' });
     }

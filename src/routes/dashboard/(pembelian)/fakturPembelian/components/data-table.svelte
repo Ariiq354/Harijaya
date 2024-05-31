@@ -1,13 +1,11 @@
 <script lang="ts">
-  import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-  import { writable } from 'svelte/store';
-  import type { selectFaktur, selectPemesananPembelian } from '$lib/server/schema';
-  import * as Table from '$lib/components/ui/table';
-  import DataTableActions from './data-table-action.svelte';
-  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import * as Table from '$lib/components/ui/table';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { Render, Subscribe, createTable } from 'svelte-headless-table';
+  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
+  import { writable } from 'svelte/store';
 
   type itemType = {
     id: string;
@@ -15,7 +13,7 @@
     tanggal: string;
     total: number;
     pemesananPembelian: {
-      noPemesanan: string;
+      noPembelian: string;
       supplier: {
         name: string;
       } | null;
@@ -51,7 +49,7 @@
       header: 'Tgl. Faktur'
     }),
     table.column({
-      accessor: ({ pemesananPembelian }) => pemesananPembelian.noPemesanan,
+      accessor: ({ pemesananPembelian }) => pemesananPembelian.noPembelian,
       header: 'No Pemesanan'
     }),
     table.column({

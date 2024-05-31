@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { selectAkun } from '$lib/server/schema';
+  import type { selectAkun } from '$lib/server/schema/keuangan';
 
   export let akunDebit: selectAkun;
   export let akunKredit: selectAkun;

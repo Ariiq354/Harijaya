@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { fakturPemesananTable, pemesananPembelianTable } from '$lib/server/schema';
+import { fakturPembelianTable, pemesananPembelianTable } from '$lib/server/schema/pembelian';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
@@ -10,8 +10,8 @@ import { formSchema } from './schema';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
-  const exist = await db.query.fakturPemesananTable.findFirst({
-    where: eq(fakturPemesananTable.pemesananId, id)
+  const exist = await db.query.fakturPembelianTable.findFirst({
+    where: eq(fakturPembelianTable.pembelianId, id)
   });
 
   if (exist) {
@@ -64,11 +64,11 @@ export const actions: Actions = {
     const id = generateIdFromEntropySize(10);
 
     await db
-      .insert(fakturPemesananTable)
+      .insert(fakturPembelianTable)
       .values({
         id: id,
         total: form.data.total,
-        pemesananId: form.data.id,
+        pembelianId: form.data.id,
         supplierId: form.data.supplierId,
         catatan: form.data.catatan,
         biayaKirim: form.data.biayaKirim,
@@ -77,11 +77,11 @@ export const actions: Actions = {
         tanggal: form.data.tanggal
       })
       .onConflictDoUpdate({
-        target: fakturPemesananTable.id,
+        target: fakturPembelianTable.id,
         set: {
           catatan: form.data.catatan,
           total: form.data.total,
-          pemesananId: form.data.id,
+          pembelianId: form.data.id,
           supplierId: form.data.supplierId,
           biayaKirim: form.data.biayaKirim,
           biayaLainnya: form.data.biayaLainnya,

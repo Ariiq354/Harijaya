@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { pelangganTable } from '$lib/server/schema';
+import { pelangganTable } from '$lib/server/schema/penjualan';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';

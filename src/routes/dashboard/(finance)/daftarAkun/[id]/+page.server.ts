@@ -1,5 +1,5 @@
 import { db } from '$lib/server';
-import { akunTable } from '$lib/server/schema';
+import { akunTable } from '$lib/server/schema/keuangan';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';

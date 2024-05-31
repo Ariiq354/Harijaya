@@ -1,22 +1,22 @@
 import { db } from '$lib/server';
-import { fakturPemesananTable } from '$lib/server/schema';
+import { fakturPembelianTable } from '$lib/server/schema/pembelian';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const pemesananPembelianData = await db.query.fakturPemesananTable.findMany({
+  const pemesananPembelianData = await db.query.fakturPembelianTable.findMany({
     columns: {
       id: true,
       noFaktur: true,
       tanggal: true,
       total: true
     },
-    orderBy: desc(fakturPemesananTable.createdAt),
+    orderBy: desc(fakturPembelianTable.createdAt),
     with: {
       pemesananPembelian: {
         columns: {
-          noPemesanan: true
+          noPembelian: true
         },
         with: {
           supplier: {
@@ -42,7 +42,7 @@ export const actions: Actions = {
     }
 
     try {
-      await db.delete(fakturPemesananTable).where(eq(fakturPemesananTable.id, id));
+      await db.delete(fakturPembelianTable).where(eq(fakturPembelianTable.id, id));
     } catch (error) {
       return fail(500, { message: 'something went wrong' });
     }

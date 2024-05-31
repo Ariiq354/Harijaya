@@ -37,16 +37,16 @@
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Page>Daftar Pemasok</Breadcrumb.Page>
+        <Breadcrumb.Page>Daftar Supplier</Breadcrumb.Page>
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-1">
       {#if $formData.id}
-        <h1 class="text-3xl font-bold">Edit Pemasok</h1>
+        <h1 class="text-3xl font-bold">Edit Supplier</h1>
       {:else}
-        <h1 class="text-3xl font-bold">Buat Pemasok</h1>
+        <h1 class="text-3xl font-bold">Buat Supplier</h1>
       {/if}
     </div>
     <Button variant="outline" href="/dashboard/daftarPemasok" class="p-2 shadow-lg">
