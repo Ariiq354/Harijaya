@@ -26,7 +26,7 @@ export const sidebarItem = [
     child: [
       {
         href: '/dashboard/daftarPemasok',
-        title: 'Daftar Pemasok'
+        title: 'Daftar Supplier'
       },
       {
         href: '/dashboard/pemesananPembelian',

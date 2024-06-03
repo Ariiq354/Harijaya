@@ -39,7 +39,10 @@
     }),
     table.column({
       accessor: 'harga',
-      header: 'Harga'
+      header: 'Harga',
+      cell: ({ value }) => {
+        return value.toLocaleString('id-ID');
+      }
     }),
     table.column({
       accessor: ({ id }) => id,
@@ -78,8 +81,8 @@
               <Table.Head>No.</Table.Head>
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-                  <Table.Head {...attrs}>
-                    {#if cell.id !== 'Menu'}
+                  <Table.Head {...attrs} class="last:text-center">
+                    {#if cell.id !== 'Action'}
                       <Button
                         variant="ghost"
                         class="hover:bg-background/0 hover:text-foreground"
@@ -105,7 +108,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs}>
+                  <Table.Cell {...attrs} class="number last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

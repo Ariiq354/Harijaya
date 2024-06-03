@@ -74,107 +74,102 @@
 
   <Card.Root class="pt-4">
     <Card.Content>
-      <form method="POST" use:enhance>
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <Form.Field {form} name="id">
-              <Form.Control let:attrs>
-                <input hidden name={attrs.name} bind:value={$formData.id} />
-              </Form.Control>
-            </Form.Field>
-            <Form.Field {form} name="kodeTransaksi">
-              <Form.Control let:attrs>
-                <Form.Label>Kode Transaksi</Form.Label>
-                <Input readonly {...attrs} bind:value={$formData.kodeTransaksi} />
-              </Form.Control>
-              <Form.FieldErrors />
-            </Form.Field>
-            <Form.Field {form} name="nominal">
-              <Form.Control let:attrs>
-                <Form.Label>Nominal</Form.Label>
-                <Input {...attrs} bind:value={$formData.nominal} placeholder="Rp" />
-              </Form.Control>
-              <Form.FieldErrors />
-            </Form.Field>
-            <Form.Field {form} name="akunDebit">
-              <Form.Control let:attrs>
-                <Form.Label>Akun Debit</Form.Label>
-                <Select.Root
-                  selected={selectedAkunDebit}
-                  onSelectedChange={(v) => {
-                    v && ($formData.akunDebit = v.value);
-                  }}
-                >
-                  <Select.Trigger {...attrs}>
-                    <Select.Value class="capitalize" placeholder="Pilih Kategori Akun" />
-                  </Select.Trigger>
-                  <Select.Content class="max-h-40 overflow-auto">
-                    {#if data.akun.length}
-                      {#each data.akun as item}
-                        <Select.Item value={item.id} label={item.nama} />
-                      {/each}
-                    {:else}
-                      <Select.Item disabled value="" label="No Result Found" />
-                    {/if}
-                  </Select.Content>
-                </Select.Root>
-                <input hidden bind:value={$formData.akunDebit} name={attrs.name} />
-              </Form.Control>
-              <Form.FieldErrors />
-            </Form.Field>
-          </div>
-          <div>
-            <Form.Field {form} name="tanggal">
-              <Form.Control let:attrs>
-                <Form.Label>Tgl. Transaksi</Form.Label>
-                <Input class="block" type="date" {...attrs} bind:value={$formData.tanggal} />
-              </Form.Control>
-              <Form.FieldErrors />
-            </Form.Field>
-            <Form.Field {form} name="noReferensi">
-              <Form.Control let:attrs>
-                <Form.Label>No. Referensi</Form.Label>
-                <Input {...attrs} bind:value={$formData.noReferensi} />
-              </Form.Control>
-              <Form.FieldErrors />
-            </Form.Field>
-            <Form.Field {form} name="deskripsi">
-              <Form.Control let:attrs>
-                <Form.Label>Deskripsi</Form.Label>
-                <Input {...attrs} bind:value={$formData.deskripsi} />
-              </Form.Control>
-              <Form.FieldErrors />
-            </Form.Field>
-            <Form.Field {form} name="akunKredit">
-              <Form.Control let:attrs>
-                <Form.Label>Akun Debit</Form.Label>
-                <Select.Root
-                  selected={selectedAkunKredit}
-                  onSelectedChange={(v) => {
-                    v && ($formData.akunKredit = v.value);
-                  }}
-                >
-                  <Select.Trigger {...attrs}>
-                    <Select.Value class="capitalize" placeholder="Pilih Kategori Akun" />
-                  </Select.Trigger>
-                  <Select.Content class="max-h-40 overflow-auto">
-                    {#if data.akun.length}
-                      {#each data.akun as item}
-                        <Select.Item value={item.id} label={item.nama} />
-                      {/each}
-                    {:else}
-                      <Select.Item disabled value="" label="No Result Found" />
-                    {/if}
-                  </Select.Content>
-                </Select.Root>
-                <input hidden bind:value={$formData.akunKredit} name={attrs.name} />
-              </Form.Control>
-              <Form.FieldErrors />
-            </Form.Field>
-          </div>
-        </div>
+      <form method="POST" use:enhance class="grid grid-cols-2 gap-2">
+        <Form.Field {form} name="id" class="hidden">
+          <Form.Control let:attrs>
+            <input hidden name={attrs.name} bind:value={$formData.id} />
+          </Form.Control>
+        </Form.Field>
+        <Form.Field {form} name="kodeTransaksi">
+          <Form.Control let:attrs>
+            <Form.Label>Kode Transaksi</Form.Label>
+            <Input readonly {...attrs} bind:value={$formData.kodeTransaksi} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="nominal">
+          <Form.Control let:attrs>
+            <Form.Label>Nominal</Form.Label>
+            <Input type="number" {...attrs} bind:value={$formData.nominal} placeholder="Rp" />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="akunDebit">
+          <Form.Control let:attrs>
+            <Form.Label>Akun Debit</Form.Label>
+            <Select.Root
+              selected={selectedAkunDebit}
+              onSelectedChange={(v) => {
+                v && ($formData.akunDebit = v.value);
+              }}
+            >
+              <Select.Trigger {...attrs}>
+                <Select.Value class="capitalize" placeholder="Pilih Kategori Akun" />
+              </Select.Trigger>
+              <Select.Content class="max-h-40 overflow-auto">
+                {#if data.akun.length}
+                  {#each data.akun as item}
+                    <Select.Item value={item.id} label={item.nama} />
+                  {/each}
+                {:else}
+                  <Select.Item disabled value="" label="No Result Found" />
+                {/if}
+              </Select.Content>
+            </Select.Root>
+            <input hidden bind:value={$formData.akunDebit} name={attrs.name} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
 
-        <Form.Button disabled={$submitting} class="col-span-2 mt-4 w-full" title="submit form">
+        <Form.Field {form} name="tanggal">
+          <Form.Control let:attrs>
+            <Form.Label>Tgl. Transaksi</Form.Label>
+            <Input class="block" type="date" {...attrs} bind:value={$formData.tanggal} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="noReferensi">
+          <Form.Control let:attrs>
+            <Form.Label>No. Referensi</Form.Label>
+            <Input {...attrs} bind:value={$formData.noReferensi} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="deskripsi">
+          <Form.Control let:attrs>
+            <Form.Label>Deskripsi</Form.Label>
+            <Input {...attrs} bind:value={$formData.deskripsi} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="akunKredit">
+          <Form.Control let:attrs>
+            <Form.Label>Akun Debit</Form.Label>
+            <Select.Root
+              selected={selectedAkunKredit}
+              onSelectedChange={(v) => {
+                v && ($formData.akunKredit = v.value);
+              }}
+            >
+              <Select.Trigger {...attrs}>
+                <Select.Value class="capitalize" placeholder="Pilih Kategori Akun" />
+              </Select.Trigger>
+              <Select.Content class="max-h-40 overflow-auto">
+                {#if data.akun.length}
+                  {#each data.akun as item}
+                    <Select.Item value={item.id} label={item.nama} />
+                  {/each}
+                {:else}
+                  <Select.Item disabled value="" label="No Result Found" />
+                {/if}
+              </Select.Content>
+            </Select.Root>
+            <input hidden bind:value={$formData.akunKredit} name={attrs.name} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+
+        <Form.Button disabled={$submitting} class="col-span-2 mt-4 w-fit" title="submit form">
           {#if $submitting}
             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           {/if}

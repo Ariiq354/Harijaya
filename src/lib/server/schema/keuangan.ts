@@ -1,5 +1,5 @@
 import { relations, sql } from 'drizzle-orm';
-import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const akunTable = sqliteTable('akun', {
   id: text('id').notNull().primaryKey(),
@@ -18,7 +18,7 @@ export const jurnalTable = sqliteTable('jurnal', {
   kodeTransaksi: text('kode_transaksi').notNull().unique(),
   tanggal: text('tanggal').notNull(),
   noReferensi: text('no_referensi').notNull(),
-  nominal: text('nominal').notNull(),
+  nominal: integer('nominal').notNull(),
   deskripsi: text('deskripsi').notNull(),
   akunDebit: text('akun_debit').references(() => akunTable.id, { onDelete: 'set null' }),
   akunKredit: text('akun_kredit').references(() => akunTable.id, { onDelete: 'set null' }),

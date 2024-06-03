@@ -32,11 +32,7 @@
   <hr class="border-black" />
   <Card.Root>
     <Card.Content>
-      {#await data.jurnalData}
-        Loading data...
-      {:then data}
-        <DataTable {data} />
-      {/await}
+      <DataTable data={data.jurnalData} />
     </Card.Content>
   </Card.Root>
 </div>

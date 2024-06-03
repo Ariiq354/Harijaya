@@ -25,18 +25,19 @@
     <div class="flex flex-col gap-1">
       <h1 class="text-3xl font-bold">Daftar Barang</h1>
     </div>
-    <Button href="/dashboard/daftarBarang/new" variant="outline" class="p-2 shadow-lg">
+    <Button
+      href="/dashboard/daftarBarang/new"
+      variant="outline"
+      class="p-2 shadow-lg"
+      aria-label="tambah data"
+    >
       <Plus />
     </Button>
   </div>
   <hr class="border-black" />
   <Card.Root>
     <Card.Content>
-      {#await data.barangData}
-        Loading data...
-      {:then data}
-        <DataTable {data} />
-      {/await}
+      <DataTable data={data.barangData} />
     </Card.Content>
   </Card.Root>
 </div>

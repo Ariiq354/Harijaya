@@ -23,7 +23,7 @@
         loading = false;
         isOpen = false;
         invalidateAll();
-        toast.success('Pemasok Dihapus');
+        toast.success('Supplier Dihapus');
       }
     };
   };
@@ -54,6 +54,10 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
+    <DropdownMenu.Item href={`/dashboard/daftarPemasok/${id}/detail`}>
+      <Copy class="mr-2 h-4 w-4" />
+      Detail
+    </DropdownMenu.Item>
     <DropdownMenu.Item href={`/dashboard/daftarPemasok/${id}`}>
       <Edit class="mr-2 h-4 w-4" />
       Edit

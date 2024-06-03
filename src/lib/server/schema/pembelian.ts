@@ -5,7 +5,7 @@ import { barangTable } from './penjualan';
 
 export const supplierTable = sqliteTable('supplier', {
   id: text('id').notNull().primaryKey(),
-  name: text('name').notNull().unique(),
+  name: text('name').notNull(),
   email: text('email').notNull(),
   npwp: text('npwp').notNull(),
   phone: text('phone').notNull(),

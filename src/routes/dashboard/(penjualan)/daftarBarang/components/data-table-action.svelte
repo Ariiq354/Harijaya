@@ -4,7 +4,7 @@
   import { Button } from '$lib/components/ui/button';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import Modal from '$lib/components/ui/modal.svelte';
-  import { Edit, Loader2, MoreHorizontal, Trash } from 'lucide-svelte';
+  import { Copy, Edit, Loader2, MoreHorizontal, Trash } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
   import type { SubmitFunction } from '../$types';
 
@@ -53,6 +53,10 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
+    <DropdownMenu.Item href={`/dashboard/daftarBarang/${id}/detail`}>
+      <Copy class="mr-2 h-4 w-4" />
+      Detail
+    </DropdownMenu.Item>
     <DropdownMenu.Item href={`/dashboard/daftarBarang/${id}`}>
       <Edit class="mr-2 h-4 w-4" />
       Edit

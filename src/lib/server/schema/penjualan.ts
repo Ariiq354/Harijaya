@@ -4,7 +4,7 @@ import { userTable } from './auth';
 
 export const barangTable = sqliteTable('barang', {
   id: text('id').notNull().primaryKey(),
-  name: text('name').notNull().unique(),
+  name: text('name').notNull(),
   harga: integer('harga').notNull(),
   deskripsi: text('deskripsi').notNull(),
   satuan: text('satuan').notNull(),
@@ -16,7 +16,7 @@ export const barangTable = sqliteTable('barang', {
 
 export const pelangganTable = sqliteTable('pelanggan', {
   id: text('id').notNull().primaryKey(),
-  name: text('name').notNull().unique(),
+  name: text('name').notNull(),
   email: text('email').notNull(),
   phone: text('phone').notNull(),
   npwp: text('npwp').notNull(),

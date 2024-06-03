@@ -74,7 +74,7 @@
               <Table.Head>No.</Table.Head>
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-                  <Table.Head {...attrs} class="text-center">
+                  <Table.Head {...attrs} class="last:text-center">
                     {#if cell.id !== 'Action'}
                       <Button
                         variant="ghost"

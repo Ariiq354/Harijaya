@@ -58,7 +58,10 @@
     }),
     table.column({
       accessor: 'nominal',
-      header: 'Nominal'
+      header: 'Nominal',
+      cell: ({ value }) => {
+        return value.toLocaleString('id-ID');
+      }
     }),
     table.column({
       accessor: 'deskripsi',
@@ -101,7 +104,7 @@
               <Table.Head>No.</Table.Head>
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-                  <Table.Head {...attrs} class="text-center">
+                  <Table.Head {...attrs} class="last:text-center">
                     {#if cell.id !== 'Action'}
                       <Button
                         variant="ghost"
@@ -128,7 +131,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="last:text-center">
+                  <Table.Cell {...attrs} class="number last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

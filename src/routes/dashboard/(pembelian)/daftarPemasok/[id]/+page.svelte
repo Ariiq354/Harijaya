@@ -11,6 +11,7 @@
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
+  import { Textarea } from '$lib/components/ui/textarea';
 
   export let data: PageData;
 
@@ -65,7 +66,7 @@
         </Form.Field>
         <Form.Field {form} name="name">
           <Form.Control let:attrs>
-            <Form.Label>Nama Pemasok</Form.Label>
+            <Form.Label>Nama Supplier</Form.Label>
             <Input {...attrs} bind:value={$formData.name} />
           </Form.Control>
           <Form.FieldErrors />
@@ -94,7 +95,7 @@
         <Form.Field {form} name="address">
           <Form.Control let:attrs>
             <Form.Label>Address</Form.Label>
-            <Input {...attrs} bind:value={$formData.address} />
+            <Textarea rows={6} {...attrs} bind:value={$formData.address} />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
@@ -120,7 +121,7 @@
           <Form.FieldErrors />
         </Form.Field>
 
-        <Form.Button disabled={$submitting} class="col-span-2 mt-4">
+        <Form.Button disabled={$submitting} class="col-span-2 mt-4 w-fit">
           {#if $submitting}
             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           {/if}
