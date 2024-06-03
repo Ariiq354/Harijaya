@@ -25,7 +25,7 @@
   <hr class="border-black" />
   <Card.Root>
     <Card.Content>
-      {#await data.pemesananPenjualanData}
+      {#await data.fakturPenjualanData}
         Loading data...
       {:then data}
         <DataTable {data} />

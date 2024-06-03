@@ -1,15 +1,25 @@
 <script lang="ts">
-  import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-  import { writable } from 'svelte/store';
-  import type { selectAkun } from '$lib/server/schema/keuangan';
-  import * as Table from '$lib/components/ui/table';
-  import DataTableActions from './data-table-action.svelte';
-  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import * as Table from '$lib/components/ui/table';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { Render, Subscribe, createTable } from 'svelte-headless-table';
+  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
+  import { writable } from 'svelte/store';
 
-  export let data: selectAkun[];
+  type itemType = {
+    tanggal: string;
+    status: number;
+    noSuratJalan: string;
+    pemesananPembelian: {
+      noPembelian: string;
+      supplier: {
+        name: string;
+      } | null;
+    } | null;
+  };
+
+  export let data: itemType[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -26,30 +36,29 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'kode',
-      header: 'Kode Akun'
+      accessor: 'noSuratJalan',
+      header: 'No. Pengiriman'
     }),
     table.column({
-      accessor: 'nama',
-      header: 'Nama Akun'
+      accessor: ({ pemesananPembelian }) => pemesananPembelian?.supplier?.name,
+      header: 'Supplier'
     }),
     table.column({
-      accessor: 'kategori',
-      header: 'Kategori Akun'
+      accessor: 'tanggal',
+      header: 'Tgl. Faktur'
     }),
     table.column({
-      accessor: ({ id }) => id,
-      header: 'Action',
+      accessor: ({ pemesananPembelian }) => pemesananPembelian?.noPembelian,
+      header: 'No Pemesanan'
+    }),
+    table.column({
+      accessor: 'status',
+      header: 'Status',
       cell: ({ value }) => {
-        return createRender(DataTableActions, { id: value });
-      },
-      plugins: {
-        sort: {
-          disable: true
-        },
-
-        filter: {
-          exclude: true
+        if (value === 1) {
+          return 'setuju';
+        } else {
+          return 'selesai';
         }
       }
     })
@@ -74,8 +83,8 @@
               <Table.Head>No.</Table.Head>
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-                  <Table.Head {...attrs} class="text-center">
-                    {#if cell.id !== 'Action'}
+                  <Table.Head {...attrs}>
+                    {#if cell.id !== 'Menu'}
                       <Button
                         variant="ghost"
                         class="hover:bg-background/0 hover:text-foreground"
@@ -101,7 +110,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="capitalize last:text-center">
+                  <Table.Cell {...attrs} class="numberFaktur">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>
@@ -118,7 +127,6 @@
       size="sm"
       on:click={() => ($pageIndex = $pageIndex - 1)}
       disabled={!$hasPreviousPage}
-      title="previous data"
     >
       <ChevronLeft size="20" />
     </Button>
@@ -127,7 +135,6 @@
       size="sm"
       disabled={!$hasNextPage}
       on:click={() => ($pageIndex = $pageIndex + 1)}
-      title="next data"
     >
       <ChevronRight size="20" />
     </Button>

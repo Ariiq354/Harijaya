@@ -60,6 +60,10 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
+    <DropdownMenu.Item href={`/dashboard/inputJurnal/${id}/detail`}>
+      <Copy class="mr-2 h-4 w-4" />
+      Detail
+    </DropdownMenu.Item>
     <DropdownMenu.Item href={`/dashboard/inputJurnal/${id}`}>
       <Edit class="mr-2 h-4 w-4" />
       Edit

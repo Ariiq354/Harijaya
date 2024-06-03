@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
-  import { invalidateAll } from '$app/navigation';
-  import { Button } from '$lib/components/ui/button';
+  import { MoreHorizontal, Loader2, PenLine } from 'lucide-svelte';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+  import { Button } from '$lib/components/ui/button';
+  import { Copy, Edit, Trash } from 'lucide-svelte';
   import Modal from '$lib/components/ui/modal.svelte';
-  import { Copy, Edit, Loader2, MoreHorizontal, Trash } from 'lucide-svelte';
-  import { toast } from 'svelte-sonner';
+  import { enhance } from '$app/forms';
   import type { SubmitFunction } from '../$types';
+  import { toast } from 'svelte-sonner';
+  import { invalidateAll } from '$app/navigation';
 
   export let id: string;
   let isOpen = false;
@@ -22,7 +23,7 @@
         loading = false;
         isOpen = false;
         invalidateAll();
-        toast.success('Akun Dihapus');
+        toast.success('Faktur Dihapus');
       }
     };
   };
@@ -48,24 +49,22 @@
 </Modal>
 <DropdownMenu.Root>
   <DropdownMenu.Trigger asChild let:builder>
-    <Button
-      variant="ghost"
-      builders={[builder]}
-      size="icon"
-      class="relative h-8 w-8 p-0"
-      title="table action"
-    >
+    <Button variant="ghost" builders={[builder]} size="icon" class="relative h-8 w-8 p-0">
       <MoreHorizontal class="h-4 w-4" />
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
-    <DropdownMenu.Item href={`/dashboard/daftarAkun/${id}/detail`}>
-      <Copy class="mr-2 h-4 w-4" />
-      Detail
-    </DropdownMenu.Item>
-    <DropdownMenu.Item href={`/dashboard/daftarAkun/${id}`}>
+    <DropdownMenu.Item href={`/dashboard/pemesananPembelian/${id}`}>
       <Edit class="mr-2 h-4 w-4" />
       Edit
+    </DropdownMenu.Item>
+    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
+      <PenLine class="mr-2 h-4 w-4" />
+      Buat Faktur
+    </DropdownMenu.Item>
+    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
+      <PenLine class="mr-2 h-4 w-4" />
+      Buat Surat Jalan
     </DropdownMenu.Item>
     <DropdownMenu.Item on:click={() => (isOpen = true)}>
       <Trash class="mr-2 h-4 w-4" />

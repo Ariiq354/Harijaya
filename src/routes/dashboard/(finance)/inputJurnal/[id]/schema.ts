@@ -6,7 +6,7 @@ export const formSchema = z.object({
   tanggal: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   noReferensi: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   nominal: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
-  deskripsi: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
+  deskripsi: z.string(),
   akunDebit: z.string().min(1, { message: 'Data tidak boleh kosong!' }).nullable(),
   akunKredit: z.string().min(1, { message: 'Data tidak boleh kosong!' }).nullable()
 });

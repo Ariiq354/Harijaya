@@ -33,7 +33,7 @@ export const pelangganTable = sqliteTable('pelanggan', {
 export const pemesananPenjualanTable = sqliteTable('pemesanan_penjualan', {
   id: text('id').notNull().primaryKey(),
   pelangganId: text('pelanggan_id').references(() => pelangganTable.id, { onDelete: 'set null' }),
-  noPenjualan: text('no_penjualan').notNull(),
+  noPenjualan: text('no_penjualan').notNull().unique(),
   tanggal: text('tanggal').notNull(),
   userId: text('user_id').references(() => userTable.id, { onDelete: 'set null' }),
   lampiran: text('lampiran').notNull(),
@@ -49,9 +49,9 @@ export const pemesananPenjualanTable = sqliteTable('pemesanan_penjualan', {
 
 export const penjualanProdukTable = sqliteTable('penjualan_produk', {
   id: text('id').notNull().primaryKey(),
-  penjualanId: text('penjualan_id')
-    .notNull()
-    .references(() => pemesananPenjualanTable.id, { onDelete: 'cascade' }),
+  penjualanId: text('penjualan_id').references(() => pemesananPenjualanTable.id, {
+    onDelete: 'cascade'
+  }),
   barangId: text('barang_id').references(() => barangTable.id, { onDelete: 'set null' }),
   kuantitas: integer('kuantitas').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
@@ -62,9 +62,9 @@ export const penjualanProdukTable = sqliteTable('penjualan_produk', {
 
 export const fakturPenjualanTable = sqliteTable('faktur_penjualan', {
   id: text('id').notNull().primaryKey(),
-  penjualanId: text('penjualan_id')
-    .notNull()
-    .references(() => pemesananPenjualanTable.id, { onDelete: 'cascade' }),
+  penjualanId: text('penjualan_id').references(() => pemesananPenjualanTable.id, {
+    onDelete: 'set null'
+  }),
   noFaktur: text('no_faktur').notNull(),
   tanggal: text('tanggal').notNull(),
   pelangganId: text('pelanggan_id').references(() => pelangganTable.id, { onDelete: 'set null' }),

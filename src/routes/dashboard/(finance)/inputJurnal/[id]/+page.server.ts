@@ -1,13 +1,14 @@
 import { db } from '$lib/server';
 import { jurnalTable } from '$lib/server/schema/keuangan';
+import { currentDate } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
-import { eq, like, max, sql } from 'drizzle-orm';
+import { eq, like, sql } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
-import { currentDate } from '$lib/utils';
+import { getNumber } from '$lib/server/utils';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -19,18 +20,7 @@ export const load: PageServerLoad = async ({ params }) => {
   const akun = await db.query.akunTable.findMany();
 
   if (!data) {
-    const num = await db
-      .select({
-        num: sql<string>`
-        CASE
-          WHEN MAX(CAST(SUBSTR(kode_transaksi, -3) AS INTEGER)) ISNULL then '001'
-          ELSE SUBSTR('00' || (MAX(CAST(SUBSTR(kode_transaksi, -3) AS INTEGER)) + 1), -3)
-        END`
-      })
-      .from(jurnalTable)
-      .where(like(jurnalTable.kodeTransaksi, sql`'TRX-' || strftime('%Y%m%d', 'now') || '-%'`));
-
-    trx = 'TRX-' + currentDate() + '-' + num[0].num;
+    trx = await getNumber('TRX', jurnalTable, jurnalTable.kodeTransaksi);
   } else {
     trx = data.kodeTransaksi;
   }

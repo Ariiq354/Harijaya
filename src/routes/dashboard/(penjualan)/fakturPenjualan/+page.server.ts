@@ -5,7 +5,7 @@ import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const pemesananPenjualanData = await db.query.fakturPenjualanTable.findMany({
+  const fakturPenjualanData = await db.query.fakturPenjualanTable.findMany({
     columns: {
       id: true,
       noFaktur: true,
@@ -30,7 +30,7 @@ export const load: PageServerLoad = async () => {
   });
 
   return {
-    pemesananPenjualanData
+    fakturPenjualanData
   };
 };
 

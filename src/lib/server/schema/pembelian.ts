@@ -22,13 +22,13 @@ export const supplierTable = sqliteTable('supplier', {
 export const pemesananPembelianTable = sqliteTable('pemesanan_pembelian', {
   id: text('id').notNull().primaryKey(),
   supplierId: text('supplier_id').references(() => supplierTable.id, { onDelete: 'set null' }),
-  noPembelian: text('no_pembelian').notNull(),
+  noPembelian: text('no_pembelian').notNull().unique(),
   tanggal: text('tanggal').notNull(),
   userId: text('user_id').references(() => userTable.id, { onDelete: 'set null' }),
   lampiran: text('lampiran').notNull(),
   ppn: integer('ppn', { mode: 'boolean' }).notNull(), // 0: tidak, 1: iya
   total: integer('total').notNull(),
-  status: integer('status').notNull().default(1), // 1: disetujui, 2: penagihan, 3: pengiriman
+  status: integer('status').notNull().default(0), // 0: disetujui, 1: sudah Faktur (penagihan), 2: sudah surat jalan (pengiriman), 3: selesai
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
     .default(sql`(CURRENT_TIMESTAMP)`)
@@ -50,9 +50,9 @@ export const pembelianProdukTable = sqliteTable('pembelian_produk', {
 
 export const fakturPembelianTable = sqliteTable('faktur_pembelian', {
   id: text('id').notNull().primaryKey(),
-  pembelianId: text('pembelian_id')
-    .notNull()
-    .references(() => pemesananPembelianTable.id, { onDelete: 'cascade' }),
+  pembelianId: text('pembelian_id').references(() => pemesananPembelianTable.id, {
+    onDelete: 'set null'
+  }),
   noFaktur: text('no_faktur').notNull(),
   tanggal: text('tanggal').notNull(),
   supplierId: text('supplier_id').references(() => supplierTable.id, { onDelete: 'set null' }),

@@ -1,8 +1,8 @@
 import { db } from '$lib/server';
 import { lucia } from '$lib/server/auth';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { Argon2id } from 'oslo/password';
 import { superValidate } from 'sveltekit-superforms';
+import { verify } from '@node-rs/argon2';
 import { zod } from 'sveltekit-superforms/adapters';
 import { formSchema } from './schema';
 import type { Actions, PageServerLoad } from './$types';
@@ -32,7 +32,12 @@ export const actions: Actions = {
       error(401, 'Username atau password salah');
     }
 
-    const validPassword = await new Argon2id().verify(exist.password!, form.data.password);
+    const validPassword = await verify(exist.password!, form.data.password, {
+      memoryCost: 19456,
+      timeCost: 2,
+      outputLen: 32,
+      parallelism: 1
+    });
 
     if (!validPassword) {
       error(401, 'Username atau password salah');

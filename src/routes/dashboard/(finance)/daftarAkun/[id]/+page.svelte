@@ -59,7 +59,12 @@
         <h1 class="text-3xl font-bold">Buat Akun</h1>
       {/if}
     </div>
-    <Button variant="outline" href="/dashboard/daftarAkun" class="p-2 shadow-lg" title="go back">
+    <Button
+      variant="outline"
+      href="/dashboard/daftarAkun"
+      class="p-2 shadow-lg"
+      aria-label="go back"
+    >
       <ArrowLeft />
     </Button>
   </div>
@@ -97,7 +102,11 @@
               }}
             >
               <Select.Trigger {...attrs}>
-                <Select.Value class="capitalize" placeholder="Pilih Kategori Akun" />
+                <Select.Value
+                  class="capitalize"
+                  placeholder="Pilih Kategori Akun"
+                  aria-label="Pilih Kategori Akun"
+                />
               </Select.Trigger>
               <Select.Content>
                 <ScrollArea class="h-40">

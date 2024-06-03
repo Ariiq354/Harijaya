@@ -68,6 +68,10 @@
       <PenLine class="mr-2 h-4 w-4" />
       Buat Faktur
     </DropdownMenu.Item>
+    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
+      <PenLine class="mr-2 h-4 w-4" />
+      Buat Faktur
+    </DropdownMenu.Item>
     <DropdownMenu.Item on:click={() => (isOpen = true)}>
       <Trash class="mr-2 h-4 w-4" />
       Hapus

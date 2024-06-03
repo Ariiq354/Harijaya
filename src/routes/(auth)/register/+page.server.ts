@@ -2,7 +2,7 @@ import { db } from '$lib/server';
 import { userTable } from '$lib/server/schema/auth';
 import { fail } from '@sveltejs/kit';
 import { generateIdFromEntropySize } from 'lucia';
-import { Argon2id } from 'oslo/password';
+import { hash } from '@node-rs/argon2';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
@@ -32,7 +32,12 @@ export const actions: Actions = {
     }
 
     const userId = generateIdFromEntropySize(10);
-    const passwordHash = await new Argon2id().hash(form.data.password);
+    const passwordHash = await hash(form.data.password, {
+      memoryCost: 19456,
+      timeCost: 2,
+      outputLen: 32,
+      parallelism: 1
+    });
 
     await db.insert(userTable).values({
       id: userId,

@@ -59,8 +59,7 @@
         Submit
       </Form.Button>
       <p>
-        Already have an account? <a href="/login" class="text-blue-500 hover:text-blue-300"
-          >Login Here</a
+        Already have an account? <a href="/" class="text-blue-500 hover:text-blue-300">Login Here</a
         >
       </p>
     </Card.Footer>

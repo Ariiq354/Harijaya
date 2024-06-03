@@ -17,7 +17,7 @@
       supplier: {
         name: string;
       } | null;
-    };
+    } | null;
   };
 
   export let data: itemType[];
@@ -41,7 +41,7 @@
       header: 'No. Faktur'
     }),
     table.column({
-      accessor: ({ pemesananPembelian }) => pemesananPembelian.supplier?.name,
+      accessor: ({ pemesananPembelian }) => pemesananPembelian?.supplier?.name,
       header: 'Supplier'
     }),
     table.column({
@@ -49,7 +49,7 @@
       header: 'Tgl. Faktur'
     }),
     table.column({
-      accessor: ({ pemesananPembelian }) => pemesananPembelian.noPembelian,
+      accessor: ({ pemesananPembelian }) => pemesananPembelian?.noPembelian,
       header: 'No Pemesanan'
     }),
     table.column({

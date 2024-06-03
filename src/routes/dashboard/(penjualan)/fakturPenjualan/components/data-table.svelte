@@ -17,7 +17,7 @@
       pelanggan: {
         name: string;
       } | null;
-    };
+    } | null;
   };
 
   export let data: itemType[];
@@ -41,7 +41,7 @@
       header: 'No. Faktur'
     }),
     table.column({
-      accessor: ({ pemesananPenjualan }) => pemesananPenjualan.pelanggan?.name,
+      accessor: ({ pemesananPenjualan }) => pemesananPenjualan?.pelanggan?.name,
       header: 'Supplier'
     }),
     table.column({
@@ -49,7 +49,7 @@
       header: 'Tgl. Faktur'
     }),
     table.column({
-      accessor: ({ pemesananPenjualan }) => pemesananPenjualan.noPenjualan,
+      accessor: ({ pemesananPenjualan }) => pemesananPenjualan?.noPenjualan,
       header: 'No Pemesanan'
     }),
     table.column({
