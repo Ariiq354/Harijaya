@@ -25,11 +25,7 @@
   <hr class="border-black" />
   <Card.Root>
     <Card.Content>
-      {#await data.penerimaanBarangData}
-        Loading data...
-      {:then data}
-        <DataTable {data} />
-      {/await}
+      <DataTable data={data.penerimaanBarangData} />
     </Card.Content>
   </Card.Root>
 </div>

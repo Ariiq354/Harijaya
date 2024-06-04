@@ -1,7 +1,11 @@
 import { db } from '$lib/server';
-import { fakturPembelianTable } from '$lib/server/schema/pembelian';
+import {
+  fakturPembelianTable,
+  pemesananPembelianRelations,
+  pemesananPembelianTable
+} from '$lib/server/schema/pembelian';
 import { fail } from '@sveltejs/kit';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -39,6 +43,21 @@ export const actions: Actions = {
     const id = url.searchParams.get('id');
     if (!id) {
       return fail(400, { message: 'invalid request' });
+    }
+
+    const fakturPembelian = await db.query.fakturPembelianTable.findFirst({
+      where: eq(fakturPembelianTable.id, id)
+    });
+
+    const pembelianId = fakturPembelian?.pembelianId;
+
+    if (pembelianId) {
+      await db
+        .update(pemesananPembelianTable)
+        .set({
+          status: sql<number>`${pemesananPembelianTable.status} - 1`
+        })
+        .where(eq(pemesananPembelianTable.id, pembelianId));
     }
 
     try {

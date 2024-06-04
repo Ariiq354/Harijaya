@@ -7,9 +7,9 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async () => {
   const penerimaanBarangData = await db.query.penerimaanTable.findMany({
     columns: {
+      id: true,
       tanggal: true,
-      noSuratJalan: true,
-      status: true
+      noSuratJalan: true
     },
     orderBy: desc(penerimaanTable.createdAt),
     with: {

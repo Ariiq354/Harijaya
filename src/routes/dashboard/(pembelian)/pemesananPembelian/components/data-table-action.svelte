@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MoreHorizontal, Loader2, PenLine } from 'lucide-svelte';
+  import { MoreHorizontal, Loader2, PenLine, ClipboardPlus } from 'lucide-svelte';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Button } from '$lib/components/ui/button';
   import { Copy, Edit, Trash } from 'lucide-svelte';
@@ -10,6 +10,7 @@
   import { invalidateAll } from '$app/navigation';
 
   export let id: string;
+  export let status: number;
   let isOpen = false;
   let loading = false;
 
@@ -60,18 +61,28 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
+    <DropdownMenu.Item href={`/dashboard/pemesananPembelian/${id}/detail`}>
+      <Copy class="mr-2 h-4 w-4" />
+      Detail
+    </DropdownMenu.Item>
     <DropdownMenu.Item href={`/dashboard/pemesananPembelian/${id}`}>
       <Edit class="mr-2 h-4 w-4" />
       Edit
     </DropdownMenu.Item>
-    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
-      <PenLine class="mr-2 h-4 w-4" />
-      Buat Faktur
-    </DropdownMenu.Item>
-    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
-      <PenLine class="mr-2 h-4 w-4" />
-      Buat Faktur
-    </DropdownMenu.Item>
+    {#if status != 3}
+      {#if status != 1}
+        <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
+          <PenLine class="mr-2 h-4 w-4" />
+          Buat Faktur
+        </DropdownMenu.Item>
+      {/if}
+      {#if status != 2}
+        <DropdownMenu.Item href={`/dashboard/penerimaanBarang/${id}`}>
+          <ClipboardPlus class="mr-2 h-4 w-4" />
+          Buat Surat Jalan
+        </DropdownMenu.Item>
+      {/if}
+    {/if}
     <DropdownMenu.Item on:click={() => (isOpen = true)}>
       <Trash class="mr-2 h-4 w-4" />
       Hapus

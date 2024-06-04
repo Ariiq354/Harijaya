@@ -2,14 +2,15 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
+  import DataTableActions from './data-table-action.svelte';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
-  import { Render, Subscribe, createTable } from 'svelte-headless-table';
+  import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
 
   type itemType = {
+    id: string;
     tanggal: string;
-    status: number;
     noSuratJalan: string;
     pemesananPembelian: {
       noPembelian: string;
@@ -36,6 +37,10 @@
 
   const columns = table.createColumns([
     table.column({
+      accessor: 'tanggal',
+      header: 'Tgl. Pengiriman'
+    }),
+    table.column({
       accessor: 'noSuratJalan',
       header: 'No. Pengiriman'
     }),
@@ -44,21 +49,22 @@
       header: 'Supplier'
     }),
     table.column({
-      accessor: 'tanggal',
-      header: 'Tgl. Faktur'
-    }),
-    table.column({
       accessor: ({ pemesananPembelian }) => pemesananPembelian?.noPembelian,
-      header: 'No Pemesanan'
+      header: 'No. Pemesanan'
     }),
     table.column({
-      accessor: 'status',
-      header: 'Status',
+      accessor: ({ id }) => id,
+      header: 'Action',
       cell: ({ value }) => {
-        if (value === 1) {
-          return 'setuju';
-        } else {
-          return 'selesai';
+        return createRender(DataTableActions, { id: value });
+      },
+      plugins: {
+        sort: {
+          disable: true
+        },
+
+        filter: {
+          exclude: true
         }
       }
     })
@@ -84,7 +90,7 @@
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
                   <Table.Head {...attrs}>
-                    {#if cell.id !== 'Menu'}
+                    {#if cell.id !== 'Action'}
                       <Button
                         variant="ghost"
                         class="hover:bg-background/0 hover:text-foreground"
@@ -110,7 +116,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="numberFaktur">
+                  <Table.Cell {...attrs} class="last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

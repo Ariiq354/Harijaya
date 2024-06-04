@@ -17,7 +17,7 @@
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Page>Daftar Jurnal</Breadcrumb.Page>
+        <Breadcrumb.Page>Input Jurnal</Breadcrumb.Page>
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>

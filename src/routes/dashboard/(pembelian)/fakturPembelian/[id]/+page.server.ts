@@ -1,7 +1,7 @@
 import { db } from '$lib/server';
 import { fakturPembelianTable, pemesananPembelianTable } from '$lib/server/schema/pembelian';
 import { fail, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -92,7 +92,7 @@ export const actions: Actions = {
 
     await db
       .update(pemesananPembelianTable)
-      .set({ status: 2 })
+      .set({ status: sql<number>`${pemesananPembelianTable.status} + 1` })
       .where(eq(pemesananPembelianTable.id, form.data.id));
 
     return {

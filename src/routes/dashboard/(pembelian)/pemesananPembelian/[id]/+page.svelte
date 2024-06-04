@@ -71,12 +71,10 @@
       }
     : undefined;
 
-  $: selectedBarang = $formData.produk
-    .map((p) => {
-      const barang = data.barang.find((i) => i.id == p.barangId);
-      return barang ? { label: barang.name, value: p.barangId } : undefined;
-    })
-    .filter(Boolean);
+  $: selectedBarang = $formData.produk.map((p) => {
+    const barang = data.barang.find((i) => i.id == p.barangId);
+    return barang ? { label: barang.name, value: p.barangId } : undefined;
+  });
 </script>
 
 <div class="flex flex-col gap-4">
@@ -99,7 +97,12 @@
         <h1 class="text-3xl font-bold">Buat Pemesanan Pembelian</h1>
       {/if}
     </div>
-    <Button variant="outline" href="/dashboard/pemesananPembelian" class="p-2 shadow-lg">
+    <Button
+      variant="outline"
+      href="/dashboard/pemesananPembelian"
+      class="p-2 shadow-lg"
+      aria-label="go back"
+    >
       <ArrowLeft />
     </Button>
   </div>
@@ -193,7 +196,8 @@
             </Table.Header>
             <Table.Body>
               {#each $formData.produk as item, i (item)}
-                {@const harga = data.barang.find((i) => i.id == item.barangId)?.harga}
+                {@const barang = data.barang.find((i) => i.id == item.barangId)}
+                {@const harga = barang ? barang.harga : 0}
                 <Table.Row>
                   <Form.Control let:attrs>
                     <Table.Cell>{i + 1}</Table.Cell>

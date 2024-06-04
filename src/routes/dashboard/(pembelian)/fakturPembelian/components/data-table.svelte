@@ -2,8 +2,9 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
+  import DataTableActions from './data-table-action.svelte';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
-  import { Render, Subscribe, createTable } from 'svelte-headless-table';
+  import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
 
@@ -58,6 +59,22 @@
       cell: ({ value }) => {
         return value.toLocaleString('id-ID');
       }
+    }),
+    table.column({
+      accessor: ({ id }) => id,
+      header: 'Action',
+      cell: ({ value }) => {
+        return createRender(DataTableActions, { id: value });
+      },
+      plugins: {
+        sort: {
+          disable: true
+        },
+
+        filter: {
+          exclude: true
+        }
+      }
     })
   ]);
 
@@ -80,8 +97,8 @@
               <Table.Head>No.</Table.Head>
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-                  <Table.Head {...attrs}>
-                    {#if cell.id !== 'Menu'}
+                  <Table.Head {...attrs} class="last:text-center">
+                    {#if cell.id !== 'Action'}
                       <Button
                         variant="ghost"
                         class="hover:bg-background/0 hover:text-foreground"
@@ -107,7 +124,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="numberFaktur">
+                  <Table.Cell {...attrs} class="numberFaktur last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

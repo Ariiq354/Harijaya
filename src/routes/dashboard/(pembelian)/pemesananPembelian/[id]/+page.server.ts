@@ -1,9 +1,5 @@
 import { db } from '$lib/server';
-import {
-  supplierTable,
-  pemesananPembelianTable,
-  pembelianProdukTable
-} from '$lib/server/schema/pembelian';
+import { pemesananPembelianTable, pembelianProdukTable } from '$lib/server/schema/pembelian';
 import { fail } from '@sveltejs/kit';
 import { eq, like, sql } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
@@ -12,6 +8,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
 import { currentDate } from '$lib/utils';
+import { getNumber } from '$lib/server/utils';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -26,20 +23,7 @@ export const load: PageServerLoad = async ({ params }) => {
   });
 
   if (!data) {
-    const num = await db
-      .select({
-        num: sql<string>`
-        CASE
-          WHEN MAX(CAST(SUBSTR(${pemesananPembelianTable.noPembelian}, -3) AS INTEGER)) ISNULL then '001'
-          ELSE SUBSTR('00' || (MAX(CAST(SUBSTR(${pemesananPembelianTable.noPembelian}, -3) AS INTEGER)) + 1), -3)
-        END`
-      })
-      .from(pemesananPembelianTable)
-      .where(
-        like(pemesananPembelianTable.noPembelian, sql`'PO-' || strftime('%Y%m%d', 'now') || '-%'`)
-      );
-
-    trx = 'PO-' + currentDate() + '-' + num[0].num;
+    trx = await getNumber('PO', pemesananPembelianTable, pemesananPembelianTable.noPembelian);
   } else {
     trx = data.noPembelian;
   }
@@ -94,7 +78,6 @@ export const actions: Actions = {
       if (!v.id) {
         v.id = generateIdFromEntropySize(10);
       }
-
       await db
         .insert(pembelianProdukTable)
         .values({

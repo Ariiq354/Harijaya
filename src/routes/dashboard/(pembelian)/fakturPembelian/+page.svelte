@@ -25,11 +25,7 @@
   <hr class="border-black" />
   <Card.Root>
     <Card.Content>
-      {#await data.fakturPembelianData}
-        Loading data...
-      {:then data}
-        <DataTable {data} />
-      {/await}
+      <DataTable data={data.fakturPembelianData} />
     </Card.Content>
   </Card.Root>
 </div>

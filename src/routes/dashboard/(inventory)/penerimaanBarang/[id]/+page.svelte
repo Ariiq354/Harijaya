@@ -14,6 +14,7 @@
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
+  import { getCurrentDate } from '$lib/utils';
 
   export let data: PageData;
 
@@ -31,6 +32,8 @@
   });
   const { form: formData, enhance, submitting } = form;
   $formData.id = data.id;
+  $formData.noSuratJalan = data.trx;
+  $formData.tanggal = getCurrentDate();
   $formData.supplierId = data.pemesananPembelian?.supplierId as string;
 </script>
 
@@ -50,12 +53,18 @@
     <div class="flex flex-col gap-1">
       <h1 class="text-3xl font-bold">Buat Penerimaan Barang</h1>
     </div>
-    <Button variant="outline" href="/dashboard/pemesananPembelian" class="p-2 shadow-lg">
+    <Button
+      variant="outline"
+      href="/dashboard/pemesananPembelian"
+      class="p-2 shadow-lg"
+      aria-label="go back"
+    >
       <ArrowLeft />
     </Button>
   </div>
   <hr class="border-black" />
 
+  <SuperDebug data={$formData} />
   <Card.Root class="pt-4">
     <Card.Content>
       <form method="POST" use:enhance class="w-full">
@@ -87,53 +96,47 @@
         </div>
         <hr class="my-4" />
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div>
-            <div class="flex w-full flex-col gap-2 py-2">
-              <Label>No. Pemesanan</Label>
+          <div class="space-y-2">
+            <div class="flex w-full flex-col gap-y-2 pt-1">
+              <Label class="text-sm font-medium">No. Pemesanan</Label>
               <Input readonly value={data.pemesananPembelian?.noPembelian} />
             </div>
-            <div class="flex w-full flex-col gap-2 py-2">
-              <Form.Field {form} name="noSuratJalan">
-                <Form.Control let:attrs>
-                  <Form.Label>No. Surat Jalan</Form.Label>
-                  <Input readonly {...attrs} bind:value={$formData.noSuratJalan} />
-                </Form.Control>
-                <Form.FieldErrors />
-              </Form.Field>
-              <Form.Field {form} name="tanggal">
-                <Form.Control let:attrs>
-                  <Form.Label>Tanggal Pengiriman</Form.Label>
-                  <Input readonly type="date" {...attrs} bind:value={$formData.tanggal} />
-                </Form.Control>
-                <Form.FieldErrors />
-              </Form.Field>
-            </div>
-            <div>
-              <Form.Field {form} name="noPelacakan">
-                <Form.Control let:attrs>
-                  <Form.Label>No. Pelacakan</Form.Label>
-                  <Input type="date" {...attrs} bind:value={$formData.noPelacakan} />
-                </Form.Control>
-                <Form.FieldErrors />
-              </Form.Field>
-              <Form.Field {form} name="jenis">
-                <Form.Control let:attrs>
-                  <Form.Label>Jenis Pengiriman</Form.Label>
-                  <Input type="date" {...attrs} bind:value={$formData.jenis} />
-                </Form.Control>
-                <Form.FieldErrors />
-              </Form.Field>
+            <div class="flex w-full flex-col gap-y-2 pt-1">
+              <Label class="text-sm font-medium">Tanggal Pemesanan</Label>
+              <Input readonly value={data.pemesananPembelian?.tanggal} />
             </div>
           </div>
           <div>
-            <div class="flex w-full flex-col gap-2 py-2">
-              <Label>No. Pemesanan</Label>
-              <Input readonly value={data.pemesananPembelian?.noPembelian} />
-            </div>
-            <div class="flex w-full flex-col gap-2 py-2">
-              <Label>Tanggal Pemesanan</Label>
-              <Input readonly value={data.pemesananPembelian?.tanggal} />
-            </div>
+            <Form.Field {form} name="noSuratJalan">
+              <Form.Control let:attrs>
+                <Form.Label>No. Surat Jalan</Form.Label>
+                <Input readonly {...attrs} bind:value={$formData.noSuratJalan} />
+              </Form.Control>
+              <Form.FieldErrors />
+            </Form.Field>
+            <Form.Field {form} name="tanggal">
+              <Form.Control let:attrs>
+                <Form.Label>Tanggal Pengiriman</Form.Label>
+                <Input readonly type="date" {...attrs} bind:value={$formData.tanggal} />
+              </Form.Control>
+              <Form.FieldErrors />
+            </Form.Field>
+          </div>
+          <div>
+            <Form.Field {form} name="noPelacakan">
+              <Form.Control let:attrs>
+                <Form.Label>No. Pelacakan</Form.Label>
+                <Input {...attrs} bind:value={$formData.noPelacakan} />
+              </Form.Control>
+              <Form.FieldErrors />
+            </Form.Field>
+            <Form.Field {form} name="jenis">
+              <Form.Control let:attrs>
+                <Form.Label>Jenis Pengiriman</Form.Label>
+                <Input {...attrs} bind:value={$formData.jenis} />
+              </Form.Control>
+              <Form.FieldErrors />
+            </Form.Field>
           </div>
         </div>
         <hr class="my-4" />

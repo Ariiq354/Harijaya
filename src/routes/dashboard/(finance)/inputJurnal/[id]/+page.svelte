@@ -8,11 +8,10 @@
   import * as Select from '$lib/components/ui/select';
   import { ArrowLeft, Loader2 } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
-  import SuperDebug, { superForm } from 'sveltekit-superforms';
+  import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
 
   export let data: PageData;
 

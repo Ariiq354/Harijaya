@@ -20,7 +20,7 @@
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Page>Detail Pelanggan</Breadcrumb.Page>
+        <Breadcrumb.Page>Daftar Pelanggan</Breadcrumb.Page>
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>

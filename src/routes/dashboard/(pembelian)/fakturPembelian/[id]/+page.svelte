@@ -141,7 +141,7 @@
                     <Input readonly value={item.barang?.name} />
                   </Table.Cell>
                   <Table.Cell>
-                    <Input type="number" readonly value={item.barang?.harga} />
+                    {item.barang?.harga}
                   </Table.Cell>
                   <Table.Cell>
                     <Input type="number" readonly value={item.kuantitas} />

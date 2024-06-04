@@ -19,7 +19,7 @@
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Page>Detail Supplier</Breadcrumb.Page>
+        <Breadcrumb.Page>Daftar Supplier</Breadcrumb.Page>
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
