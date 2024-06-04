@@ -1,17 +1,22 @@
 <script lang="ts">
-  import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-  import { writable } from 'svelte/store';
-  import type { selectPemesananPenjualan } from '$lib/server/schema/penjualan';
-  import * as Table from '$lib/components/ui/table';
-  import DataTableActions from './data-table-action.svelte';
-  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import * as Table from '$lib/components/ui/table';
+  import DataTableActions from './data-table-action.svelte';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
+  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
+  import { writable } from 'svelte/store';
 
-  type itemType = selectPemesananPenjualan & {
-    pelanggan: {
-      name: string | null;
+  type itemType = {
+    id: string;
+    tanggal: string;
+    noSuratJalan: string;
+    pemesananPenjualan: {
+      noPenjualan: string;
+      pelanggan: {
+        name: string;
+      } | null;
     } | null;
   };
 
@@ -32,42 +37,26 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'noPenjualan',
-      header: 'No. Penjualan'
-    }),
-    table.column({
       accessor: 'tanggal',
-      header: 'Tgl. Penjualan'
+      header: 'Tgl. Pengiriman'
     }),
     table.column({
-      accessor: ({ pelanggan }) => pelanggan?.name,
-      header: 'Nama Pelanggan'
+      accessor: 'noSuratJalan',
+      header: 'No. Pengiriman'
     }),
     table.column({
-      accessor: 'total',
-      header: 'Total',
-      cell: ({ value }) => {
-        return value.toLocaleString('id-ID');
-      }
+      accessor: ({ pemesananPenjualan }) => pemesananPenjualan?.pelanggan?.name,
+      header: 'Supplier'
     }),
     table.column({
-      accessor: 'status',
-      header: 'Status',
-      cell: ({ value }) => {
-        if (value === 3) {
-          return 'Pengiriman';
-        } else if (value === 2) {
-          return 'Penagihan';
-        } else {
-          return 'Disetujui';
-        }
-      }
+      accessor: ({ pemesananPenjualan }) => pemesananPenjualan?.noPenjualan,
+      header: 'No. Pemesanan'
     }),
     table.column({
-      accessor: ({ id, status }) => ({ id: id, status: status }),
+      accessor: ({ id }) => id,
       header: 'Action',
       cell: ({ value }) => {
-        return createRender(DataTableActions, { id: value.id, status: value.status });
+        return createRender(DataTableActions, { id: value });
       },
       plugins: {
         sort: {
@@ -100,7 +89,7 @@
               <Table.Head>No.</Table.Head>
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-                  <Table.Head {...attrs} class="last:text-center">
+                  <Table.Head {...attrs}>
                     {#if cell.id !== 'Action'}
                       <Button
                         variant="ghost"
@@ -127,7 +116,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="number last:text-center">
+                  <Table.Cell {...attrs} class="last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>
@@ -144,7 +133,6 @@
       size="sm"
       on:click={() => ($pageIndex = $pageIndex - 1)}
       disabled={!$hasPreviousPage}
-      title="previous data"
     >
       <ChevronLeft size="20" />
     </Button>
@@ -153,7 +141,6 @@
       size="sm"
       disabled={!$hasNextPage}
       on:click={() => ($pageIndex = $pageIndex + 1)}
-      title="next data"
     >
       <ChevronRight size="20" />
     </Button>

@@ -29,7 +29,7 @@
       href="/dashboard/pemesananPenjualan/new"
       variant="outline"
       class="p-2 shadow-lg"
-      title="add data"
+      aria-label="add data"
     >
       <Plus />
     </Button>
@@ -37,11 +37,7 @@
   <hr class="border-black" />
   <Card.Root>
     <Card.Content>
-      {#await data.pemesananPenjualanData}
-        Loading data...
-      {:then data}
-        <DataTable {data} />
-      {/await}
+      <DataTable data={data.pemesananPenjualanData} />
     </Card.Content>
   </Card.Root>
 </div>

@@ -4,11 +4,20 @@
   import { Button } from '$lib/components/ui/button';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import Modal from '$lib/components/ui/modal.svelte';
-  import { Edit, Loader2, MoreHorizontal, PenLine, Trash } from 'lucide-svelte';
+  import {
+    ClipboardPlus,
+    Copy,
+    Edit,
+    Loader2,
+    MoreHorizontal,
+    PenLine,
+    Trash
+  } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
   import type { SubmitFunction } from '../$types';
 
   export let id: string;
+  export let status: number;
   let isOpen = false;
   let loading = false;
 
@@ -59,14 +68,28 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
+    <DropdownMenu.Item href="{`/dashboard/pemesananPenjualan/${id}`}/detail">
+      <Copy class="mr-2 h-4 w-4" />
+      Detail
+    </DropdownMenu.Item>
     <DropdownMenu.Item href={`/dashboard/pemesananPenjualan/${id}`}>
       <Edit class="mr-2 h-4 w-4" />
       Edit
     </DropdownMenu.Item>
-    <DropdownMenu.Item href={`/dashboard/fakturPenjualan/${id}`}>
-      <PenLine class="mr-2 h-4 w-4" />
-      Buat Faktur
-    </DropdownMenu.Item>
+    {#if status !== 3}
+      {#if status !== 1}
+        <DropdownMenu.Item href={`/dashboard/fakturPenjualan/${id}`}>
+          <PenLine class="mr-2 h-4 w-4" />
+          Buat Faktur
+        </DropdownMenu.Item>
+      {/if}
+      {#if status !== 2}
+        <DropdownMenu.Item href={`/dashboard/pengirimanBarang/${id}`}>
+          <ClipboardPlus class="mr-2 h-4 w-4" />
+          Buat Surat Jalan
+        </DropdownMenu.Item>
+      {/if}
+    {/if}
     <DropdownMenu.Item on:click={() => (isOpen = true)}>
       <Trash class="mr-2 h-4 w-4" />
       Hapus

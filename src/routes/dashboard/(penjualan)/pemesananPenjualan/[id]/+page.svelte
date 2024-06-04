@@ -101,7 +101,12 @@
         <h1 class="text-3xl font-bold">Buat Pemesanan Penjualan</h1>
       {/if}
     </div>
-    <Button variant="outline" href="/dashboard/pemesananPenjualan" class="p-2 shadow-lg">
+    <Button
+      variant="outline"
+      href="/dashboard/pemesananPenjualan"
+      class="p-2 shadow-lg"
+      aria-label="go back"
+    >
       <ArrowLeft />
     </Button>
   </div>
@@ -119,7 +124,7 @@
           <div>
             <Form.Field {form} name="pelangganId" class="w-full">
               <Form.Control let:attrs>
-                <Form.Label>Nama Supplier</Form.Label>
+                <Form.Label>Nama Pelanggan</Form.Label>
                 <Select.Root
                   selected={selectedPelanggan}
                   onSelectedChange={(v) => {

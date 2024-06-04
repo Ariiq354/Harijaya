@@ -54,17 +54,9 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
-    <DropdownMenu.Item href={`/dashboard/pemesananPembelian/${id}`}>
-      <Edit class="mr-2 h-4 w-4" />
-      Edit
-    </DropdownMenu.Item>
-    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
-      <PenLine class="mr-2 h-4 w-4" />
-      Buat Faktur
-    </DropdownMenu.Item>
-    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
-      <PenLine class="mr-2 h-4 w-4" />
-      Buat Surat Jalan
+    <DropdownMenu.Item href={`/dashboard/fakturPenjualan/${id}/detail`}>
+      <Copy class="mr-2 h-4 w-4" />
+      Detail
     </DropdownMenu.Item>
     <DropdownMenu.Item on:click={() => (isOpen = true)}>
       <Trash class="mr-2 h-4 w-4" />

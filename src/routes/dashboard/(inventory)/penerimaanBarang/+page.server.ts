@@ -1,8 +1,9 @@
 import { db } from '$lib/server';
 import { penerimaanTable } from '$lib/server/schema/inventory';
 import { fail } from '@sveltejs/kit';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
+import { pemesananPembelianTable } from '$lib/server/schema/pembelian';
 
 export const load: PageServerLoad = async () => {
   const penerimaanBarangData = await db.query.penerimaanTable.findMany({
@@ -38,6 +39,21 @@ export const actions: Actions = {
     const id = url.searchParams.get('id');
     if (!id) {
       return fail(400, { message: 'invalid request' });
+    }
+
+    const penerimaanBarang = await db.query.penerimaanTable.findFirst({
+      where: eq(penerimaanTable.id, id)
+    });
+
+    const pembelianId = penerimaanBarang?.pemesananPembelianId;
+
+    if (pembelianId) {
+      await db
+        .update(pemesananPembelianTable)
+        .set({
+          status: sql<number>`${pemesananPembelianTable.status} - 2`
+        })
+        .where(eq(pemesananPembelianTable.id, pembelianId));
     }
 
     try {

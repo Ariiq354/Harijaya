@@ -1,7 +1,7 @@
 import { db } from '$lib/server';
-import { fakturPenjualanTable } from '$lib/server/schema/penjualan';
+import { fakturPenjualanTable, pemesananPenjualanTable } from '$lib/server/schema/penjualan';
 import { fail } from '@sveltejs/kit';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -39,6 +39,21 @@ export const actions: Actions = {
     const id = url.searchParams.get('id');
     if (!id) {
       return fail(400, { message: 'invalid request' });
+    }
+
+    const fakturPenjualan = await db.query.fakturPenjualanTable.findFirst({
+      where: eq(fakturPenjualanTable.id, id)
+    });
+
+    const penjualanId = fakturPenjualan?.penjualanId;
+
+    if (penjualanId) {
+      await db
+        .update(pemesananPenjualanTable)
+        .set({
+          status: sql<number>`${pemesananPenjualanTable.status} - 1`
+        })
+        .where(eq(pemesananPenjualanTable.id, penjualanId));
     }
 
     try {

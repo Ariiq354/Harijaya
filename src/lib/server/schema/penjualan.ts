@@ -40,7 +40,7 @@ export const pemesananPenjualanTable = sqliteTable('pemesanan_penjualan', {
   ppn: integer('ppn', { mode: 'boolean' }).notNull(), // 0: tidak, 1: iya
   pembulatan: integer('pembulatan').notNull(),
   total: integer('total').notNull(),
-  status: integer('status').notNull().default(1), // 1: disetujui, 2: penagihan, 3: pengiriman
+  status: integer('status').notNull().default(0), // 1: disetujui, 2: penagihan, 3: pengiriman
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
     .default(sql`(CURRENT_TIMESTAMP)`)

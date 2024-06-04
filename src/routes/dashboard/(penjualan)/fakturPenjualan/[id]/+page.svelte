@@ -10,7 +10,7 @@
   import { Textarea } from '$lib/components/ui/textarea';
   import { ArrowLeft, Loader2 } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
-  import SuperDebug, { superForm } from 'sveltekit-superforms';
+  import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
@@ -55,7 +55,12 @@
     <div class="flex flex-col gap-1">
       <h1 class="text-3xl font-bold">Buat Faktur Penjualan</h1>
     </div>
-    <Button variant="outline" href="/dashboard/pemesananPenjualan" class="p-2 shadow-lg">
+    <Button
+      variant="outline"
+      href="/dashboard/pemesananPenjualan"
+      class="p-2 shadow-lg"
+      aria-label="go back"
+    >
       <ArrowLeft />
     </Button>
   </div>
@@ -142,7 +147,7 @@
                     <Input readonly value={item.barang?.name} />
                   </Table.Cell>
                   <Table.Cell>
-                    <Input type="number" readonly value={item.barang?.harga} />
+                    {item.barang?.harga}
                   </Table.Cell>
                   <Table.Cell>
                     <Input type="number" readonly value={item.kuantitas} />

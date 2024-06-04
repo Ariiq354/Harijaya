@@ -23,7 +23,7 @@
     async onUpdate({ form }) {
       if (form.valid) {
         toast.success('Submit berhasil');
-        await goto('/dashboard/penerimaanBarang');
+        await goto('/dashboard/pengirimanBarang');
       }
     },
     onError(event) {
@@ -34,7 +34,7 @@
   $formData.id = data.id;
   $formData.noSuratJalan = data.trx;
   $formData.tanggal = getCurrentDate();
-  $formData.supplierId = data.pemesananPembelian?.supplierId as string;
+  $formData.pelangganId = data.pemesananPenjualan?.pelangganId as string;
 </script>
 
 <div class="flex flex-col gap-4">
@@ -45,17 +45,17 @@
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Page>Penerimaan Barang</Breadcrumb.Page>
+        <Breadcrumb.Page>Pengiriman Barang</Breadcrumb.Page>
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-1">
-      <h1 class="text-3xl font-bold">Buat Penerimaan Barang</h1>
+      <h1 class="text-3xl font-bold">Buat Pengiriman Barang</h1>
     </div>
     <Button
       variant="outline"
-      href="/dashboard/pemesananPembelian"
+      href="/dashboard/pemesananPenjualan"
       class="p-2 shadow-lg"
       aria-label="go back"
     >
@@ -73,25 +73,25 @@
             <input hidden name={attrs.name} bind:value={$formData.id} />
           </Form.Control>
         </Form.Field>
-        <Form.Field {form} name="supplierId" class="hidden">
+        <Form.Field {form} name="pelangganId" class="hidden">
           <Form.Control let:attrs>
-            <input hidden name={attrs.name} bind:value={$formData.supplierId} />
+            <input hidden name={attrs.name} bind:value={$formData.pelangganId} />
           </Form.Control>
         </Form.Field>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <div class="mt-4 flex flex-col gap-2">
-              <Label>Nama Supplier</Label>
-              <Input readonly value={data.pemesananPembelian?.supplier?.name} />
+              <Label>Nama Pelanggan</Label>
+              <Input readonly value={data.pemesananPenjualan?.pelanggan?.name} />
             </div>
             <div class="mt-4 flex flex-col gap-2">
               <Label>Email</Label>
-              <Input readonly value={data.pemesananPembelian?.supplier?.email} />
+              <Input readonly value={data.pemesananPenjualan?.pelanggan?.email} />
             </div>
           </div>
           <div class="flex w-full flex-col gap-2 py-2">
             <Label>Alamat</Label>
-            <Textarea rows={8} readonly value={data.pemesananPembelian?.supplier?.address} />
+            <Textarea rows={8} readonly value={data.pemesananPenjualan?.pelanggan?.address} />
           </div>
         </div>
         <hr class="my-4" />
@@ -99,11 +99,11 @@
           <div class="space-y-2">
             <div class="flex w-full flex-col gap-y-2 pt-1">
               <Label class="text-sm font-medium">No. Pemesanan</Label>
-              <Input readonly value={data.pemesananPembelian?.noPembelian} />
+              <Input readonly value={data.pemesananPenjualan?.noPenjualan} />
             </div>
             <div class="flex w-full flex-col gap-y-2 pt-1">
               <Label class="text-sm font-medium">Tanggal Pemesanan</Label>
-              <Input readonly value={data.pemesananPembelian?.tanggal} />
+              <Input readonly value={data.pemesananPenjualan?.tanggal} />
             </div>
           </div>
           <div>
@@ -151,8 +151,8 @@
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {#if data.pemesananPembelian}
-              {#each data.pemesananPembelian.produk as item, i (item)}
+            {#if data.pemesananPenjualan}
+              {#each data.pemesananPenjualan.produk as item, i (item)}
                 <Table.Row>
                   <Table.Cell>{i + 1}</Table.Cell>
                   <Table.Cell>

@@ -8,6 +8,7 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { getNumber } from '$lib/server/utils';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -22,20 +23,7 @@ export const load: PageServerLoad = async ({ params }) => {
   });
 
   if (!data) {
-    const num = await db
-      .select({
-        num: sql<string>`
-        CASE
-          WHEN MAX(CAST(SUBSTR(${pemesananPenjualanTable.noPenjualan}, -3) AS INTEGER)) ISNULL then '001'
-          ELSE SUBSTR('00' || (MAX(CAST(SUBSTR(${pemesananPenjualanTable.noPenjualan}, -3) AS INTEGER)) + 1), -3)
-        END`
-      })
-      .from(pemesananPenjualanTable)
-      .where(
-        like(pemesananPenjualanTable.noPenjualan, sql`'SO-' || strftime('%Y%m%d', 'now') || '-%'`)
-      );
-
-    trx = 'SO-' + currentDate() + '-' + num[0].num;
+    trx = await getNumber('SO', pemesananPenjualanTable, pemesananPenjualanTable.noPenjualan);
   } else {
     trx = data.noPenjualan;
   }

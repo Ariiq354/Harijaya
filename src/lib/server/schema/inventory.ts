@@ -51,12 +51,12 @@ export const penerimaanRelations = relations(penerimaanTable, ({ one }) => ({
 }));
 
 export const pengirimanRelations = relations(pengirimanTable, ({ one }) => ({
-  pemesananPembelian: one(pemesananPembelianTable, {
+  pemesananPenjualan: one(pemesananPenjualanTable, {
     fields: [pengirimanTable.pemesananPenjualanId],
-    references: [pemesananPembelianTable.id]
+    references: [pemesananPenjualanTable.id]
   }),
-  supplierId: one(supplierTable, {
+  pelangganId: one(pelangganTable, {
     fields: [pengirimanTable.pelangganId],
-    references: [supplierTable.id]
+    references: [pelangganTable.id]
   })
 }));
