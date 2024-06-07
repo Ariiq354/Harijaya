@@ -2,23 +2,21 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
-  import DataTableActions from './data-table-action.svelte';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
-  import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
+  import { Render, Subscribe, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
 
   type itemType = {
     id: string;
-    tanggal: string;
-    noSuratJalan: string;
-    status: number;
-    pemesananPembelian: {
-      noPembelian: string;
-      supplier: {
-        name: string;
-      } | null;
-    } | null;
+    createdAt: string | null;
+    updatedAt: string | null;
+    barangId: string;
+    stok: number;
+    barang: {
+      name: string;
+      deskripsi: string;
+    };
   };
 
   export let data: itemType[];
@@ -38,47 +36,16 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'tanggal',
-      header: 'Tgl. Pengiriman'
+      accessor: ({ barang }) => barang.name,
+      header: 'Nama Produk'
     }),
     table.column({
-      accessor: 'noSuratJalan',
-      header: 'No. Pengiriman'
+      accessor: ({ barang }) => barang.deskripsi,
+      header: 'Deskripsi'
     }),
     table.column({
-      accessor: ({ pemesananPembelian }) => pemesananPembelian?.supplier?.name,
-      header: 'Supplier'
-    }),
-    table.column({
-      accessor: ({ pemesananPembelian }) => pemesananPembelian?.noPembelian,
-      header: 'No. Pemesanan'
-    }),
-    table.column({
-      accessor: 'status',
-      header: 'Status',
-      cell: ({ value }) => {
-        if (value === 2) {
-          return 'Selesai';
-        } else {
-          return 'Proses';
-        }
-      }
-    }),
-    table.column({
-      accessor: ({ id, status }) => ({ id: id, status: status }),
-      header: 'Action',
-      cell: ({ value }) => {
-        return createRender(DataTableActions, { id: value.id, status: value.status });
-      },
-      plugins: {
-        sort: {
-          disable: true
-        },
-
-        filter: {
-          exclude: true
-        }
-      }
+      accessor: 'stok',
+      header: 'Stok'
     })
   ]);
 
@@ -128,7 +95,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="last:text-center">
+                  <Table.Cell {...attrs}>
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

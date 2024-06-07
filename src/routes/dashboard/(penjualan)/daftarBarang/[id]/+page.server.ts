@@ -7,6 +7,7 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { stokTable } from '$lib/server/schema/inventory';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -51,6 +52,11 @@ export const actions: Actions = {
         }
       });
 
+    await db.insert(stokTable).values({
+      id: generateIdFromEntropySize(10),
+      stok: 0,
+      barangId: form.data.id
+    });
     return {
       form
     };

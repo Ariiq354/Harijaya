@@ -62,11 +62,11 @@ export const sidebarItem = [
   },
   {
     icon: BriefcaseBusiness,
-    title: 'Inventory',
+    title: 'Persediaan Barang',
     child: [
       {
-        href: '/dashboard/daftarInventory',
-        title: 'Daftar Inventory'
+        href: '/dashboard/daftarStok',
+        title: 'Daftar Stok'
       },
       {
         href: '/dashboard/penerimaanBarang',
@@ -77,8 +77,8 @@ export const sidebarItem = [
         title: 'Pengiriman Barang'
       },
       {
-        href: '/dashboard/stockOpname',
-        title: 'Stock Opname'
+        href: '/dashboard/stockFisik',
+        title: 'Stok Fisik'
       }
     ]
   }

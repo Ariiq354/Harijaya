@@ -3,6 +3,7 @@ import { barangTable } from '$lib/server/schema/penjualan';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
+import { stokTable } from '$lib/server/schema/inventory';
 
 export const load: PageServerLoad = async () => {
   const barangData = await db.query.barangTable.findMany({

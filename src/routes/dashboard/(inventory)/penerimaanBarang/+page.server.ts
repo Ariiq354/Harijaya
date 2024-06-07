@@ -10,7 +10,8 @@ export const load: PageServerLoad = async () => {
     columns: {
       id: true,
       tanggal: true,
-      noSuratJalan: true
+      noSuratJalan: true,
+      status: true
     },
     orderBy: desc(penerimaanTable.createdAt),
     with: {

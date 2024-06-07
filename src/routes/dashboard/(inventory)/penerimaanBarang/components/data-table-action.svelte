@@ -10,6 +10,7 @@
   import { invalidateAll } from '$app/navigation';
 
   export let id: string;
+  export let status: number;
   let isOpen = false;
   let loading = false;
 
@@ -58,6 +59,12 @@
       <Copy class="mr-2 h-4 w-4" />
       Detail
     </DropdownMenu.Item>
+    {#if status === 1}
+      <DropdownMenu.Item href={`/dashboard/penerimaanBarang/${id}/selesai`}>
+        <PenLine class="mr-2 h-4 w-4" />
+        Selesai
+      </DropdownMenu.Item>
+    {/if}
     <DropdownMenu.Item on:click={() => (isOpen = true)}>
       <Trash class="mr-2 h-4 w-4" />
       Hapus
