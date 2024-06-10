@@ -29,10 +29,6 @@ export const sidebarItem = [
         title: 'Daftar Supplier'
       },
       {
-        href: '/dashboard/pemesananPembelian',
-        title: 'Pemesanan Pembelian'
-      },
-      {
         href: '/dashboard/fakturPembelian',
         title: 'Faktur Pembelian'
       }
@@ -51,10 +47,6 @@ export const sidebarItem = [
         title: 'Daftar Pelanggan'
       },
       {
-        href: '/dashboard/pemesananPenjualan',
-        title: 'Pemesanan Penjualan'
-      },
-      {
         href: '/dashboard/fakturPenjualan',
         title: 'Faktur Penjualan'
       }
@@ -65,20 +57,20 @@ export const sidebarItem = [
     title: 'Inventory',
     child: [
       {
-        href: '/dashboard/daftarInventory',
-        title: 'Daftar Inventory'
+        href: '/dashboard/stokBahanMentah',
+        title: 'Stok Bahan Mentah'
       },
       {
-        href: '/dashboard/penerimaanBarang',
-        title: 'Penerimaan Barang'
+        href: '/dashboard/stokBarangJadi',
+        title: 'Stok Bahan Jadi'
       },
       {
-        href: '/dashboard/pengirimanBarang',
-        title: 'Pengiriman Barang'
+        href: '/dashboard/prosesProduksi',
+        title: 'Proses Produksi'
       },
       {
-        href: '/dashboard/stockOpname',
-        title: 'Stock Opname'
+        href: '/dashboard/stokFisik',
+        title: 'Stok Fisik'
       }
     ]
   }

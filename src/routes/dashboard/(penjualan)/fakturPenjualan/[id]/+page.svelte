@@ -1,23 +1,30 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import ImageUpload from '$lib/components/ImageUpload.svelte';
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
   import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
+  import { Checkbox } from '$lib/components/ui/checkbox';
   import * as Form from '$lib/components/ui/form';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
+  import * as Select from '$lib/components/ui/select';
   import * as Table from '$lib/components/ui/table';
   import { Textarea } from '$lib/components/ui/textarea';
-  import { ArrowLeft, Loader2 } from 'lucide-svelte';
+  import { ArrowLeft, Loader2, Trash2 } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
-  import { superForm } from 'sveltekit-superforms';
+  import SuperDebug, { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
+  import { generateIdFromEntropySize } from 'lucia';
 
   export let data: PageData;
+  let subTotal: number;
+  let ppnTotal: number;
 
   const form = superForm(data.form, {
+    dataType: 'json',
     validators: zodClient(formSchema),
     async onUpdate({ form }) {
       if (form.valid) {
@@ -30,13 +37,48 @@
     }
   });
   const { form: formData, enhance, submitting } = form;
-  $formData.id = data.id;
-  $formData.pelangganId = data.pemesananPenjualan?.pelangganId as string;
-  $: $formData.total =
-    (data.pemesananPenjualan?.total as number) +
-    Number($formData.biayaKirim) +
-    Number($formData.biayaLainnya) +
-    Number($formData.pembulatan);
+
+  function tambahData() {
+    $formData.produk = [
+      ...$formData.produk,
+      {
+        id: '',
+        harga: 0,
+        barangId: '',
+        kuantitas: 0
+      }
+    ];
+  }
+
+  function removeData(i: number) {
+    $formData.produk.splice(i, 1);
+    $formData.produk = $formData.produk;
+  }
+
+  $: {
+    subTotal = $formData.produk.reduce(
+      (acc, item) => acc + Number(item.harga) * Number(item.kuantitas),
+      0
+    );
+    ppnTotal = $formData.ppn ? subTotal + subTotal * 0.1 : subTotal;
+    $formData.total =
+      ppnTotal +
+      Number($formData.biayaKirim) +
+      Number($formData.biayaLainnya) +
+      Number($formData.pembulatan);
+  }
+
+  $: selectedPelanggan = $formData.pelangganId
+    ? {
+        label: data.pelanggan.find((i) => i.id == $formData.pelangganId)?.name ?? '',
+        value: $formData.pelangganId
+      }
+    : undefined;
+
+  $: selectedBarang = $formData.produk.map((p) => {
+    const barang = data.barang.find((i) => i.id == p.barangId);
+    return barang ? { label: barang.name, value: p.barangId } : undefined;
+  });
 </script>
 
 <div class="flex flex-col gap-4">
@@ -53,11 +95,15 @@
   </Breadcrumb.Root>
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-1">
-      <h1 class="text-3xl font-bold">Buat Faktur Penjualan</h1>
+      {#if $formData.id}
+        <h1 class="text-3xl font-bold">Edit Faktur Penjualan</h1>
+      {:else}
+        <h1 class="text-3xl font-bold">Buat Faktur Penjualan</h1>
+      {/if}
     </div>
     <Button
       variant="outline"
-      href="/dashboard/pemesananPenjualan"
+      href="/dashboard/fakturPenjualan"
       class="p-2 shadow-lg"
       aria-label="go back"
     >
@@ -66,6 +112,7 @@
   </div>
   <hr class="border-black" />
 
+  <SuperDebug data={$formData} />
   <Card.Root class="pt-4">
     <Card.Content>
       <form method="POST" use:enhance class="w-full">
@@ -74,43 +121,52 @@
             <input hidden name={attrs.name} bind:value={$formData.id} />
           </Form.Control>
         </Form.Field>
-        <Form.Field {form} name="pelangganId" class="hidden">
-          <Form.Control let:attrs>
-            <input hidden name={attrs.name} bind:value={$formData.pelangganId} />
-          </Form.Control>
-        </Form.Field>
-        <Form.Field {form} name="total" class="hidden">
-          <Form.Control let:attrs>
-            <input hidden name={attrs.name} bind:value={$formData.total} />
-          </Form.Control>
-        </Form.Field>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <div class="mt-4 flex flex-col gap-2">
-              <Label>Nama Supplier</Label>
-              <Input readonly value={data.pemesananPenjualan?.pelanggan?.name} />
-            </div>
+            <Form.Field {form} name="pelangganId" class="w-full">
+              <Form.Control let:attrs>
+                <Form.Label>Nama Pelanggan</Form.Label>
+                <Select.Root
+                  selected={selectedPelanggan}
+                  onSelectedChange={(v) => {
+                    v && ($formData.pelangganId = v.value);
+                  }}
+                >
+                  <Select.Trigger {...attrs}>
+                    <Select.Value placeholder="Pilih pelanggan..." />
+                  </Select.Trigger>
+                  <Select.Content class="max-h-40 overflow-auto">
+                    {#if data.pelanggan.length}
+                      {#each data.pelanggan as item}
+                        <Select.Item value={item.id} label={item.name} />
+                      {/each}
+                    {:else}
+                      <Select.Item value="" label="No Result Found" disabled />
+                    {/if}
+                  </Select.Content>
+                </Select.Root>
+                <input hidden bind:value={$formData.pelangganId} name={attrs.name} />
+              </Form.Control>
+              <Form.FieldErrors />
+            </Form.Field>
             <div class="mt-4 flex flex-col gap-2">
               <Label>Email</Label>
-              <Input readonly value={data.pemesananPenjualan?.pelanggan?.email} />
+              <Input
+                readonly
+                value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.email}
+              />
             </div>
           </div>
           <div class="flex w-full flex-col gap-2 py-2">
             <Label>Alamat</Label>
-            <Textarea rows={8} readonly value={data.pemesananPenjualan?.pelanggan?.address} />
+            <Textarea
+              rows={8}
+              readonly
+              value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.address}
+            />
           </div>
         </div>
         <hr class="my-4" />
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div class="flex w-full flex-col gap-2 py-2">
-            <Label>No. Pemesanan</Label>
-            <Input readonly value={data.pemesananPenjualan?.noPenjualan} />
-          </div>
-          <div class="flex w-full flex-col gap-2 py-2">
-            <Label>Tanggal Pemesanan</Label>
-            <Input readonly value={data.pemesananPenjualan?.tanggal} />
-          </div>
-        </div>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Form.Field {form} name="noFaktur">
             <Form.Control let:attrs>
@@ -121,49 +177,77 @@
           </Form.Field>
           <Form.Field {form} name="tanggal">
             <Form.Control let:attrs>
-              <Form.Label>Tanggal Faktur</Form.Label>
+              <Form.Label>Tanggal</Form.Label>
               <Input class="block" type="date" {...attrs} bind:value={$formData.tanggal} />
             </Form.Control>
             <Form.FieldErrors />
           </Form.Field>
         </div>
         <hr class="my-4" />
-        <Table.Root class="w-full">
-          <Table.Header>
-            <Table.Row>
-              <Table.Head>No.</Table.Head>
-              <Table.Head>Barang</Table.Head>
-              <Table.Head>Harga</Table.Head>
-              <Table.Head>Kuantitas</Table.Head>
-              <Table.Head>Jumlah</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {#if data.pemesananPenjualan}
-              {#each data.pemesananPenjualan.produk as item, i (item)}
+        <div class="flex w-full justify-end">
+          <Button on:click={tambahData}>Tambah</Button>
+        </div>
+        <Form.Field {form} name="produk">
+          <Form.Control let:attrs>
+            <Table.Root class="w-full">
+              <Table.Header>
                 <Table.Row>
-                  <Table.Cell>{i + 1}</Table.Cell>
-                  <Table.Cell>
-                    <Input readonly value={item.barang?.name} />
-                  </Table.Cell>
-                  <Table.Cell>
-                    {item.barang?.harga}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Input type="number" readonly value={item.kuantitas} />
-                  </Table.Cell>
-                  <Table.Cell>
-                    {#if item.barang}
-                      {item.barang.harga * item.kuantitas}
-                    {:else}
-                      0
-                    {/if}
-                  </Table.Cell>
+                  <Table.Head>No.</Table.Head>
+                  <Table.Head>Barang</Table.Head>
+                  <Table.Head>Harga</Table.Head>
+                  <Table.Head>Kuantitas</Table.Head>
+                  <Table.Head>Jumlah</Table.Head>
+                  <Table.Head>Action</Table.Head>
                 </Table.Row>
-              {/each}
-            {/if}
-          </Table.Body>
-        </Table.Root>
+              </Table.Header>
+              <Table.Body>
+                {#each $formData.produk as item, i (i)}
+                  {@const barang = data.barang.find((i) => i.id == item.barangId)}
+                  <Table.Row>
+                    <Table.Cell>{i + 1}</Table.Cell>
+                    <Table.Cell>
+                      <Select.Root
+                        selected={selectedBarang[i]}
+                        onSelectedChange={(v) => {
+                          v && ($formData.produk[i].barangId = v.value);
+                        }}
+                      >
+                        <Select.Trigger {...attrs}>
+                          <Select.Value placeholder="Pilih barang..." />
+                        </Select.Trigger>
+                        <Select.Content class="max-h-40 overflow-auto">
+                          {#if data.barang.length}
+                            {#each data.barang as item}
+                              <Select.Item value={item.id} label={item.name} />
+                            {/each}
+                          {:else}
+                            <Select.Item value="" label="No Result Found" disabled />
+                          {/if}
+                        </Select.Content>
+                      </Select.Root>
+                      <input hidden bind:value={$formData.produk[i].barangId} name={attrs.name} />
+                      <input hidden bind:value={$formData.produk[i].id} name={attrs.name} />
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Input type="number" {...attrs} bind:value={$formData.produk[i].harga} />
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Input type="number" {...attrs} bind:value={$formData.produk[i].kuantitas} />
+                    </Table.Cell>
+                    <Table.Cell>
+                      {$formData.produk[i].harga * $formData.produk[i].kuantitas}
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Button class="p-2" variant="destructive" on:click={() => removeData(i)}>
+                        <Trash2 />
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
+                {/each}
+              </Table.Body>
+            </Table.Root>
+          </Form.Control>
+        </Form.Field>
         <hr class="my-4" />
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
@@ -177,23 +261,53 @@
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div class="flex w-full flex-col gap-2 py-2">
                 <Label>Nama Bank</Label>
-                <Input readonly value={data.pemesananPenjualan?.pelanggan?.namaBank} />
+                <Input
+                  readonly
+                  value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.namaBank}
+                />
               </div>
               <div class="flex w-full flex-col gap-2 py-2">
                 <Label>No. Rekening</Label>
-                <Input readonly value={data.pemesananPenjualan?.pelanggan?.noRekening} />
+                <Input
+                  readonly
+                  value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.noRekening}
+                />
               </div>
             </div>
             <div class="flex w-full flex-col gap-2 py-2">
               <Label>Atas Nama</Label>
-              <Input readonly value={data.pemesananPenjualan?.pelanggan?.atasNama} />
+              <Input
+                readonly
+                value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.atasNama}
+              />
             </div>
+            <ImageUpload
+              disabled={false}
+              url={$formData.lampiran}
+              onChange={(url) => ($formData.lampiran = url)}
+              onRemove={() => ($formData.lampiran = '')}
+            />
           </div>
           <div class="flex flex-col gap-2">
             <div class="flex w-full justify-between">
               <div>Subtotal:</div>
               <div>
-                {data.pemesananPenjualan?.total}
+                {subTotal}
+              </div>
+            </div>
+            <div class="flex w-full justify-between">
+              <div>PPN:</div>
+              <Form.Field {form} name="ppn">
+                <Form.Control let:attrs>
+                  <Checkbox {...attrs} bind:checked={$formData.ppn} />
+                  <input name={attrs.name} value={$formData.ppn} hidden />
+                </Form.Control>
+              </Form.Field>
+            </div>
+            <div class="flex w-full justify-between">
+              <div>Total & PPN:</div>
+              <div>
+                {ppnTotal}
               </div>
             </div>
             <div class="flex w-full justify-between">
@@ -202,7 +316,6 @@
                 <Form.Control let:attrs>
                   <Input type="number" {...attrs} bind:value={$formData.biayaKirim} />
                 </Form.Control>
-                <Form.FieldErrors />
               </Form.Field>
             </div>
             <div class="flex w-full justify-between">
@@ -211,7 +324,6 @@
                 <Form.Control let:attrs>
                   <Input type="number" {...attrs} bind:value={$formData.biayaLainnya} />
                 </Form.Control>
-                <Form.FieldErrors />
               </Form.Field>
             </div>
             <div class="flex w-full justify-between">
@@ -220,13 +332,13 @@
                 <Form.Control let:attrs>
                   <Input type="number" {...attrs} bind:value={$formData.pembulatan} />
                 </Form.Control>
-                <Form.FieldErrors />
               </Form.Field>
             </div>
             <div class="flex w-full justify-between">
               <div>Grand Total:</div>
               <div>
                 {$formData.total}
+                <input type="hidden" bind:value={$formData.total} />
               </div>
             </div>
           </div>

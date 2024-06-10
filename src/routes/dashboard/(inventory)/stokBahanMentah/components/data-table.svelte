@@ -2,21 +2,15 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
-  import DataTableActions from './data-table-action.svelte';
+  import type { stokBahanMentah } from '$lib/server/schema/inventory';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
-  import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
+  import { Render, Subscribe, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
 
-  type itemType = {
-    id: string;
-    tanggal: string;
-    noSuratJalan: string;
-    pemesananPembelian: {
-      noPembelian: string;
-      supplier: {
-        name: string;
-      } | null;
+  type itemType = stokBahanMentah & {
+    barang: {
+      name: string;
     } | null;
   };
 
@@ -37,36 +31,12 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'tanggal',
-      header: 'Tgl. Pengiriman'
+      accessor: ({ barang }) => barang?.name,
+      header: 'Nama Barang'
     }),
     table.column({
-      accessor: 'noSuratJalan',
-      header: 'No. Pengiriman'
-    }),
-    table.column({
-      accessor: ({ pemesananPembelian }) => pemesananPembelian?.supplier?.name,
-      header: 'Supplier'
-    }),
-    table.column({
-      accessor: ({ pemesananPembelian }) => pemesananPembelian?.noPembelian,
-      header: 'No. Pemesanan'
-    }),
-    table.column({
-      accessor: ({ id }) => id,
-      header: 'Action',
-      cell: ({ value }) => {
-        return createRender(DataTableActions, { id: value });
-      },
-      plugins: {
-        sort: {
-          disable: true
-        },
-
-        filter: {
-          exclude: true
-        }
-      }
+      accessor: 'stok',
+      header: 'Stok'
     })
   ]);
 
@@ -89,7 +59,7 @@
               <Table.Head>No.</Table.Head>
               {#each headerRow.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-                  <Table.Head {...attrs}>
+                  <Table.Head {...attrs} class="last:text-center">
                     {#if cell.id !== 'Action'}
                       <Button
                         variant="ghost"
@@ -116,7 +86,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="last:text-center">
+                  <Table.Cell {...attrs} class="number last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

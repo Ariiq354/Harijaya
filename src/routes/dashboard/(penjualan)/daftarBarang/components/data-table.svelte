@@ -38,13 +38,6 @@
       header: 'Satuan'
     }),
     table.column({
-      accessor: 'harga',
-      header: 'Harga',
-      cell: ({ value }) => {
-        return value.toLocaleString('id-ID');
-      }
-    }),
-    table.column({
       accessor: ({ id }) => id,
       header: 'Action',
       cell: ({ value }) => {

@@ -1,23 +1,17 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
+  import { writable } from 'svelte/store';
+  import type { selectFakturPembelian } from '$lib/server/schema/pembelian';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
-  import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
-  import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
-  import { writable } from 'svelte/store';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-  type itemType = {
-    id: string;
-    noFaktur: string;
-    tanggal: string;
-    total: number;
-    pemesananPembelian: {
-      noPembelian: string;
-      supplier: {
-        name: string;
-      } | null;
+  type itemType = selectFakturPembelian & {
+    supplier: {
+      name: string | null;
     } | null;
   };
 
@@ -42,16 +36,12 @@
       header: 'No. Faktur'
     }),
     table.column({
-      accessor: ({ pemesananPembelian }) => pemesananPembelian?.supplier?.name,
-      header: 'Supplier'
-    }),
-    table.column({
       accessor: 'tanggal',
-      header: 'Tgl. Faktur'
+      header: 'Tgl. Pembelian'
     }),
     table.column({
-      accessor: ({ pemesananPembelian }) => pemesananPembelian?.noPembelian,
-      header: 'No Pemesanan'
+      accessor: ({ supplier }) => supplier?.name,
+      header: 'Nama Pemasok'
     }),
     table.column({
       accessor: 'total',
@@ -124,7 +114,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="numberFaktur last:text-center">
+                  <Table.Cell {...attrs} class="number last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>
@@ -141,6 +131,7 @@
       size="sm"
       on:click={() => ($pageIndex = $pageIndex - 1)}
       disabled={!$hasPreviousPage}
+      title="previous data"
     >
       <ChevronLeft size="20" />
     </Button>
@@ -149,6 +140,7 @@
       size="sm"
       disabled={!$hasNextPage}
       on:click={() => ($pageIndex = $pageIndex + 1)}
+      title="next data"
     >
       <ChevronRight size="20" />
     </Button>

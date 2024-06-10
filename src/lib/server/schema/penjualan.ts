@@ -1,13 +1,14 @@
 import { relations, sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { userTable } from './auth';
+import { stokBarangJadiTable, stokBahanMentahTable } from './inventory';
 
 export const barangTable = sqliteTable('barang', {
   id: text('id').notNull().primaryKey(),
   name: text('name').notNull(),
-  harga: integer('harga').notNull(),
   deskripsi: text('deskripsi').notNull(),
   satuan: text('satuan').notNull(),
+  tipe: integer('tipe').notNull(), // 1: mentah, 2: jadi
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
     .default(sql`(CURRENT_TIMESTAMP)`)
@@ -30,17 +31,19 @@ export const pelangganTable = sqliteTable('pelanggan', {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
 
-export const pemesananPenjualanTable = sqliteTable('pemesanan_penjualan', {
+export const fakturPenjualanTable = sqliteTable('faktur_penjualan', {
   id: text('id').notNull().primaryKey(),
   pelangganId: text('pelanggan_id').references(() => pelangganTable.id, { onDelete: 'set null' }),
-  noPenjualan: text('no_penjualan').notNull().unique(),
+  noFaktur: text('no_faktur').notNull().unique(),
   tanggal: text('tanggal').notNull(),
   userId: text('user_id').references(() => userTable.id, { onDelete: 'set null' }),
   lampiran: text('lampiran').notNull(),
+  catatan: text('catatan').notNull(),
   ppn: integer('ppn', { mode: 'boolean' }).notNull(), // 0: tidak, 1: iya
   pembulatan: integer('pembulatan').notNull(),
+  biayaKirim: integer('biaya_kirim').notNull(),
+  biayaLainnya: integer('biaya_lainnya').notNull(),
   total: integer('total').notNull(),
-  status: integer('status').notNull().default(0), // 1: disetujui, 2: penagihan, 3: pengiriman
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
     .default(sql`(CURRENT_TIMESTAMP)`)
@@ -49,10 +52,13 @@ export const pemesananPenjualanTable = sqliteTable('pemesanan_penjualan', {
 
 export const penjualanProdukTable = sqliteTable('penjualan_produk', {
   id: text('id').notNull().primaryKey(),
-  penjualanId: text('penjualan_id').references(() => pemesananPenjualanTable.id, {
-    onDelete: 'cascade'
-  }),
+  penjualanId: text('penjualan_id')
+    .notNull()
+    .references(() => fakturPenjualanTable.id, {
+      onDelete: 'cascade'
+    }),
   barangId: text('barang_id').references(() => barangTable.id, { onDelete: 'set null' }),
+  harga: integer('harga').notNull(),
   kuantitas: integer('kuantitas').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
@@ -60,37 +66,29 @@ export const penjualanProdukTable = sqliteTable('penjualan_produk', {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
 
-export const fakturPenjualanTable = sqliteTable('faktur_penjualan', {
-  id: text('id').notNull().primaryKey(),
-  penjualanId: text('penjualan_id').references(() => pemesananPenjualanTable.id, {
-    onDelete: 'set null'
+export const barangRelations = relations(barangTable, ({ one, many }) => ({
+  bahanMentah: one(stokBahanMentahTable, {
+    fields: [barangTable.id],
+    references: [stokBahanMentahTable.barangId]
   }),
-  noFaktur: text('no_faktur').notNull(),
-  tanggal: text('tanggal').notNull(),
-  pelangganId: text('pelanggan_id').references(() => pelangganTable.id, { onDelete: 'set null' }),
-  catatan: text('catatan').notNull(),
-  biayaKirim: integer('biaya_kirim').notNull(),
-  biayaLainnya: integer('biaya_lainnya').notNull(),
-  pembulatan: integer('pembulatan').notNull(),
-  total: integer('total').notNull(),
-  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
-  updatedAt: text('updated_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
-});
+  barangJadi: one(stokBarangJadiTable, {
+    fields: [barangTable.id],
+    references: [stokBarangJadiTable.barangId]
+  })
+}));
 
-export const pemesananPenjualanRelations = relations(pemesananPenjualanTable, ({ one, many }) => ({
+export const fakturPenjualanRelations = relations(fakturPenjualanTable, ({ one, many }) => ({
   pelanggan: one(pelangganTable, {
-    fields: [pemesananPenjualanTable.pelangganId],
+    fields: [fakturPenjualanTable.pelangganId],
     references: [pelangganTable.id]
   }),
   produk: many(penjualanProdukTable)
 }));
 
 export const penjualanProdukRelations = relations(penjualanProdukTable, ({ one }) => ({
-  pemesananPenjualan: one(pemesananPenjualanTable, {
+  fakturPenjualan: one(fakturPenjualanTable, {
     fields: [penjualanProdukTable.penjualanId],
-    references: [pemesananPenjualanTable.id]
+    references: [fakturPenjualanTable.id]
   }),
   barang: one(barangTable, {
     fields: [penjualanProdukTable.barangId],
@@ -98,21 +96,8 @@ export const penjualanProdukRelations = relations(penjualanProdukTable, ({ one }
   })
 }));
 
-export const fakturPenjualanRelations = relations(fakturPenjualanTable, ({ one }) => ({
-  pemesananPenjualan: one(pemesananPenjualanTable, {
-    fields: [fakturPenjualanTable.penjualanId],
-    references: [pemesananPenjualanTable.id]
-  }),
-  pelanggan: one(pelangganTable, {
-    fields: [fakturPenjualanTable.pelangganId],
-    references: [pelangganTable.id]
-  })
-}));
-
 export type selectBarang = typeof barangTable.$inferSelect;
 
 export type selectPelanggan = typeof pelangganTable.$inferSelect;
-
-export type selectPemesananPenjualan = typeof pemesananPenjualanTable.$inferSelect;
 
 export type selectFakturPenjualan = typeof fakturPenjualanTable.$inferSelect;

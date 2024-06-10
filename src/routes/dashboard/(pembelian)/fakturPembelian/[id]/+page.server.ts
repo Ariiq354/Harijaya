@@ -1,54 +1,32 @@
 import { db } from '$lib/server';
-import { fakturPembelianTable, pemesananPembelianTable } from '$lib/server/schema/pembelian';
-import { fail, redirect } from '@sveltejs/kit';
+import { fakturPembelianTable, pembelianProdukTable } from '$lib/server/schema/pembelian';
+import { fail } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { barangTable } from '$lib/server/schema/penjualan';
+import { stokBahanMentahTable } from '$lib/server/schema/inventory';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
-  const exist = await db.query.fakturPembelianTable.findFirst({
-    where: eq(fakturPembelianTable.pembelianId, id)
+  const supplier = await db.query.supplierTable.findMany();
+  const barang = await db.query.barangTable.findMany({
+    where: eq(barangTable.tipe, 1)
   });
-
-  if (exist) {
-    redirect(302, '/dashboard/fakturPembelian');
-  }
-
-  const pemesananPembelian = await db.query.pemesananPembelianTable.findFirst({
-    where: eq(pemesananPembelianTable.id, id),
+  const data = await db.query.fakturPembelianTable.findFirst({
+    where: eq(fakturPembelianTable.id, id),
     with: {
-      supplier: {
-        columns: {
-          address: true,
-          email: true,
-          name: true,
-          atasNama: true,
-          noRekening: true,
-          namaBank: true
-        }
-      },
-      produk: {
-        with: {
-          barang: {
-            columns: {
-              name: true,
-              harga: true,
-              satuan: true
-            }
-          }
-        }
-      }
+      produk: true
     }
   });
 
   return {
-    form: await superValidate(zod(formSchema)),
-    pemesananPembelian,
-    id
+    form: await superValidate(data, zod(formSchema)),
+    supplier,
+    barang
   };
 };
 
@@ -61,39 +39,81 @@ export const actions: Actions = {
       });
     }
 
-    const id = generateIdFromEntropySize(10);
+    if (!form.data.id) {
+      form.data.id = generateIdFromEntropySize(10);
+    }
 
     await db
       .insert(fakturPembelianTable)
       .values({
-        id: id,
-        total: form.data.total,
-        pembelianId: form.data.id,
-        supplierId: form.data.supplierId,
-        catatan: form.data.catatan,
+        id: form.data.id,
         biayaKirim: form.data.biayaKirim,
         biayaLainnya: form.data.biayaLainnya,
+        catatan: form.data.catatan,
+        supplierId: form.data.supplierId,
         noFaktur: form.data.noFaktur,
-        tanggal: form.data.tanggal
+        tanggal: form.data.tanggal,
+        userId: event.locals.user!.id,
+        lampiran: form.data.lampiran,
+        total: form.data.total,
+        ppn: form.data.ppn
       })
       .onConflictDoUpdate({
         target: fakturPembelianTable.id,
         set: {
-          catatan: form.data.catatan,
-          total: form.data.total,
-          pembelianId: form.data.id,
-          supplierId: form.data.supplierId,
+          id: form.data.id,
           biayaKirim: form.data.biayaKirim,
           biayaLainnya: form.data.biayaLainnya,
+          catatan: form.data.catatan,
+          supplierId: form.data.supplierId,
           noFaktur: form.data.noFaktur,
-          tanggal: form.data.tanggal
+          tanggal: form.data.tanggal,
+          userId: event.locals.user!.id,
+          lampiran: form.data.lampiran,
+          total: form.data.total,
+          ppn: form.data.ppn
         }
       });
 
-    await db
-      .update(pemesananPembelianTable)
-      .set({ status: sql<number>`${pemesananPembelianTable.status} + 1` })
-      .where(eq(pemesananPembelianTable.id, form.data.id));
+    form.data.produk.forEach(async (v) => {
+      if (!v.id) {
+        v.id = generateIdFromEntropySize(10);
+        await db
+          .update(stokBahanMentahTable)
+          .set({
+            stok: sql<number>`${stokBahanMentahTable.stok} + ${v.kuantitas}`
+          })
+          .where(eq(stokBahanMentahTable.barangId, v.barangId!));
+      } else {
+        const stock = await db.query.pembelianProdukTable.findFirst({
+          where: eq(pembelianProdukTable.id, v.id)
+        });
+        const diff = v.kuantitas - stock!.kuantitas;
+        if (diff !== 0) {
+          await db.update(stokBahanMentahTable).set({
+            stok: sql<number>`${stokBahanMentahTable.stok} + (${diff})`
+          });
+        }
+      }
+      await db
+        .insert(pembelianProdukTable)
+        .values({
+          id: v.id,
+          pembelianId: form.data.id,
+          harga: v.harga,
+          barangId: v.barangId,
+          kuantitas: v.kuantitas
+        })
+        .onConflictDoUpdate({
+          target: pembelianProdukTable.id,
+          set: {
+            harga: v.harga,
+            pembelianId: form.data.id,
+            barangId: v.barangId,
+            kuantitas: v.kuantitas
+          }
+        });
+    });
 
     return {
       form

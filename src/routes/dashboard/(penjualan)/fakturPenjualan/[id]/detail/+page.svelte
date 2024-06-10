@@ -2,15 +2,19 @@
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
   import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
-  import * as Form from '$lib/components/ui/form';
+  import { Checkbox } from '$lib/components/ui/checkbox';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import * as Table from '$lib/components/ui/table';
   import { Textarea } from '$lib/components/ui/textarea';
-  import { ArrowLeft, Loader2 } from 'lucide-svelte';
+  import { ArrowLeft } from 'lucide-svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
+  const subTotal = data.data.produk.reduce((acc, item) => {
+    acc += item.harga * item.kuantitas;
+    return acc;
+  }, 0);
 </script>
 
 <div class="flex flex-col gap-4">
@@ -26,9 +30,7 @@
     </Breadcrumb.List>
   </Breadcrumb.Root>
   <div class="flex items-center justify-between">
-    <div class="flex flex-col gap-1">
-      <h1 class="text-3xl font-bold">Detail Faktur Penjualan</h1>
-    </div>
+    <div class="flex flex-col gap-1 text-3xl font-bold">Detail Faktur Penjualan</div>
     <Button
       variant="outline"
       href="/dashboard/fakturPenjualan"
@@ -45,38 +47,28 @@
       <div class="w-full">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <div class="mt-4 flex flex-col gap-2">
-              <Label>Nama Supplier</Label>
-              <Input disabled value={data.data.pemesananPenjualan?.pelanggan?.name} />
+            <div class="flex w-full flex-col gap-2 py-2">
+              <Label>Nama Pelanggan</Label>
+              <Input disabled value={data.data.pelanggan?.name} />
             </div>
-            <div class="mt-4 flex flex-col gap-2">
+            <div class="flex w-full flex-col gap-2 py-2">
               <Label>Email</Label>
-              <Input disabled value={data.data.pemesananPenjualan?.pelanggan?.email} />
+              <Input disabled value={data.data.pelanggan?.email} />
             </div>
           </div>
           <div class="flex w-full flex-col gap-2 py-2">
             <Label>Alamat</Label>
-            <Textarea rows={8} disabled value={data.data.pemesananPenjualan?.pelanggan?.address} />
+            <Textarea rows={6} disabled value={data.data.pelanggan?.address} />
           </div>
         </div>
         <hr class="my-4" />
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div class="flex w-full flex-col gap-2 py-2">
-            <Label>No. Pemesanan</Label>
-            <Input disabled value={data.data.pemesananPenjualan?.noPenjualan} />
-          </div>
-          <div class="flex w-full flex-col gap-2 py-2">
-            <Label>Tanggal Pemesanan</Label>
-            <Input disabled value={data.data.pemesananPenjualan?.tanggal} />
-          </div>
-        </div>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div class="flex w-full flex-col gap-2 py-2">
             <Label>No. Faktur</Label>
             <Input disabled value={data.data.noFaktur} />
           </div>
           <div class="flex w-full flex-col gap-2 py-2">
-            <Label>Tanggal Faktur</Label>
+            <Label>Tanggal</Label>
             <Input disabled value={data.data.tanggal} />
           </div>
         </div>
@@ -92,71 +84,90 @@
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {#if data.data.pemesananPenjualan}
-              {#each data.data.pemesananPenjualan.produk as item, i (item)}
-                <Table.Row>
-                  <Table.Cell>{i + 1}</Table.Cell>
-                  <Table.Cell>
-                    <Input disabled value={item.barang?.name} />
-                  </Table.Cell>
-                  <Table.Cell>
-                    {item.barang?.harga}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Input type="number" disabled value={item.kuantitas} />
-                  </Table.Cell>
-                  <Table.Cell>
-                    {#if item.barang}
-                      {item.barang.harga * item.kuantitas}
-                    {:else}
-                      0
-                    {/if}
-                  </Table.Cell>
-                </Table.Row>
-              {/each}
-            {/if}
+            {#each data.data.produk as item, i (item)}
+              <Table.Row>
+                <Table.Cell>{i + 1}</Table.Cell>
+                <Table.Cell>
+                  <Input disabled value={item.barang?.name} />
+                </Table.Cell>
+                <Table.Cell>
+                  <Input disabled type="number" value={item.harga} />
+                </Table.Cell>
+                <Table.Cell>
+                  <Input disabled type="number" value={item.kuantitas} />
+                </Table.Cell>
+                <Table.Cell>
+                  {item.harga * item.kuantitas}
+                </Table.Cell>
+              </Table.Row>
+            {/each}
           </Table.Body>
         </Table.Root>
         <hr class="my-4" />
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <div class="flex w-full flex-col gap-2 py-2">
-              <Label>Pesan</Label>
+              <Label>Atas Nama</Label>
               <Textarea rows={6} disabled value={data.data.catatan} />
             </div>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div class="flex w-full flex-col gap-2 py-2">
                 <Label>Nama Bank</Label>
-                <Input disabled value={data.data.pemesananPenjualan?.pelanggan?.namaBank} />
+                <Input disabled value={data.data.pelanggan?.namaBank} />
               </div>
               <div class="flex w-full flex-col gap-2 py-2">
                 <Label>No. Rekening</Label>
-                <Input disabled value={data.data.pemesananPenjualan?.pelanggan?.noRekening} />
+                <Input disabled value={data.data.pelanggan?.noRekening} />
               </div>
             </div>
             <div class="flex w-full flex-col gap-2 py-2">
               <Label>Atas Nama</Label>
-              <Input disabled value={data.data.pemesananPenjualan?.pelanggan?.atasNama} />
+              <Input disabled value={data.data.pelanggan?.atasNama} />
+            </div>
+            <div class="relative h-[200px] w-[200px] overflow-hidden rounded-md">
+              <a href={data.data.lampiran} target="_blank">
+                <img class="h-full object-cover" alt="lampiran" src={data.data.lampiran} />
+              </a>
             </div>
           </div>
           <div class="flex flex-col gap-2">
             <div class="flex w-full justify-between">
               <div>Subtotal:</div>
               <div>
-                {data.data.pemesananPenjualan?.total}
+                {subTotal}
+              </div>
+            </div>
+            <div class="flex w-full justify-between">
+              <div>PPN:</div>
+              <Checkbox disabled checked={data.data.ppn} />
+            </div>
+            <div class="flex w-full justify-between">
+              <div>Total & PPN:</div>
+              <div>
+                {#if data.data.ppn}
+                  {subTotal + subTotal * 0.1}
+                {:else}
+                  {subTotal}
+                {/if}
               </div>
             </div>
             <div class="flex w-full justify-between">
               <div>Biaya Kirim:</div>
-              <Input disabled class="w-fit" type="number" value={data.data.biayaKirim} />
+              <div>
+                {data.data.biayaKirim}
+              </div>
             </div>
             <div class="flex w-full justify-between">
               <div>Biaya Lainnya:</div>
-              <Input disabled class="w-fit" type="number" value={data.data.biayaLainnya} />
+              <div>
+                {data.data.biayaLainnya}
+              </div>
             </div>
             <div class="flex w-full justify-between">
               <div>Pembulatan:</div>
-              <Input disabled class="w-fit" type="number" value={data.data.biayaLainnya} />
+              <div>
+                {data.data.pembulatan}
+              </div>
             </div>
             <div class="flex w-full justify-between">
               <div>Grand Total:</div>

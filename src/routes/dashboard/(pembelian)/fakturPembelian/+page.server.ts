@@ -1,33 +1,17 @@
 import { db } from '$lib/server';
-import {
-  fakturPembelianTable,
-  pemesananPembelianRelations,
-  pemesananPembelianTable
-} from '$lib/server/schema/pembelian';
+import { fakturPembelianTable } from '$lib/server/schema/pembelian';
 import { fail } from '@sveltejs/kit';
 import { desc, eq, sql } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
+import { stokBahanMentahTable } from '$lib/server/schema/inventory';
 
 export const load: PageServerLoad = async () => {
   const fakturPembelianData = await db.query.fakturPembelianTable.findMany({
-    columns: {
-      id: true,
-      noFaktur: true,
-      tanggal: true,
-      total: true
-    },
     orderBy: desc(fakturPembelianTable.createdAt),
     with: {
-      pemesananPembelian: {
+      supplier: {
         columns: {
-          noPembelian: true
-        },
-        with: {
-          supplier: {
-            columns: {
-              name: true
-            }
-          }
+          name: true
         }
       }
     }
@@ -45,22 +29,21 @@ export const actions: Actions = {
       return fail(400, { message: 'invalid request' });
     }
 
-    const fakturPembelian = await db.query.fakturPembelianTable.findFirst({
-      where: eq(fakturPembelianTable.id, id)
-    });
-
-    const pembelianId = fakturPembelian?.pembelianId;
-
-    if (pembelianId) {
-      await db
-        .update(pemesananPembelianTable)
-        .set({
-          status: sql<number>`${pemesananPembelianTable.status} - 1`
-        })
-        .where(eq(pemesananPembelianTable.id, pembelianId));
-    }
-
     try {
+      const data = await db.query.fakturPembelianTable.findFirst({
+        where: eq(fakturPembelianTable.id, id),
+        with: {
+          produk: true
+        }
+      });
+      data?.produk.forEach(async (i) => {
+        await db
+          .update(stokBahanMentahTable)
+          .set({
+            stok: sql<number>`${stokBahanMentahTable.stok} - (${i.kuantitas})`
+          })
+          .where(eq(stokBahanMentahTable.barangId, i.barangId!));
+      });
       await db.delete(fakturPembelianTable).where(eq(fakturPembelianTable.id, id));
     } catch (error) {
       return fail(500, { message: 'something went wrong' });

@@ -17,27 +17,19 @@
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Page>Pemesanan Penjualan</Breadcrumb.Page>
+        <Breadcrumb.Page>Stok Bahan Mentah</Breadcrumb.Page>
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-1">
-      <h1 class="text-3xl font-bold">Pemesanan Penjualan</h1>
+      <h1 class="text-3xl font-bold">Stok Bahan Mentah</h1>
     </div>
-    <Button
-      href="/dashboard/pemesananPenjualan/new"
-      variant="outline"
-      class="p-2 shadow-lg"
-      aria-label="add data"
-    >
-      <Plus />
-    </Button>
   </div>
   <hr class="border-black" />
   <Card.Root>
     <Card.Content>
-      <DataTable data={data.pemesananPenjualanData} />
+      <DataTable data={data.data} />
     </Card.Content>
   </Card.Root>
 </div>

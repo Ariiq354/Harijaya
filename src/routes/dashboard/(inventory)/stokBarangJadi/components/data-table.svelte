@@ -1,17 +1,16 @@
 <script lang="ts">
-  import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-  import { writable } from 'svelte/store';
-  import type { selectPemesananPembelian } from '$lib/server/schema/pembelian';
-  import * as Table from '$lib/components/ui/table';
-  import DataTableActions from './data-table-action.svelte';
-  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import * as Table from '$lib/components/ui/table';
+  import type { stokBahanMentah } from '$lib/server/schema/inventory';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { Render, Subscribe, createTable } from 'svelte-headless-table';
+  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
+  import { writable } from 'svelte/store';
 
-  type itemType = selectPemesananPembelian & {
-    supplier: {
-      name: string | null;
+  type itemType = stokBahanMentah & {
+    barang: {
+      name: string;
     } | null;
   };
 
@@ -32,52 +31,12 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'noPembelian',
-      header: 'No. Pembelian'
+      accessor: ({ barang }) => barang?.name,
+      header: 'Nama Barang'
     }),
     table.column({
-      accessor: 'tanggal',
-      header: 'Tgl. Pemesanan'
-    }),
-    table.column({
-      accessor: ({ supplier }) => supplier?.name,
-      header: 'Nama Pemasok'
-    }),
-    table.column({
-      accessor: 'total',
-      header: 'Total',
-      cell: ({ value }) => {
-        return value.toLocaleString('id-ID');
-      }
-    }),
-    table.column({
-      accessor: 'status',
-      header: 'Status',
-      cell: ({ value }) => {
-        if (value === 3) {
-          return 'Pengiriman';
-        } else if (value === 2) {
-          return 'Penagihan';
-        } else {
-          return 'Disetujui';
-        }
-      }
-    }),
-    table.column({
-      accessor: ({ id, status }) => ({ id: id, status: status }),
-      header: 'Action',
-      cell: ({ value }) => {
-        return createRender(DataTableActions, { id: value.id, status: value.status });
-      },
-      plugins: {
-        sort: {
-          disable: true
-        },
-
-        filter: {
-          exclude: true
-        }
-      }
+      accessor: 'stok',
+      header: 'Stok'
     })
   ]);
 
@@ -144,7 +103,6 @@
       size="sm"
       on:click={() => ($pageIndex = $pageIndex - 1)}
       disabled={!$hasPreviousPage}
-      title="previous data"
     >
       <ChevronLeft size="20" />
     </Button>
@@ -153,7 +111,6 @@
       size="sm"
       disabled={!$hasNextPage}
       on:click={() => ($pageIndex = $pageIndex + 1)}
-      title="next data"
     >
       <ChevronRight size="20" />
     </Button>

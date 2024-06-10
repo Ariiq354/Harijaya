@@ -23,7 +23,7 @@
         loading = false;
         isOpen = false;
         invalidateAll();
-        toast.success('Faktur Dihapus');
+        toast.success('Faktur Penjualan Dihapus');
       }
     };
   };
@@ -57,6 +57,10 @@
     <DropdownMenu.Item href={`/dashboard/fakturPenjualan/${id}/detail`}>
       <Copy class="mr-2 h-4 w-4" />
       Detail
+    </DropdownMenu.Item>
+    <DropdownMenu.Item href={`/dashboard/fakturPenjualan/${id}`}>
+      <PenLine class="mr-2 h-4 w-4" />
+      Edit
     </DropdownMenu.Item>
     <DropdownMenu.Item on:click={() => (isOpen = true)}>
       <Trash class="mr-2 h-4 w-4" />

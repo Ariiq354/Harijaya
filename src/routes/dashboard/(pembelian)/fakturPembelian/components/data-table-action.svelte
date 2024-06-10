@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { MoreHorizontal, Loader2, PenLine } from 'lucide-svelte';
-  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-  import { Button } from '$lib/components/ui/button';
-  import { Copy, Edit, Trash } from 'lucide-svelte';
-  import Modal from '$lib/components/ui/modal.svelte';
   import { enhance } from '$app/forms';
-  import type { SubmitFunction } from '../$types';
-  import { toast } from 'svelte-sonner';
   import { invalidateAll } from '$app/navigation';
+  import { Button } from '$lib/components/ui/button';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+  import Modal from '$lib/components/ui/modal.svelte';
+  import { Copy, Edit, Loader2, MoreHorizontal, Trash } from 'lucide-svelte';
+  import { toast } from 'svelte-sonner';
+  import type { SubmitFunction } from '../$types';
 
   export let id: string;
   let isOpen = false;
@@ -23,7 +22,7 @@
         loading = false;
         isOpen = false;
         invalidateAll();
-        toast.success('Faktur Dihapus');
+        toast.success('Faktur Pembelian Dihapus');
       }
     };
   };
@@ -49,7 +48,13 @@
 </Modal>
 <DropdownMenu.Root>
   <DropdownMenu.Trigger asChild let:builder>
-    <Button variant="ghost" builders={[builder]} size="icon" class="relative h-8 w-8 p-0">
+    <Button
+      variant="ghost"
+      builders={[builder]}
+      size="icon"
+      class="relative h-8 w-8 p-0"
+      title="Table action"
+    >
       <MoreHorizontal class="h-4 w-4" />
     </Button>
   </DropdownMenu.Trigger>
@@ -57,6 +62,10 @@
     <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}/detail`}>
       <Copy class="mr-2 h-4 w-4" />
       Detail
+    </DropdownMenu.Item>
+    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
+      <Edit class="mr-2 h-4 w-4" />
+      Edit
     </DropdownMenu.Item>
     <DropdownMenu.Item on:click={() => (isOpen = true)}>
       <Trash class="mr-2 h-4 w-4" />

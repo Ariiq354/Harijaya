@@ -8,7 +8,7 @@
   import * as Card from '$lib/components/ui/card';
   import { ArrowLeft, Loader2 } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
-  import { superForm } from 'sveltekit-superforms';
+  import SuperDebug, { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
@@ -33,6 +33,12 @@
     ? {
         label: $formData.satuan,
         value: $formData.satuan
+      }
+    : undefined;
+  $: selectedTipe = $formData.tipe
+    ? {
+        label: $formData.tipe !== 2 ? 'Bahan Mentah' : 'Bahan Jadi',
+        value: $formData.tipe.toString()
       }
     : undefined;
 </script>
@@ -63,6 +69,7 @@
   </div>
   <hr class="border-black" />
 
+  <SuperDebug data={$formData} />
   <Card.Root class="pt-4">
     <Card.Content>
       <form method="POST" use:enhance>
@@ -85,10 +92,24 @@
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
-        <Form.Field {form} name="harga">
+        <Form.Field {form} name="tipe">
           <Form.Control let:attrs>
-            <Form.Label>Harga / satuan</Form.Label>
-            <Input type="number" {...attrs} bind:value={$formData.harga} />
+            <Form.Label>Tipe bahan</Form.Label>
+            <Select.Root
+              selected={selectedTipe}
+              onSelectedChange={(v) => {
+                v && ($formData.tipe = parseInt(v.value));
+              }}
+            >
+              <Select.Trigger {...attrs}>
+                <Select.Value placeholder="Pilih tipe bahan" />
+              </Select.Trigger>
+              <Select.Content class="max-h-40 overflow-auto">
+                <Select.Item value="1" label="Barang Mentah" />
+                <Select.Item value="2" label="Barang Jadi" />
+              </Select.Content>
+            </Select.Root>
+            <input hidden bind:value={$formData.tipe} name={attrs.name} />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
@@ -102,31 +123,13 @@
               }}
             >
               <Select.Trigger {...attrs}>
-                <Select.Value placeholder="Select satuan" />
+                <Select.Value placeholder="Pilih satuan" />
               </Select.Trigger>
               <Select.Content class="max-h-40 overflow-auto">
-                <Select.Item value="1 Unit" label="1 Unit" />
-                <Select.Item value="100 Roll / Pack" label="100 Roll / Pack" />
-                <Select.Item value="25 Cards" label="25 Cards" />
-                <Select.Item value="Bag" label="Bag" />
-                <Select.Item value="Botol" label="Botol" />
-                <Select.Item value="Box" label="Box" />
-                <Select.Item value="Buah" label="Buah" />
-                <Select.Item value="Cost/Test" label="Cost/Test" />
-                <Select.Item value="Electrolyte Analyzer" label="Electrolyte Analyzer" />
-                <Select.Item value="Galon" label="Galon" />
-                <Select.Item value="Kit" label="Kit" />
-                <Select.Item value="Pcs" label="Pcs" />
-                <Select.Item value="Per Petri" label="Per Petri" />
-                <Select.Item value="Pouch" label="Pouch" />
-                <Select.Item value="Set" label="Set" />
-                <Select.Item value="String" label="String" />
-                <Select.Item value="Tube" label="Tube" />
-                <Select.Item value="Unit" label="Unit" />
-                <Select.Item value="Urine Analyzer" label="Urine Analyzer" />
-                <Select.Item value="Vial" label="Vial" />
-                <Select.Item value="Vil" label="Vil" />
-                <Select.Item value="Roll" label="Roll" />
+                <Select.Item value="kilogram" label="kilogram" />
+                <Select.Item value="gram" label="gram" />
+                <Select.Item value="liter" label="liter" />
+                <Select.Item value="pcs" label="pcs" />
               </Select.Content>
             </Select.Root>
             <input hidden bind:value={$formData.satuan} name={attrs.name} />

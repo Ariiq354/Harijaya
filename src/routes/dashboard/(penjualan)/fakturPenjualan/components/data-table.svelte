@@ -2,22 +2,16 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
+  import type { selectFakturPenjualan } from '$lib/server/schema/penjualan';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
   import DataTableActions from './data-table-action.svelte';
 
-  type itemType = {
-    id: string;
-    noFaktur: string;
-    tanggal: string;
-    total: number;
-    pemesananPenjualan: {
-      noPenjualan: string;
-      pelanggan: {
-        name: string;
-      } | null;
+  type itemType = selectFakturPenjualan & {
+    pelanggan: {
+      name: string | null;
     } | null;
   };
 
@@ -42,16 +36,12 @@
       header: 'No. Faktur'
     }),
     table.column({
-      accessor: ({ pemesananPenjualan }) => pemesananPenjualan?.pelanggan?.name,
-      header: 'Supplier'
-    }),
-    table.column({
       accessor: 'tanggal',
-      header: 'Tgl. Faktur'
+      header: 'Tgl. Penjualan'
     }),
     table.column({
-      accessor: ({ pemesananPenjualan }) => pemesananPenjualan?.noPenjualan,
-      header: 'No Pemesanan'
+      accessor: ({ pelanggan }) => pelanggan?.name,
+      header: 'Nama Pelanggan'
     }),
     table.column({
       accessor: 'total',

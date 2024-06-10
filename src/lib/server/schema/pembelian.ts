@@ -19,16 +19,18 @@ export const supplierTable = sqliteTable('supplier', {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
 
-export const pemesananPembelianTable = sqliteTable('pemesanan_pembelian', {
+export const fakturPembelianTable = sqliteTable('faktur_pembelian', {
   id: text('id').notNull().primaryKey(),
   supplierId: text('supplier_id').references(() => supplierTable.id, { onDelete: 'set null' }),
-  noPembelian: text('no_pembelian').notNull().unique(),
+  noFaktur: text('no_faktur').notNull().unique(),
   tanggal: text('tanggal').notNull(),
   userId: text('user_id').references(() => userTable.id, { onDelete: 'set null' }),
   lampiran: text('lampiran').notNull(),
   ppn: integer('ppn', { mode: 'boolean' }).notNull(), // 0: tidak, 1: iya
+  biayaKirim: integer('biaya_kirim').notNull(),
+  catatan: text('catatan').notNull(),
+  biayaLainnya: integer('biaya_lainnya').notNull(),
   total: integer('total').notNull(),
-  status: integer('status').notNull().default(0), // 0: disetujui, 1: sudah Faktur (penagihan), 2: sudah surat jalan (pengiriman), 3: selesai
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
     .default(sql`(CURRENT_TIMESTAMP)`)
@@ -39,8 +41,9 @@ export const pembelianProdukTable = sqliteTable('pembelian_produk', {
   id: text('id').notNull().primaryKey(),
   pembelianId: text('pembelian_id')
     .notNull()
-    .references(() => pemesananPembelianTable.id, { onDelete: 'cascade' }),
+    .references(() => fakturPembelianTable.id, { onDelete: 'cascade' }),
   barangId: text('barang_id').references(() => barangTable.id, { onDelete: 'set null' }),
+  harga: integer('harga').notNull(),
   kuantitas: integer('kuantitas').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
@@ -48,36 +51,18 @@ export const pembelianProdukTable = sqliteTable('pembelian_produk', {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
 
-export const fakturPembelianTable = sqliteTable('faktur_pembelian', {
-  id: text('id').notNull().primaryKey(),
-  pembelianId: text('pembelian_id').references(() => pemesananPembelianTable.id, {
-    onDelete: 'set null'
-  }),
-  noFaktur: text('no_faktur').notNull(),
-  tanggal: text('tanggal').notNull(),
-  supplierId: text('supplier_id').references(() => supplierTable.id, { onDelete: 'set null' }),
-  catatan: text('catatan').notNull(),
-  biayaKirim: integer('biaya_kirim').notNull(),
-  biayaLainnya: integer('biaya_lainnya').notNull(),
-  total: integer('total').notNull(),
-  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
-  updatedAt: text('updated_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
-});
-
-export const pemesananPembelianRelations = relations(pemesananPembelianTable, ({ one, many }) => ({
+export const fakturPembelianRelations = relations(fakturPembelianTable, ({ one, many }) => ({
   supplier: one(supplierTable, {
-    fields: [pemesananPembelianTable.supplierId],
+    fields: [fakturPembelianTable.supplierId],
     references: [supplierTable.id]
   }),
   produk: many(pembelianProdukTable)
 }));
 
 export const pembelianProdukRelations = relations(pembelianProdukTable, ({ one }) => ({
-  pemesananPembelian: one(pemesananPembelianTable, {
+  fakturPembelian: one(fakturPembelianTable, {
     fields: [pembelianProdukTable.pembelianId],
-    references: [pemesananPembelianTable.id]
+    references: [fakturPembelianTable.id]
   }),
   barang: one(barangTable, {
     fields: [pembelianProdukTable.barangId],
@@ -85,19 +70,6 @@ export const pembelianProdukRelations = relations(pembelianProdukTable, ({ one }
   })
 }));
 
-export const fakturPembelianRelations = relations(fakturPembelianTable, ({ one }) => ({
-  pemesananPembelian: one(pemesananPembelianTable, {
-    fields: [fakturPembelianTable.pembelianId],
-    references: [pemesananPembelianTable.id]
-  }),
-  supplier: one(supplierTable, {
-    fields: [fakturPembelianTable.supplierId],
-    references: [supplierTable.id]
-  })
-}));
-
 export type selectSupplier = typeof supplierTable.$inferSelect;
-
-export type selectPemesananPembelian = typeof pemesananPembelianTable.$inferSelect;
 
 export type selectFakturPembelian = typeof fakturPembelianTable.$inferSelect;

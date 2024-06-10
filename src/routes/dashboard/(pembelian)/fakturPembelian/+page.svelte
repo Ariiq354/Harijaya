@@ -1,6 +1,8 @@
 <script lang="ts">
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
+  import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
+  import { Plus } from 'lucide-svelte';
   import type { PageData } from './$types';
   import DataTable from './components/data-table.svelte';
 
@@ -19,8 +21,18 @@
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
-  <div class="flex flex-col">
-    <h1 class="mt-1 text-3xl font-bold">Faktur Pembelian</h1>
+  <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-1">
+      <h1 class="text-3xl font-bold">Faktur Pembelian</h1>
+    </div>
+    <Button
+      href="/dashboard/fakturPembelian/new"
+      variant="outline"
+      class="p-2 shadow-lg"
+      aria-label="add data"
+    >
+      <Plus />
+    </Button>
   </div>
   <hr class="border-black" />
   <Card.Root>

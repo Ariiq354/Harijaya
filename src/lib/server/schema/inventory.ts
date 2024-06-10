@@ -1,62 +1,119 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
-import { pemesananPembelianTable, supplierTable } from './pembelian';
 import { relations, sql } from 'drizzle-orm';
-import { pelangganTable, pemesananPenjualanTable } from './penjualan';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { barangTable } from './penjualan';
 
-export const penerimaanTable = sqliteTable('penerimaan', {
+export const stokBahanMentahTable = sqliteTable('stok_bahan_mentah', {
   id: text('id').notNull().primaryKey(),
-  pemesananPembelianId: text('pemesanan_pembelian_id').references(
-    () => pemesananPembelianTable.id,
-    { onDelete: 'set null' }
-  ),
-  supplierId: text('supplier_id').references(() => supplierTable.id, { onDelete: 'set null' }),
-  noSuratJalan: text('no_surat_jalan').notNull(),
-  tanggal: text('tanggal').notNull(),
-  noPelacakan: text('no_pelacakan').notNull(),
-  jenis: text('jenis').notNull(),
-  status: integer('status').notNull().default(1),
+  barangId: text('barang_id').references(() => barangTable.id, { onDelete: 'set null' }),
+  stok: integer('stok').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
     .default(sql`(CURRENT_TIMESTAMP)`)
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
 
-export const pengirimanTable = sqliteTable('pengiriman', {
+export const stokBarangJadiTable = sqliteTable('stok_barang_jadi', {
   id: text('id').notNull().primaryKey(),
-  pemesananPenjualanId: text('pemesanan_penjualan_id').references(
-    () => pemesananPenjualanTable.id,
-    { onDelete: 'set null' }
-  ),
-  pelangganId: text('pelanggan_id').references(() => pelangganTable.id, { onDelete: 'set null' }),
-  noSuratJalan: text('no_surat_jalan').notNull(),
-  tanggal: text('tanggal').notNull(),
-  noPelacakan: text('no_pelacakan').notNull(),
-  jenis: text('jenis').notNull(),
-  status: integer('status').notNull().default(1),
+  barangId: text('barang_id').references(() => barangTable.id, { onDelete: 'set null' }),
+  stok: integer('stok').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
     .default(sql`(CURRENT_TIMESTAMP)`)
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
 
-export const penerimaanRelations = relations(penerimaanTable, ({ one }) => ({
-  pemesananPembelian: one(pemesananPembelianTable, {
-    fields: [penerimaanTable.pemesananPembelianId],
-    references: [pemesananPembelianTable.id]
-  }),
-  supplierId: one(supplierTable, {
-    fields: [penerimaanTable.supplierId],
-    references: [supplierTable.id]
+export const prosesTable = sqliteTable('proses', {
+  id: text('id').notNull().primaryKey(),
+  noProses: text('no_proses').notNull(),
+  tanggal: text('tanggal').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const prosesProdukTable = sqliteTable('proses_produk', {
+  id: text('id').notNull().primaryKey(),
+  prosesId: text('proses_id')
+    .notNull()
+    .references(() => prosesTable.id, { onDelete: 'cascade' }),
+  barangId: text('barang_id').references(() => barangTable.id, { onDelete: 'set null' }),
+  kuantitas: integer('kuantitas').notNull(),
+  tipeBarang: text('tipe_barang').notNull(), // 0: barang mentah, 1: barang jadi
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const stokFisikTable = sqliteTable('stok_fisik', {
+  id: text('id').notNull().primaryKey(),
+  noStokFisik: text('no_stok_fisik').notNull(),
+  tanggal: text('tanggal').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const stokFisikProdukTable = sqliteTable('stok_fisik_produk', {
+  id: text('id').notNull().primaryKey(),
+  stokFisikId: text('stok_fisik_id')
+    .notNull()
+    .references(() => stokFisikTable.id, { onDelete: 'cascade' }),
+  barangId: text('barang_id').references(() => barangTable.id, { onDelete: 'set null' }),
+  kuantitas: integer('kuantitas').notNull(),
+  tipe: integer('tipe').notNull(), // 0: kurang, 1: tambah
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const stokBahanMentahRelations = relations(stokBahanMentahTable, ({ one }) => ({
+  barang: one(barangTable, {
+    fields: [stokBahanMentahTable.barangId],
+    references: [barangTable.id]
   })
 }));
 
-export const pengirimanRelations = relations(pengirimanTable, ({ one }) => ({
-  pemesananPenjualan: one(pemesananPenjualanTable, {
-    fields: [pengirimanTable.pemesananPenjualanId],
-    references: [pemesananPenjualanTable.id]
-  }),
-  pelangganId: one(pelangganTable, {
-    fields: [pengirimanTable.pelangganId],
-    references: [pelangganTable.id]
+export const stokBahanJadiRelations = relations(stokBarangJadiTable, ({ one }) => ({
+  barang: one(barangTable, {
+    fields: [stokBarangJadiTable.barangId],
+    references: [barangTable.id]
   })
 }));
+
+export const prosesRelations = relations(prosesTable, ({ one, many }) => ({
+  produkProses: many(prosesProdukTable)
+}));
+
+export const prosesProdukRelations = relations(prosesProdukTable, ({ one }) => ({
+  proses: one(prosesTable, {
+    fields: [prosesProdukTable.prosesId],
+    references: [prosesTable.id]
+  }),
+  barang: one(barangTable, {
+    fields: [prosesProdukTable.barangId],
+    references: [barangTable.id]
+  })
+}));
+
+export const stokFisiRelations = relations(stokFisikTable, ({ one, many }) => ({
+  produkStok: many(stokFisikProdukTable)
+}));
+
+export const stokFisikProdukRelations = relations(stokFisikProdukTable, ({ one }) => ({
+  stokFisik: one(stokFisikTable, {
+    fields: [stokFisikProdukTable.stokFisikId],
+    references: [stokFisikTable.id]
+  }),
+  barang: one(barangTable, {
+    fields: [stokFisikProdukTable.barangId],
+    references: [barangTable.id]
+  })
+}));
+
+export type stokBahanMentah = typeof stokBahanMentahTable.$inferSelect;
+
+export type stokBarangJadi = typeof stokBarangJadiTable.$inferSelect;

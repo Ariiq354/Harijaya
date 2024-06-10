@@ -41,8 +41,12 @@
         <Input disabled value={data.data.deskripsi} />
       </div>
       <div class="flex w-full flex-col gap-2 py-2">
-        <Label>Harga / Satuan</Label>
-        <Input disabled type="number" value={data.data.harga} />
+        <Label>Tipe Bahan</Label>
+        {#if data.data.tipe !== 1}
+          <Input disabled value="Barang Jadi" />
+        {:else}
+          <Input disabled value="Barang Mentah" />
+        {/if}
       </div>
       <div class="flex w-full flex-col gap-2 py-2">
         <Label>Satuan</Label>
