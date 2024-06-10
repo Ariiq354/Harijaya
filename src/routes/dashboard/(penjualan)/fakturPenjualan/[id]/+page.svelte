@@ -13,11 +13,10 @@
   import { Textarea } from '$lib/components/ui/textarea';
   import { ArrowLeft, Loader2, Trash2 } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
-  import SuperDebug, { superForm } from 'sveltekit-superforms';
+  import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
-  import { generateIdFromEntropySize } from 'lucia';
 
   export let data: PageData;
   let subTotal: number;
@@ -112,7 +111,6 @@
   </div>
   <hr class="border-black" />
 
-  <SuperDebug data={$formData} />
   <Card.Root class="pt-4">
     <Card.Content>
       <form method="POST" use:enhance class="w-full">
