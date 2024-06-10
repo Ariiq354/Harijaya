@@ -5,8 +5,8 @@ export default {
   dialect: 'sqlite',
   driver: 'turso',
   dbCredentials: {
-    url: 'file:test.db'
-    // url: process.env.DATABASE_URL ?? '',
-    // authToken: process.env.DATABASE_AUTH_TOKEN ?? ''
+    // url: 'file:test.db'
+    url: process.env.DATABASE_URL ?? '',
+    authToken: process.env.DATABASE_AUTH_TOKEN ?? ''
   }
 } satisfies Config;
