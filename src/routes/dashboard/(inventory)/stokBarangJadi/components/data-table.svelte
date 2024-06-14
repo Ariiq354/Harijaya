@@ -2,19 +2,13 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
-  import type { stokBahanMentah } from '$lib/server/schema/inventory';
+  import type { selectBarang } from '$lib/server/schema/penjualan';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import { Render, Subscribe, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
 
-  type itemType = stokBahanMentah & {
-    barang: {
-      name: string;
-    } | null;
-  };
-
-  export let data: itemType[];
+  export let data: selectBarang[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -31,7 +25,7 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: ({ barang }) => barang?.name,
+      accessor: 'name',
       header: 'Nama Barang'
     }),
     table.column({

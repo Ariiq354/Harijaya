@@ -5,7 +5,8 @@ export const formSchema = z.object({
   name: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   tipe: z.coerce.number().gt(0, { message: 'Data tidak boleh kosong!' }),
   deskripsi: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
-  satuan: z.string().min(1, { message: 'Data tidak boleh kosong!' })
+  satuan: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
+  status: z.coerce.number()
 });
 
 export type FormSchema = typeof formSchema;

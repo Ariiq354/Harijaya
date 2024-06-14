@@ -22,7 +22,7 @@ export const supplierTable = sqliteTable('supplier', {
 export const fakturPembelianTable = sqliteTable('faktur_pembelian', {
   id: text('id').notNull().primaryKey(),
   supplierId: text('supplier_id').references(() => supplierTable.id, { onDelete: 'set null' }),
-  noFaktur: text('no_faktur').notNull().unique(),
+  noFaktur: text('no_faktur').notNull(),
   tanggal: text('tanggal').notNull(),
   userId: text('user_id').references(() => userTable.id, { onDelete: 'set null' }),
   lampiran: text('lampiran').notNull(),
@@ -42,7 +42,9 @@ export const pembelianProdukTable = sqliteTable('pembelian_produk', {
   pembelianId: text('pembelian_id')
     .notNull()
     .references(() => fakturPembelianTable.id, { onDelete: 'cascade' }),
-  barangId: text('barang_id').references(() => barangTable.id, { onDelete: 'set null' }),
+  barangId: text('barang_id')
+    .notNull()
+    .references(() => barangTable.id, { onDelete: 'cascade' }),
   harga: integer('harga').notNull(),
   kuantitas: integer('kuantitas').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),

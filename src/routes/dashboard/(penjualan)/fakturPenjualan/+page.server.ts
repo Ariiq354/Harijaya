@@ -1,9 +1,9 @@
 import { db } from '$lib/server';
 import { fakturPenjualanTable } from '$lib/server/schema/penjualan';
+import { adjustStok } from '$lib/server/utils';
 import { fail } from '@sveltejs/kit';
-import { desc, eq, sql } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
-import { stokBarangJadiTable } from '$lib/server/schema/inventory';
 
 export const load: PageServerLoad = async () => {
   const fakturPenjualanData = await db.query.fakturPenjualanTable.findMany({
@@ -37,12 +37,7 @@ export const actions: Actions = {
         }
       });
       data?.produk.forEach(async (i) => {
-        await db
-          .update(stokBarangJadiTable)
-          .set({
-            stok: sql<number>`${stokBarangJadiTable.stok} - (${i.kuantitas})`
-          })
-          .where(eq(stokBarangJadiTable.barangId, i.barangId!));
+        await adjustStok(1, i.kuantitas, i.barangId);
       });
       await db.delete(fakturPenjualanTable).where(eq(fakturPenjualanTable.id, id));
     } catch (error) {

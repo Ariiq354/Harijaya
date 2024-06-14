@@ -38,6 +38,17 @@
       header: 'Satuan'
     }),
     table.column({
+      accessor: 'status',
+      header: 'Status',
+      cell: ({ value }) => {
+        if (value !== 2) {
+          return 'Tidak Aktif';
+        } else {
+          return 'Aktif';
+        }
+      }
+    }),
+    table.column({
       accessor: ({ id }) => id,
       header: 'Action',
       cell: ({ value }) => {
@@ -101,7 +112,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="number last:text-center">
+                  <Table.Cell {...attrs} class="last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

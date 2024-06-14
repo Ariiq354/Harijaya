@@ -13,7 +13,7 @@
   import { Textarea } from '$lib/components/ui/textarea';
   import { ArrowLeft, Loader2, Trash2 } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
-  import { superForm } from 'sveltekit-superforms';
+  import SuperDebug, { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
@@ -37,7 +37,7 @@
   });
   const { form: formData, enhance, submitting } = form;
 
-  function tambahData() {
+  function addItem() {
     $formData.produk = [
       ...$formData.produk,
       {
@@ -47,11 +47,6 @@
         kuantitas: 0
       }
     ];
-  }
-
-  function removeData(i: number) {
-    $formData.produk.splice(i, 1);
-    $formData.produk = $formData.produk;
   }
 
   $: {
@@ -107,6 +102,7 @@
   </div>
   <hr class="border-black" />
 
+  <SuperDebug data={$formData} />
   <Card.Root class="pt-4">
     <Card.Content>
       <form method="POST" use:enhance class="w-full">
@@ -179,27 +175,27 @@
         </div>
         <hr class="my-4" />
         <div class="flex w-full justify-end">
-          <Button on:click={tambahData}>Tambah</Button>
+          <Button on:click={addItem}>Tambah</Button>
         </div>
-        <Form.Field {form} name="produk">
-          <Form.Control let:attrs>
-            <Table.Root class="w-full">
-              <Table.Header>
-                <Table.Row>
-                  <Table.Head>No.</Table.Head>
-                  <Table.Head>Barang</Table.Head>
-                  <Table.Head>Harga</Table.Head>
-                  <Table.Head>Kuantitas</Table.Head>
-                  <Table.Head>Jumlah</Table.Head>
-                  <Table.Head>Action</Table.Head>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {#each $formData.produk as item, i (i)}
-                  {@const barang = data.barang.find((i) => i.id == item.barangId)}
-                  <Table.Row>
-                    <Table.Cell>{i + 1}</Table.Cell>
-                    <Table.Cell>
+        <Form.Fieldset {form} name="produk">
+          <Table.Root class="w-full">
+            <Table.Row>
+              <Table.Head>No.</Table.Head>
+              <Table.Head>Barang</Table.Head>
+              <Table.Head>Harga</Table.Head>
+              <Table.Head>Kuantitas</Table.Head>
+              <Table.Head>Jumlah</Table.Head>
+              <Table.Head>Action</Table.Head>
+            </Table.Row>
+            {#each $formData.produk as _, i (i)}
+              <Table.Row>
+                <Table.Cell>
+                  {i + 1}
+                  <input hidden bind:value={$formData.produk[i].id} name="produk" />
+                </Table.Cell>
+                <Table.Cell>
+                  <Form.ElementField {form} name="produk[{i}].barangId" class="space-y-0">
+                    <Form.Control let:attrs>
                       <Select.Root
                         selected={selectedBarang[i]}
                         onSelectedChange={(v) => {
@@ -220,28 +216,34 @@
                         </Select.Content>
                       </Select.Root>
                       <input hidden bind:value={$formData.produk[i].barangId} name={attrs.name} />
-                      <input hidden bind:value={$formData.produk[i].id} name={attrs.name} />
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Input type="number" {...attrs} bind:value={$formData.produk[i].harga} />
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Input type="number" {...attrs} bind:value={$formData.produk[i].kuantitas} />
-                    </Table.Cell>
-                    <Table.Cell>
-                      {$formData.produk[i].harga * $formData.produk[i].kuantitas}
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Button class="p-2" variant="destructive" on:click={() => removeData(i)}>
-                        <Trash2 />
-                      </Button>
-                    </Table.Cell>
-                  </Table.Row>
-                {/each}
-              </Table.Body>
-            </Table.Root>
-          </Form.Control>
-        </Form.Field>
+                    </Form.Control>
+                    <Form.FieldErrors />
+                  </Form.ElementField>
+                </Table.Cell>
+                <Table.Cell>
+                  <Input type="number" bind:value={$formData.produk[i].harga} name="produk" />
+                </Table.Cell>
+                <Table.Cell>
+                  <Input type="number" bind:value={$formData.produk[i].kuantitas} name="produk" />
+                </Table.Cell>
+                <Table.Cell>
+                  {$formData.produk[i].harga * $formData.produk[i].kuantitas}
+                </Table.Cell>
+                <Table.Cell>
+                  <Button
+                    class="p-2"
+                    variant="destructive"
+                    on:click={() =>
+                      ($formData.produk = $formData.produk.filter((_, ind) => ind !== i))}
+                  >
+                    <Trash2 />
+                  </Button>
+                </Table.Cell>
+              </Table.Row>
+            {/each}
+          </Table.Root>
+          <Form.FieldErrors />
+        </Form.Fieldset>
         <hr class="my-4" />
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>

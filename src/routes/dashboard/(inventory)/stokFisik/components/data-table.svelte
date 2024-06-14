@@ -2,13 +2,19 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
-  import type { selectBarang } from '$lib/server/schema/penjualan';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
-  import { Render, Subscribe, createTable } from 'svelte-headless-table';
+  import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
+  import DataTableActions from './data-table-action.svelte';
 
-  export let data: selectBarang[];
+  type itemType = {
+    id: string;
+    noStokFisik: string;
+    tanggal: string;
+  };
+
+  export let data: itemType[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -25,12 +31,28 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'name',
-      header: 'Nama Barang'
+      accessor: 'noStokFisik',
+      header: 'No. Stok Fisik'
     }),
     table.column({
-      accessor: 'stok',
-      header: 'Stok'
+      accessor: 'tanggal',
+      header: 'Tanggal'
+    }),
+    table.column({
+      accessor: ({ id }) => id,
+      header: 'Action',
+      cell: ({ value }) => {
+        return createRender(DataTableActions, { id: value });
+      },
+      plugins: {
+        sort: {
+          disable: true
+        },
+
+        filter: {
+          exclude: true
+        }
+      }
     })
   ]);
 
@@ -80,7 +102,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="number last:text-center">
+                  <Table.Cell {...attrs} class="last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

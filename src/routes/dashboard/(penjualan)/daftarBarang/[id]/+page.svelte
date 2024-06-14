@@ -41,6 +41,13 @@
         value: $formData.tipe.toString()
       }
     : undefined;
+
+  $: selectedStatus = $formData.status
+    ? {
+        label: $formData.status !== 2 ? 'Tidak Aktif' : 'Aktif',
+        value: $formData.status.toString()
+      }
+    : undefined;
 </script>
 
 <div class="flex flex-col gap-4">
@@ -132,6 +139,27 @@
               </Select.Content>
             </Select.Root>
             <input hidden bind:value={$formData.satuan} name={attrs.name} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="status">
+          <Form.Control let:attrs>
+            <Form.Label>Status</Form.Label>
+            <Select.Root
+              selected={selectedStatus}
+              onSelectedChange={(v) => {
+                v && ($formData.status = parseInt(v.value));
+              }}
+            >
+              <Select.Trigger {...attrs}>
+                <Select.Value placeholder="Pilih status bahan" />
+              </Select.Trigger>
+              <Select.Content class="max-h-40 overflow-auto">
+                <Select.Item value="1" label="Tidak Aktif" />
+                <Select.Item value="2" label="Aktif" />
+              </Select.Content>
+            </Select.Root>
+            <input hidden bind:value={$formData.status} name={attrs.name} />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>

@@ -3,6 +3,7 @@ import { db } from '.';
 import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
 import { currentDate } from '$lib/utils';
 import { jurnalTable } from './schema/keuangan';
+import { barangTable } from './schema/penjualan';
 
 export async function getNumber(
   code: string,
@@ -21,4 +22,14 @@ export async function getNumber(
     .where(like(column, sql`${code + '-'} || strftime('%Y%m%d', 'now') || '-%'`));
 
   return code + '-' + currentDate() + '-' + num[0].num;
+}
+
+export async function adjustStok(tipe: number, kuantitas: number, barangId: string) {
+  const adjustment = tipe === 0 ? `- ${kuantitas}` : `+ ${kuantitas}`;
+  await db
+    .update(barangTable)
+    .set({
+      stok: sql<number>`${barangTable.stok} ${adjustment}`
+    })
+    .where(eq(barangTable.id, barangId!));
 }

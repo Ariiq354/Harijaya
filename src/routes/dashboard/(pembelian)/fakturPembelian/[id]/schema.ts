@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const formSchema = z.object({
   id: z.string(),
-  supplierId: z.string().min(1, { message: 'Data tidak boleh kosong!' }).nullable(),
+  supplierId: z.string().nullable(),
   noFaktur: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   tanggal: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   lampiran: z.string(),
@@ -12,13 +12,14 @@ export const formSchema = z.object({
   biayaKirim: z.coerce.number(),
   biayaLainnya: z.coerce.number(),
   produk: z
-    .object({
-      id: z.string(),
-      barangId: z.string().min(1, { message: 'Data tidak boleh kosong!' }).nullable(),
-      kuantitas: z.coerce.number().gt(0, { message: 'Data tidak boleh kosong!' }),
-      harga: z.coerce.number().gt(0, { message: 'Data tidak boleh kosong!' })
-    })
-    .array()
+    .array(
+      z.object({
+        id: z.string(),
+        barangId: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
+        kuantitas: z.coerce.number(),
+        harga: z.coerce.number()
+      })
+    )
     .min(1, { message: 'Data tidak boleh kosong!' })
 });
 

@@ -1,5 +1,4 @@
 import { db } from '$lib/server';
-import { stokBarangJadiTable, stokBahanMentahTable } from '$lib/server/schema/inventory';
 import { barangTable } from '$lib/server/schema/penjualan';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
@@ -40,7 +39,9 @@ export const actions: Actions = {
         tipe: form.data.tipe,
         name: form.data.name,
         deskripsi: form.data.deskripsi,
-        satuan: form.data.satuan
+        satuan: form.data.satuan,
+        status: form.data.status,
+        stok: 0
       })
       .onConflictDoUpdate({
         target: barangTable.id,
@@ -48,55 +49,10 @@ export const actions: Actions = {
           name: form.data.name,
           tipe: form.data.tipe,
           deskripsi: form.data.deskripsi,
+          status: form.data.status,
           satuan: form.data.satuan
         }
       });
-
-    if (form.data.tipe !== 2) {
-      let id = '';
-      const data = await db.query.stokBahanMentahTable.findFirst({
-        where: eq(stokBahanMentahTable.barangId, form.data.id)
-      });
-      if (!data) {
-        id = generateIdFromEntropySize(10);
-        await db.delete(stokBarangJadiTable).where(eq(stokBarangJadiTable.barangId, form.data.id));
-      } else {
-        id = data.id;
-      }
-      await db
-        .insert(stokBahanMentahTable)
-        .values({
-          id: id,
-          stok: 0,
-          barangId: form.data.id
-        })
-        .onConflictDoNothing({
-          target: stokBahanMentahTable.id
-        });
-    } else {
-      let id = '';
-      const data = await db.query.stokBarangJadiTable.findFirst({
-        where: eq(stokBarangJadiTable.barangId, form.data.id)
-      });
-      if (!data) {
-        id = generateIdFromEntropySize(10);
-        await db
-          .delete(stokBahanMentahTable)
-          .where(eq(stokBahanMentahTable.barangId, form.data.id));
-      } else {
-        id = data.id;
-      }
-      await db
-        .insert(stokBarangJadiTable)
-        .values({
-          id: id,
-          stok: 0,
-          barangId: form.data.id
-        })
-        .onConflictDoNothing({
-          target: stokBarangJadiTable.id
-        });
-    }
 
     return {
       form

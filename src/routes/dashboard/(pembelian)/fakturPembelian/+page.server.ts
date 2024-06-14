@@ -1,9 +1,9 @@
 import { db } from '$lib/server';
 import { fakturPembelianTable } from '$lib/server/schema/pembelian';
+import { adjustStok } from '$lib/server/utils';
 import { fail } from '@sveltejs/kit';
-import { desc, eq, sql } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
-import { stokBahanMentahTable } from '$lib/server/schema/inventory';
 
 export const load: PageServerLoad = async () => {
   const fakturPembelianData = await db.query.fakturPembelianTable.findMany({
@@ -37,12 +37,7 @@ export const actions: Actions = {
         }
       });
       data?.produk.forEach(async (i) => {
-        await db
-          .update(stokBahanMentahTable)
-          .set({
-            stok: sql<number>`${stokBahanMentahTable.stok} - (${i.kuantitas})`
-          })
-          .where(eq(stokBahanMentahTable.barangId, i.barangId!));
+        await adjustStok(0, i.kuantitas, i.barangId);
       });
       await db.delete(fakturPembelianTable).where(eq(fakturPembelianTable.id, id));
     } catch (error) {
