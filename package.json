@@ -38,6 +38,7 @@
     "@libsql/client": "^0.6.2",
     "@lucia-auth/adapter-drizzle": "^1.0.7",
     "@node-rs/argon2": "1.7.0",
+    "@sveltejs/adapter-auto": "^3.2.2",
     "bits-ui": "^0.21.10",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.31.2",
