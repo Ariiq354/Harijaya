@@ -17,6 +17,32 @@ export const sidebarItem = [
       {
         href: '/dashboard/inputJurnal',
         title: 'Input Jurnal'
+      },
+      {
+        title: 'Utang',
+        child: [
+          {
+            href: '/dashboard/daftarUtang',
+            title: 'Daftar Utang'
+          },
+          {
+            href: '/dashboard/pembayaranUtang',
+            title: 'Daftar Pembayaran'
+          }
+        ]
+      },
+      {
+        title: 'Piutang',
+        child: [
+          {
+            href: '/dashboard/daftarPiutang',
+            title: 'Daftar Piutang'
+          },
+          {
+            href: '/dashboard/pembayaranPiutang',
+            title: 'Daftar Pembayaran'
+          }
+        ]
       }
     ]
   },

@@ -37,21 +37,48 @@
                   {item.title}
                 </div>
               </Accordion.Trigger>
-              <div class="pl-9">
-                {#each item.child as child}
-                  <Accordion.Content>
-                    <a
-                      href={child.href}
-                      class={cn(
-                        $page.url.pathname == child.href ? 'text-foregorund' : 'text-gray-500',
-                        'font-medium hover:text-foreground'
-                      )}
-                    >
-                      {child.title}
-                    </a>
-                  </Accordion.Content>
-                {/each}
-              </div>
+              <Accordion.Content class="pl-9">
+                <Accordion.Root>
+                  <div class="flex flex-col gap-4">
+                    {#each item.child as child, j}
+                      {#if !child.child}
+                        <a
+                          href={child.href}
+                          class={cn(
+                            $page.url.pathname == child.href ? 'text-foregorund' : 'text-gray-500',
+                            'font-medium hover:text-foreground '
+                          )}
+                        >
+                          {child.title}
+                        </a>
+                      {:else}
+                        <Accordion.Item value={'child-' + j}>
+                          <Accordion.Trigger class="py-0 text-gray-500 hover:text-foreground">
+                            {child.title}
+                          </Accordion.Trigger>
+                          <Accordion.Content class="pl-9 pt-2">
+                            <div class="flex flex-col gap-4">
+                              {#each child.child as grandChild}
+                                <a
+                                  href={grandChild.href}
+                                  class={cn(
+                                    $page.url.pathname == grandChild.href
+                                      ? 'text-foregorund'
+                                      : 'text-gray-500',
+                                    'font-medium hover:text-foreground '
+                                  )}
+                                >
+                                  {grandChild.title}
+                                </a>
+                              {/each}
+                            </div>
+                          </Accordion.Content>
+                        </Accordion.Item>
+                      {/if}
+                    {/each}
+                  </div>
+                </Accordion.Root>
+              </Accordion.Content>
             </Accordion.Item>
           {/if}
         {/each}
