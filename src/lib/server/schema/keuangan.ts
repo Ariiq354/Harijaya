@@ -1,5 +1,7 @@
 import { relations, sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { fakturPembelianTable } from './pembelian';
+import { fakturPenjualanTable } from './penjualan';
 
 export const akunTable = sqliteTable('akun', {
   id: text('id').notNull().primaryKey(),
@@ -28,6 +30,78 @@ export const jurnalTable = sqliteTable('jurnal', {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
 
+export const utangTable = sqliteTable('utang', {
+  id: text('id').notNull().primaryKey(),
+  noFaktur: text('no_faktur')
+    .notNull()
+    .references(() => fakturPembelianTable.id, { onDelete: 'cascade' }),
+  nilai: integer('nilai').notNull(),
+  sisa: integer('sisa').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const pembayaranUtangTable = sqliteTable('pembayaran_utang', {
+  id: text('id').notNull().primaryKey(),
+  totalNilai: integer('nilai').notNull(),
+  tanggal: text('tangal').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const pembayaranUtangItemTable = sqliteTable('pembayaran_utang_item', {
+  id: text('id').notNull().primaryKey(),
+  noPembayaran: text('no_pembayaran')
+    .notNull()
+    .references(() => pembayaranUtangTable.id, { onDelete: 'cascade' }),
+  noUtang: text('no_utang').references(() => utangTable.id, { onDelete: 'set null' }),
+  nilai: integer('nilai').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const piutangTable = sqliteTable('piutang', {
+  id: text('id').notNull().primaryKey(),
+  noFaktur: text('no_faktur')
+    .notNull()
+    .references(() => fakturPenjualanTable.id, { onDelete: 'cascade' }),
+  nilai: integer('nilai').notNull(),
+  sisa: integer('sisa').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const pembayaranPiutangTable = sqliteTable('pembayaran_piutang', {
+  id: text('id').notNull().primaryKey(),
+  totalNilai: integer('nilai').notNull(),
+  tanggal: text('tangal').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const pembayaranPiutangItemTable = sqliteTable('pembayaran_piutang_item', {
+  id: text('id').notNull().primaryKey(),
+  noPembayaran: text('no_pembayaran')
+    .notNull()
+    .references(() => pembayaranPiutangTable.id, { onDelete: 'cascade' }),
+  noPiutang: text('no_piutang').references(() => piutangTable.id, { onDelete: 'set null' }),
+  nilai: integer('nilai').notNull(),
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
 export const jurnalRelations = relations(jurnalTable, ({ one }) => ({
   akunDebit: one(akunTable, {
     fields: [jurnalTable.akunDebit],
@@ -39,6 +113,28 @@ export const jurnalRelations = relations(jurnalTable, ({ one }) => ({
   })
 }));
 
+export const utangRelations = relations(utangTable, ({ one }) => ({
+  fakturPembelian: one(fakturPembelianTable, {
+    fields: [utangTable.noFaktur],
+    references: [fakturPembelianTable.id]
+  })
+}));
+
+export const piutangRelations = relations(piutangTable, ({ one }) => ({
+  fakturPembelian: one(fakturPenjualanTable, {
+    fields: [piutangTable.noFaktur],
+    references: [fakturPenjualanTable.id]
+  })
+}));
+
 export type selectAkun = typeof akunTable.$inferSelect;
 
 export type selectJurnal = typeof jurnalTable.$inferSelect;
+
+export type selectUtang = typeof utangTable.$inferSelect;
+
+export type selectPiutang = typeof piutangTable.$inferSelect;
+
+export type selectPembayaranUtang = typeof pembayaranUtangTable.$inferSelect;
+
+export type selectPembayaranPiutang = typeof pembayaranPiutangTable.$inferSelect;

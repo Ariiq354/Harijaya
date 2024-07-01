@@ -12,6 +12,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
 import { adjustStok } from '$lib/server/utils';
+import { piutangTable } from '$lib/server/schema/keuangan';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -83,6 +84,13 @@ export const actions: Actions = {
         ppn: form.data.ppn
       });
 
+      await db.insert(piutangTable).values({
+        id: generateIdFromEntropySize(10),
+        nilai: form.data.total,
+        noFaktur: form.data.id,
+        sisa: form.data.total
+      });
+
       form.data.produk.forEach(async (v, i) => {
         v.id = generateIdFromEntropySize(10);
         await adjustStok(0, v.kuantitas, v.barangId);
@@ -112,6 +120,13 @@ export const actions: Actions = {
           ppn: form.data.ppn
         })
         .where(eq(fakturPenjualanTable.id, form.data.id));
+
+      await db
+        .update(piutangTable)
+        .set({
+          nilai: form.data.total
+        })
+        .where(eq(piutangTable.noFaktur, form.data.id));
 
       const originalProducts = await db.query.penjualanProdukTable.findMany({
         where: eq(penjualanProdukTable.penjualanId, form.data.id)

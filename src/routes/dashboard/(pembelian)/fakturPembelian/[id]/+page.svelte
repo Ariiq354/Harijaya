@@ -71,6 +71,7 @@
   });
 </script>
 
+<SuperDebug data={$formData} />
 <div class="flex flex-col gap-4">
   <Breadcrumb.Root>
     <Breadcrumb.List>
@@ -102,7 +103,6 @@
   </div>
   <hr class="border-black" />
 
-  <SuperDebug data={$formData} />
   <Card.Root class="pt-4">
     <Card.Content>
       <form method="POST" use:enhance class="w-full">

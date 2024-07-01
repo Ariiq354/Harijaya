@@ -9,6 +9,7 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { utangTable } from '$lib/server/schema/keuangan';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -56,6 +57,13 @@ export const actions: Actions = {
         ppn: form.data.ppn
       });
 
+      await db.insert(utangTable).values({
+        id: generateIdFromEntropySize(10),
+        nilai: form.data.total,
+        noFaktur: form.data.id,
+        sisa: form.data.total
+      });
+
       form.data.produk.forEach(async (v) => {
         v.id = generateIdFromEntropySize(10);
         await adjustStok(1, v.kuantitas, v.barangId);
@@ -85,6 +93,13 @@ export const actions: Actions = {
           ppn: form.data.ppn
         })
         .where(eq(fakturPembelianTable.id, form.data.id));
+
+      await db
+        .update(utangTable)
+        .set({
+          nilai: form.data.total
+        })
+        .where(eq(utangTable.noFaktur, form.data.id));
 
       const originalProducts = await db.query.pembelianProdukTable.findMany({
         where: eq(pembelianProdukTable.pembelianId, form.data.id)

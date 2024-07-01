@@ -5,6 +5,6 @@ export default defineConfig({
   plugins: [sveltekit()],
   optimizeDeps: {
     entries: ['src/routes/**/+*.{js,ts,svelte}', 'src/hooks*.{js,ts}'],
-    exclude: ['@node-rs/argon2']
+    exclude: ['oslo']
   }
 });

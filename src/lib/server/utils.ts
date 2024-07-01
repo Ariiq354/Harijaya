@@ -25,11 +25,19 @@ export async function getNumber(
 }
 
 export async function adjustStok(tipe: number, kuantitas: number, barangId: string) {
-  const adjustment = tipe === 0 ? `- ${kuantitas}` : `+ ${kuantitas}`;
-  await db
-    .update(barangTable)
-    .set({
-      stok: sql<number>`${barangTable.stok} ${adjustment}`
-    })
-    .where(eq(barangTable.id, barangId!));
+  if (tipe === 0) {
+    await db
+      .update(barangTable)
+      .set({
+        stok: sql<number>`${barangTable.stok} - ${kuantitas}`
+      })
+      .where(eq(barangTable.id, barangId!));
+  } else {
+    await db
+      .update(barangTable)
+      .set({
+        stok: sql<number>`${barangTable.stok} + ${kuantitas}`
+      })
+      .where(eq(barangTable.id, barangId!));
+  }
 }
