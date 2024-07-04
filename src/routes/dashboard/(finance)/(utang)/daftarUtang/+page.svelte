@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
   import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
@@ -8,13 +9,12 @@
   import { ArrowUpDown, ChevronLeft, ChevronRight, Loader2 } from 'lucide-svelte';
   import { Render, Subscribe, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
-  import { writable } from 'svelte/store';
-  import type { PageData } from './$types';
-  import SuperDebug, { superForm } from 'sveltekit-superforms';
-  import { zodClient } from 'sveltekit-superforms/adapters';
-  import { formSchema } from './schema';
   import { toast } from 'svelte-sonner';
-  import { goto } from '$app/navigation';
+  import { writable } from 'svelte/store';
+  import { superForm } from 'sveltekit-superforms';
+  import { zodClient } from 'sveltekit-superforms/adapters';
+  import type { PageData } from './$types';
+  import { formSchema } from './schema';
 
   export let data: PageData;
 
@@ -91,7 +91,6 @@
   }
 </script>
 
-<SuperDebug data={$formData} />
 <div class="flex flex-col gap-4">
   <Breadcrumb.Root>
     <Breadcrumb.List>

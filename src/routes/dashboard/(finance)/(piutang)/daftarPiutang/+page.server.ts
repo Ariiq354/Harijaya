@@ -4,15 +4,15 @@ import {
   pembayaranPiutangTable,
   piutangTable
 } from '$lib/server/schema/keuangan';
-import { adjustStok } from '$lib/server/utils';
+import { getNumber } from '$lib/server/utils';
+import { getCurrentDate } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { desc, eq, sql } from 'drizzle-orm';
-import type { Actions, PageServerLoad } from './$types';
-import { superValidate } from 'sveltekit-superforms';
-import { formSchema } from './schema';
-import { zod } from 'sveltekit-superforms/adapters';
 import { generateIdFromEntropySize } from 'lucia';
-import { getCurrentDate } from '$lib/utils';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import type { Actions, PageServerLoad } from './$types';
+import { formSchema } from './schema';
 
 export const load: PageServerLoad = async () => {
   const piutangData = await db.query.piutangTable.findMany({
@@ -42,8 +42,11 @@ export const actions: Actions = {
 
     const id = generateIdFromEntropySize(10);
 
+    const trx = await getNumber('BYR', pembayaranPiutangTable, pembayaranPiutangTable.noTransaksi);
+
     await db.insert(pembayaranPiutangTable).values({
       id: id,
+      noTransaksi: trx,
       tanggal: getCurrentDate(),
       totalNilai: form.data.total
     });

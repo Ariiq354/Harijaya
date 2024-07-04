@@ -8,7 +8,7 @@ export default {
     // url: 'file:test.db'
     //@ts-ignore
     url: process.env.DATABASE_URL ?? '',
-    //@ts-ignore
+    // @ts-ignore
     authToken: process.env.DATABASE_AUTH_TOKEN ?? ''
   }
 } satisfies Config;

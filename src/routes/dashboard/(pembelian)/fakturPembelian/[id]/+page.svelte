@@ -13,7 +13,7 @@
   import { Textarea } from '$lib/components/ui/textarea';
   import { ArrowLeft, Loader2, Trash2 } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
-  import SuperDebug, { superForm } from 'sveltekit-superforms';
+  import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
@@ -71,7 +71,6 @@
   });
 </script>
 
-<SuperDebug data={$formData} />
 <div class="flex flex-col gap-4">
   <Breadcrumb.Root>
     <Breadcrumb.List>

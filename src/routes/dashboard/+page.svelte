@@ -21,7 +21,7 @@
     <p>Jumlah Faktur Penjualan {data.fakturPenjualan[0].jumlah}</p>
   </div>
   <div class="flex flex-row items-center gap-4 rounded-lg border-2 p-4">
-    <Boxes size={80} strokeWidth={0.75} class="h-fit w-auto rounded-full bg-blue-200 p-2" />
+    <Boxes size={80} strokeWidth={0.75} />
     <div class="flex w-full flex-col items-end justify-center gap-2 text-right">
       <p class="text-2xl font-bold">
         {data.barang[0].jumlah}

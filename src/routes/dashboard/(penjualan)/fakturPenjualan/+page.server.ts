@@ -4,6 +4,7 @@ import { adjustStok } from '$lib/server/utils';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
+import { piutangTable } from '$lib/server/schema/keuangan';
 
 export const load: PageServerLoad = async () => {
   const fakturPenjualanData = await db.query.fakturPenjualanTable.findMany({
@@ -40,6 +41,7 @@ export const actions: Actions = {
         await adjustStok(1, i.kuantitas, i.barangId);
       });
       await db.delete(fakturPenjualanTable).where(eq(fakturPenjualanTable.id, id));
+      await db.delete(piutangTable).where(eq(piutangTable.noFaktur, data!.id));
     } catch (error) {
       return fail(500, { message: 'something went wrong' });
     }

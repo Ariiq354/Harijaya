@@ -11,7 +11,7 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
-import { adjustStok } from '$lib/server/utils';
+import { adjustStok, getNumber } from '$lib/server/utils';
 import { piutangTable } from '$lib/server/schema/keuangan';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -28,10 +28,13 @@ export const load: PageServerLoad = async ({ params }) => {
     }
   });
 
+  const trx = await getNumber('SO', fakturPenjualanTable, fakturPenjualanTable.noFaktur);
+
   return {
     form: await superValidate(data, zod(formSchema)),
     pelanggan,
-    barang
+    barang,
+    trx
   };
 };
 

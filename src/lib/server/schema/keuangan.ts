@@ -45,6 +45,7 @@ export const utangTable = sqliteTable('utang', {
 
 export const pembayaranUtangTable = sqliteTable('pembayaran_utang', {
   id: text('id').notNull().primaryKey(),
+  noTransaksi: text('no_transaksi').notNull(),
   totalNilai: integer('nilai').notNull(),
   tanggal: text('tangal').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
@@ -81,6 +82,7 @@ export const piutangTable = sqliteTable('piutang', {
 
 export const pembayaranPiutangTable = sqliteTable('pembayaran_piutang', {
   id: text('id').notNull().primaryKey(),
+  noTransaksi: text('no_transaksi').notNull(),
   totalNilai: integer('nilai').notNull(),
   tanggal: text('tangal').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
@@ -120,10 +122,40 @@ export const utangRelations = relations(utangTable, ({ one }) => ({
   })
 }));
 
+export const pembayaranUtangRelations = relations(pembayaranUtangTable, ({ many }) => ({
+  utangItem: many(pembayaranUtangItemTable)
+}));
+
+export const pembayaranUtangItemRelations = relations(pembayaranUtangItemTable, ({ one }) => ({
+  pembayaran: one(pembayaranUtangTable, {
+    fields: [pembayaranUtangItemTable.noPembayaran],
+    references: [pembayaranUtangTable.id]
+  }),
+  utang: one(utangTable, {
+    fields: [pembayaranUtangItemTable.noUtang],
+    references: [utangTable.id]
+  })
+}));
+
 export const piutangRelations = relations(piutangTable, ({ one }) => ({
   fakturPembelian: one(fakturPenjualanTable, {
     fields: [piutangTable.noFaktur],
     references: [fakturPenjualanTable.id]
+  })
+}));
+
+export const pembayaranPiutangRelations = relations(pembayaranPiutangTable, ({ many }) => ({
+  piutangItem: many(pembayaranPiutangItemTable)
+}));
+
+export const pembayaranPiutangItemRelations = relations(pembayaranPiutangItemTable, ({ one }) => ({
+  pembayaran: one(pembayaranPiutangTable, {
+    fields: [pembayaranPiutangItemTable.noPembayaran],
+    references: [pembayaranPiutangTable.id]
+  }),
+  piutang: one(piutangTable, {
+    fields: [pembayaranPiutangItemTable.noPiutang],
+    references: [piutangTable.id]
   })
 }));
 

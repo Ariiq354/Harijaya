@@ -27,8 +27,12 @@
 
   const columns = table.createColumns([
     table.column({
+      accessor: 'noTransaksi',
+      header: 'No. Pembayaran'
+    }),
+    table.column({
       accessor: 'tanggal',
-      header: 'Tgl. Pembelian'
+      header: 'Tgl. Pembayaran'
     }),
     table.column({
       accessor: 'totalNilai',

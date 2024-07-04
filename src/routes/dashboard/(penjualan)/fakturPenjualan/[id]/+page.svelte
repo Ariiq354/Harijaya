@@ -36,6 +36,7 @@
     }
   });
   const { form: formData, enhance, submitting } = form;
+  $formData.noFaktur = data.trx;
 
   function addItem() {
     $formData.produk = [
@@ -164,7 +165,7 @@
           <Form.Field {form} name="noFaktur">
             <Form.Control let:attrs>
               <Form.Label>No. Faktur</Form.Label>
-              <Input {...attrs} bind:value={$formData.noFaktur} />
+              <Input readonly {...attrs} bind:value={$formData.noFaktur} />
             </Form.Control>
             <Form.FieldErrors />
           </Form.Field>
