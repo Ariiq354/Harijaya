@@ -126,7 +126,7 @@
           <Form.FieldErrors />
         </Form.Field>
 
-        <Form.Button disabled={$submitting} class="col-span-2 mt-4 w-fit">
+        <Form.Button disabled={$submitting} class="mt-4 w-fit md:col-span-2">
           {#if $submitting}
             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           {/if}

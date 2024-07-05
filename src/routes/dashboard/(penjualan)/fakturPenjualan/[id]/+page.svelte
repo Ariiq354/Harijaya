@@ -178,10 +178,10 @@
           </Form.Field>
         </div>
         <hr class="my-4" />
-        <div class="flex w-full justify-end">
+        <div class="mb-4 flex w-full justify-end">
           <Button on:click={addItem}>Tambah</Button>
         </div>
-        <Form.Fieldset {form} name="produk">
+        <Form.Fieldset {form} name="produk" class="grid grid-cols-1 overflow-auto">
           <Table.Root class="w-full">
             <Table.Row>
               <Table.Head>No.</Table.Head>

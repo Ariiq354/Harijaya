@@ -73,8 +73,16 @@
 
   <Card.Root class="pt-4">
     <Card.Content>
-      <form method="POST" use:enhance class="grid grid-cols-1 gap-2 md:grid-cols-2">
-        <Form.Field {form} name="id" class="hidden">
+      <form method="POST" use:enhance class="grid grid-cols-2 gap-2">
+        <input type="text" class="w-full border-2" readonly />
+        <input type="text" class="w-full border-2" readonly />
+        <input type="text" class="w-full border-2" readonly />
+        <input type="text" class="w-full border-2" readonly />
+        <!-- <Input readonly bind:value={$formData.kodeTransaksi} /> -->
+        <!-- <Input readonly bind:value={$formData.kodeTransaksi} /> -->
+        <!-- <Input readonly bind:value={$formData.kodeTransaksi} /> -->
+        <!-- <Input readonly bind:value={$formData.kodeTransaksi} /> -->
+        <!-- <Form.Field {form} name="id" class="hidden">
           <Form.Control let:attrs>
             <input hidden name={attrs.name} bind:value={$formData.id} />
           </Form.Control>
@@ -166,9 +174,9 @@
             <input hidden bind:value={$formData.akunKredit} name={attrs.name} />
           </Form.Control>
           <Form.FieldErrors />
-        </Form.Field>
+        </Form.Field> -->
 
-        <Form.Button disabled={$submitting} class="mt-4 w-fit md:col-span-2" title="submit form">
+        <Form.Button disabled={$submitting} class="mt-4 w-fit" title="submit form">
           {#if $submitting}
             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           {/if}

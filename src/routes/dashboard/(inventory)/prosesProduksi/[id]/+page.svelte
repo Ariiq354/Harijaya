@@ -128,7 +128,7 @@
         <Form.Fieldset {form} name="bahanMentah">
           <Form.Legend>List Bahan Mentah</Form.Legend>
           <Form.Control let:attrs>
-            <Table.Root class="w-full">
+            <Table.Root class="grid w-full grid-cols-1 overflow-auto">
               <Table.Row>
                 <Table.Head>No.</Table.Head>
                 <Table.Head>Barang</Table.Head>
@@ -209,7 +209,7 @@
         <Form.Fieldset {form} name="barangJadi">
           <Form.Legend>List Barang Jadi</Form.Legend>
           <Form.Control let:attrs>
-            <Table.Root class="w-full">
+            <Table.Root class="grid w-full grid-cols-1 overflow-auto">
               <Table.Row>
                 <Table.Head>No.</Table.Head>
                 <Table.Head>Barang</Table.Head>

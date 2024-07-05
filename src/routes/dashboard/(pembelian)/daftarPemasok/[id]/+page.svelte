@@ -58,7 +58,7 @@
 
   <Card.Root class="pt-4">
     <Card.Content>
-      <form method="POST" use:enhance class="grid grid-cols-2 gap-4">
+      <form method="POST" use:enhance class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Form.Field {form} name="id" class="hidden">
           <Form.Control let:attrs>
             <input hidden name={attrs.name} bind:value={$formData.id} />
@@ -121,7 +121,7 @@
           <Form.FieldErrors />
         </Form.Field>
 
-        <Form.Button disabled={$submitting} class="col-span-2 mt-4 w-fit">
+        <Form.Button disabled={$submitting} class="mt-4 w-fit md:col-span-2">
           {#if $submitting}
             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           {/if}

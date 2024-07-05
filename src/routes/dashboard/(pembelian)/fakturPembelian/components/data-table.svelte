@@ -78,7 +78,7 @@
   <div class="flex items-center py-4">
     <Input class="max-w-sm" placeholder="Cari..." type="text" bind:value={$filterValue} />
   </div>
-  <div class="rounded-md border">
+  <div class="grid grid-cols-1 overflow-auto rounded-md border">
     <Table.Root {...$tableAttrs}>
       <Table.Header>
         {#each $headerRows as headerRow}

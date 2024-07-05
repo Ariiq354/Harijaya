@@ -55,56 +55,60 @@
       </div>
       <hr class="my-4" />
       <Label>List Bahan Mentah</Label>
-      <Table.Root class="w-full">
-        <Table.Header>
-          <Table.Row>
-            <Table.Head>No.</Table.Head>
-            <Table.Head>Barang</Table.Head>
-            <Table.Head>Kuantitas</Table.Head>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {#each bahanMentah as _, i (i)}
+      <div class="grid grid-cols-1 overflow-auto">
+        <Table.Root class="w-full ">
+          <Table.Header>
             <Table.Row>
-              <Table.Cell>
-                {i + 1}
-              </Table.Cell>
-              <Table.Cell>
-                <Input disabled value={bahanMentah[i].barang?.name} />
-              </Table.Cell>
-              <Table.Cell>
-                <Input disabled value={bahanMentah[i].kuantitas} />
-              </Table.Cell>
+              <Table.Head>No.</Table.Head>
+              <Table.Head>Barang</Table.Head>
+              <Table.Head>Kuantitas</Table.Head>
             </Table.Row>
-          {/each}
-        </Table.Body>
-      </Table.Root>
+          </Table.Header>
+          <Table.Body>
+            {#each bahanMentah as _, i (i)}
+              <Table.Row>
+                <Table.Cell>
+                  {i + 1}
+                </Table.Cell>
+                <Table.Cell>
+                  <Input disabled value={bahanMentah[i].barang?.name} />
+                </Table.Cell>
+                <Table.Cell>
+                  <Input disabled value={bahanMentah[i].kuantitas} />
+                </Table.Cell>
+              </Table.Row>
+            {/each}
+          </Table.Body>
+        </Table.Root>
+      </div>
       <hr class="my-4" />
       <Label>List Bahan Jadi</Label>
-      <Table.Root class="w-full">
-        <Table.Header>
-          <Table.Row>
-            <Table.Head>No.</Table.Head>
-            <Table.Head>Barang</Table.Head>
-            <Table.Head>Kuantitas</Table.Head>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {#each barangJadi as _, i (i)}
+      <div class="grid grid-cols-1 overflow-auto">
+        <Table.Root class="w-full">
+          <Table.Header>
             <Table.Row>
-              <Table.Cell>
-                {i + 1}
-              </Table.Cell>
-              <Table.Cell>
-                <Input disabled value={barangJadi[i].barang?.name} />
-              </Table.Cell>
-              <Table.Cell>
-                <Input disabled value={barangJadi[i].kuantitas} />
-              </Table.Cell>
+              <Table.Head>No.</Table.Head>
+              <Table.Head>Barang</Table.Head>
+              <Table.Head>Kuantitas</Table.Head>
             </Table.Row>
-          {/each}
-        </Table.Body>
-      </Table.Root>
+          </Table.Header>
+          <Table.Body>
+            {#each barangJadi as _, i (i)}
+              <Table.Row>
+                <Table.Cell>
+                  {i + 1}
+                </Table.Cell>
+                <Table.Cell>
+                  <Input disabled value={barangJadi[i].barang?.name} />
+                </Table.Cell>
+                <Table.Cell>
+                  <Input disabled value={barangJadi[i].kuantitas} />
+                </Table.Cell>
+              </Table.Row>
+            {/each}
+          </Table.Body>
+        </Table.Root>
+      </div>
     </Card.Content>
   </Card.Root>
 </div>

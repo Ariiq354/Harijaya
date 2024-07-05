@@ -51,34 +51,36 @@
         </div>
       </div>
       <hr class="my-4" />
-      <Table.Root class="w-full">
-        <Table.Row>
-          <Table.Head>No.</Table.Head>
-          <Table.Head>Barang</Table.Head>
-          <Table.Head>Tipe</Table.Head>
-          <Table.Head>Kuantitas</Table.Head>
-        </Table.Row>
-        {#each data.data.produkStok as item, i (i)}
+      <div class="grid grid-cols-1 overflow-auto">
+        <Table.Root class="w-full">
           <Table.Row>
-            <Table.Cell>
-              {i + 1}
-            </Table.Cell>
-            <Table.Cell>
-              <Input disabled value={data.data.produkStok[i].barang.name} />
-            </Table.Cell>
-            <Table.Cell>
-              {#if data.data.produkStok[i].tipe === 0}
-                -
-              {:else}
-                +
-              {/if}
-            </Table.Cell>
-            <Table.Cell>
-              <Input type="number" disabled value={data.data.produkStok[i].kuantitas} />
-            </Table.Cell>
+            <Table.Head>No.</Table.Head>
+            <Table.Head>Barang</Table.Head>
+            <Table.Head>Tipe</Table.Head>
+            <Table.Head>Kuantitas</Table.Head>
           </Table.Row>
-        {/each}
-      </Table.Root>
+          {#each data.data.produkStok as item, i (i)}
+            <Table.Row>
+              <Table.Cell>
+                {i + 1}
+              </Table.Cell>
+              <Table.Cell>
+                <Input disabled value={data.data.produkStok[i].barang.name} />
+              </Table.Cell>
+              <Table.Cell>
+                {#if data.data.produkStok[i].tipe === 0}
+                  -
+                {:else}
+                  +
+                {/if}
+              </Table.Cell>
+              <Table.Cell>
+                <Input type="number" disabled value={data.data.produkStok[i].kuantitas} />
+              </Table.Cell>
+            </Table.Row>
+          {/each}
+        </Table.Root>
+      </div>
     </Card.Content>
   </Card.Root>
 </div>

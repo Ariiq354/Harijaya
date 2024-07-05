@@ -73,36 +73,38 @@
           </div>
         </div>
         <hr class="my-4" />
-        <Table.Root class="w-full">
-          <Table.Header>
-            <Table.Row>
-              <Table.Head>No.</Table.Head>
-              <Table.Head>Barang</Table.Head>
-              <Table.Head>Harga</Table.Head>
-              <Table.Head>Kuantitas</Table.Head>
-              <Table.Head>Jumlah</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {#each data.data.produk as item, i (item)}
+        <div class="grid grid-cols-1 overflow-auto">
+          <Table.Root class="w-full">
+            <Table.Header>
               <Table.Row>
-                <Table.Cell>{i + 1}</Table.Cell>
-                <Table.Cell>
-                  <Input disabled value={item.barang?.name} />
-                </Table.Cell>
-                <Table.Cell>
-                  <Input disabled type="number" value={item.harga} />
-                </Table.Cell>
-                <Table.Cell>
-                  <Input disabled type="number" value={item.kuantitas} />
-                </Table.Cell>
-                <Table.Cell>
-                  {item.harga * item.kuantitas}
-                </Table.Cell>
+                <Table.Head>No.</Table.Head>
+                <Table.Head>Barang</Table.Head>
+                <Table.Head>Harga</Table.Head>
+                <Table.Head>Kuantitas</Table.Head>
+                <Table.Head>Jumlah</Table.Head>
               </Table.Row>
-            {/each}
-          </Table.Body>
-        </Table.Root>
+            </Table.Header>
+            <Table.Body>
+              {#each data.data.produk as item, i (item)}
+                <Table.Row>
+                  <Table.Cell>{i + 1}</Table.Cell>
+                  <Table.Cell>
+                    <Input disabled value={item.barang?.name} />
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Input disabled type="number" value={item.harga} />
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Input disabled type="number" value={item.kuantitas} />
+                  </Table.Cell>
+                  <Table.Cell>
+                    {item.harga * item.kuantitas}
+                  </Table.Cell>
+                </Table.Row>
+              {/each}
+            </Table.Body>
+          </Table.Root>
+        </div>
         <hr class="my-4" />
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>

@@ -7,7 +7,7 @@
   export let data: PageData;
 </script>
 
-<div class="grid grid-cols-4 gap-4">
+<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
   <div class="flex flex-col gap-4 rounded-lg border-2 bg-white p-4">
     <h1 class="text-lg font-semibold">Hutang</h1>
     <div class="text-2xl font-bold">
@@ -41,7 +41,7 @@
     </div>
   </div>
 </div>
-<div class="mt-4 grid grid-cols-2 gap-4">
+<div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
   <div class="rounded-lg border-2 p-4">
     <h1 class="mb-4 text-center text-xl font-bold">Pembelian vs Penjualan</h1>
     <Bar />
