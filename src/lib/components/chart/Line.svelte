@@ -11,10 +11,10 @@
     LinearScale,
     PointElement
   } from 'chart.js';
-  import { getLastFourMonths } from '$lib/utils';
+  import { getLastMonths } from '$lib/utils';
 
   const config: ChartData<'line', (number | Point)[], unknown> = {
-    labels: getLastFourMonths(),
+    labels: getLastMonths(7),
     datasets: [
       {
         label: 'Pembelian',

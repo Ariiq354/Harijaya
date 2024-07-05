@@ -71,7 +71,7 @@ export function getDashedDate() {
   return `${year}-${month}-${day}`;
 }
 
-export function getLastFourMonths() {
+export function getLastMonths(month: number) {
   const monthNames = [
     'January',
     'February',
@@ -89,7 +89,7 @@ export function getLastFourMonths() {
   const currentMonth = new Date().getMonth(); // 0-11
   const lastFourMonths = [];
 
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= month; i++) {
     let monthIndex = currentMonth - i;
     if (monthIndex < 0) {
       monthIndex += 12;
