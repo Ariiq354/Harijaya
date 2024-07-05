@@ -11,14 +11,14 @@
   <div class="flex flex-col gap-4 rounded-lg border-2 bg-white p-4">
     <h1 class="text-lg font-semibold">Hutang</h1>
     <div class="text-2xl font-bold">
-      Rp {data.utang[0].jumlah}
+      Rp {data.utang[0].jumlah.toLocaleString('id-ID')}
     </div>
     <p>Jumlah Faktur Pembelian {data.fakturPembelian[0].jumlah}</p>
   </div>
   <div class="flex flex-col gap-4 rounded-lg border-2 bg-white p-4">
     <h1 class="text-lg font-semibold">Piutang</h1>
     <div class="text-2xl font-bold">
-      Rp {data.piutang[0].jumlah}
+      Rp {data.piutang[0].jumlah.toLocaleString('id-ID')}
     </div>
     <p>Jumlah Faktur Penjualan {data.fakturPenjualan[0].jumlah}</p>
   </div>
