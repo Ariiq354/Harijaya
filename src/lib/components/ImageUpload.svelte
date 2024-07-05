@@ -1,7 +1,9 @@
 <script lang="ts">
+  //@ts-nocheck
   import { CldUploadWidget } from 'svelte-cloudinary';
   import { Button } from '$lib/components/ui/button';
   import { ImagePlus, Trash } from 'lucide-svelte';
+
 
   export let disabled: boolean;
   export let onChange: (value: string) => void;

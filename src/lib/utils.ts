@@ -55,7 +55,7 @@ export const flyAndScale = (
   };
 };
 
-export function currentDate() {
+export function getDate() {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
@@ -63,10 +63,39 @@ export function currentDate() {
   return `${year}${month}${day}`;
 }
 
-export function getCurrentDate() {
+export function getDashedDate() {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
   const day = String(currentDate.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+export function getLastFourMonths() {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+  const currentMonth = new Date().getMonth(); // 0-11
+  const lastFourMonths = [];
+
+  for (let i = 1; i <= 4; i++) {
+    let monthIndex = currentMonth - i;
+    if (monthIndex < 0) {
+      monthIndex += 12;
+    }
+    lastFourMonths.push(monthNames[monthIndex]);
+  }
+
+  return lastFourMonths.reverse(); // Optional: reverse to get in chronological order
 }

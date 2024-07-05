@@ -5,7 +5,7 @@ import {
   piutangTable
 } from '$lib/server/schema/keuangan';
 import { getNumber } from '$lib/server/utils';
-import { getCurrentDate } from '$lib/utils';
+import { getDashedDate } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { desc, eq, sql } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
@@ -47,7 +47,7 @@ export const actions: Actions = {
     await db.insert(pembayaranPiutangTable).values({
       id: id,
       noTransaksi: trx,
-      tanggal: getCurrentDate(),
+      tanggal: getDashedDate(),
       totalNilai: form.data.total
     });
 

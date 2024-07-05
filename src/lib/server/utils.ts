@@ -1,7 +1,7 @@
 import { eq, like, sql } from 'drizzle-orm';
 import { db } from '.';
 import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
-import { currentDate } from '$lib/utils';
+import { getDate } from '$lib/utils';
 import { jurnalTable } from './schema/keuangan';
 import { barangTable } from './schema/penjualan';
 
@@ -21,7 +21,7 @@ export async function getNumber(
     .from(table)
     .where(like(column, sql`${code + '-'} || strftime('%Y%m%d', 'now') || '-%'`));
 
-  return code + '-' + currentDate() + '-' + num[0].num;
+  return code + '-' + getDate() + '-' + num[0].num;
 }
 
 export async function adjustStok(tipe: number, kuantitas: number, barangId: string) {
