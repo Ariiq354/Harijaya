@@ -53,7 +53,7 @@
           <Input disabled value={data.data.npwp} />
         </div>
         <div class="flex w-full flex-col gap-2 py-2">
-          <Label>Phone</Label>
+          <Label>No. Telepon</Label>
           <Input disabled value={data.data.phone} />
         </div>
         <div class="flex w-full flex-col gap-2 py-2">
@@ -70,7 +70,7 @@
         </div>
         <div class="flex w-full flex-col gap-2 py-2">
           <Label>Atas Nama</Label>
-          <Input disabled value={data.data.atasNama} />
+          <Input disabled value={data.data.namaRekening} />
         </div>
       </div>
     </Card.Content>

@@ -18,6 +18,7 @@
   export let data: PageData;
 
   const form = superForm(data.form, {
+    dataType: 'json',
     validators: zodClient(formSchema),
     async onUpdate({ form }) {
       if (form.valid) {

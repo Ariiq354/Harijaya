@@ -41,7 +41,7 @@ export const actions: Actions = {
         phone: form.data.phone,
         address: form.data.address,
         email: form.data.email,
-        atasNama: form.data.atasNama,
+        namaRekening: form.data.namaRekening,
         noRekening: form.data.noRekening,
         namaBank: form.data.namaBank
       })
@@ -53,7 +53,7 @@ export const actions: Actions = {
           phone: form.data.phone,
           address: form.data.address,
           email: form.data.email,
-          atasNama: form.data.atasNama,
+          namaRekening: form.data.namaRekening,
           noRekening: form.data.noRekening,
           namaBank: form.data.namaBank
         }

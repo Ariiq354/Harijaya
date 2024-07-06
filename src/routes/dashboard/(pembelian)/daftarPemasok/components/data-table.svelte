@@ -8,6 +8,7 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import DataRender from './data-render.svelte';
 
   export let data: selectSupplier[];
 
@@ -34,16 +35,18 @@
       header: 'Alamat'
     }),
     table.column({
-      accessor: 'email',
-      header: 'Email'
-    }),
-    table.column({
-      accessor: 'npwp',
-      header: 'NPWP'
+      accessor: ({ namaBank, namaRekening }) => ({ namaBank, namaRekening }),
+      header: 'Bank',
+      cell: ({ value }) => {
+        return createRender(DataRender, {
+          namaBank: value.namaBank,
+          namaRekening: value.namaRekening
+        });
+      }
     }),
     table.column({
       accessor: 'phone',
-      header: 'Phone'
+      header: 'No. Telepon'
     }),
     table.column({
       accessor: ({ id }) => id,

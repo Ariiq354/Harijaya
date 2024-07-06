@@ -8,6 +8,7 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import DataRender from './data-render.svelte';
 
   export let data: selectPelanggan[];
 
@@ -29,7 +30,24 @@
       accessor: 'name',
       header: 'Nama klien'
     }),
-
+    table.column({
+      accessor: 'address',
+      header: 'Alamat'
+    }),
+    table.column({
+      accessor: ({ namaBank, namaRekening }) => ({ namaBank, namaRekening }),
+      header: 'Bank',
+      cell: ({ value }) => {
+        return createRender(DataRender, {
+          namaBank: value.namaBank,
+          namaRekening: value.namaRekening
+        });
+      }
+    }),
+    table.column({
+      accessor: 'phone',
+      header: 'No. Telepon'
+    }),
     table.column({
       accessor: ({ id }) => id,
       header: 'Action',

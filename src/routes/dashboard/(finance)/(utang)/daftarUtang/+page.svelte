@@ -38,11 +38,17 @@
     }),
     table.column({
       accessor: 'nilai',
-      header: 'Nilai Utang'
+      header: 'Nilai Utang',
+      cell: ({ value }) => {
+        return value.toLocaleString('id-ID');
+      }
     }),
     table.column({
       accessor: 'sisa',
-      header: 'Sisa'
+      header: 'Sisa',
+      cell: ({ value }) => {
+        return value.toLocaleString('id-ID');
+      }
     })
   ]);
 
@@ -183,7 +189,8 @@
                 <Table.Row>
                   <Table.Cell colspan={4} class="text-right">Total:</Table.Cell>
                   <Table.Cell>
-                    <Input disabled bind:value={$formData.total} type="number" />
+                    <input hidden bind:value={$formData.total} type="number" />
+                    {$formData.total.toLocaleString('id-ID')}
                   </Table.Cell>
                   <Table.Cell>
                     <Button disabled={$submitting} type="submit" class="">

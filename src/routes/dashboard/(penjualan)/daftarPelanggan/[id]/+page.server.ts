@@ -43,7 +43,7 @@ export const actions: Actions = {
         phone: form.data.phone,
         namaBank: form.data.namaBank,
         noRekening: form.data.noRekening,
-        atasNama: form.data.atasNama
+        namaRekening: form.data.namaRekening
       })
       .onConflictDoUpdate({
         target: pelangganTable.id,
@@ -55,7 +55,7 @@ export const actions: Actions = {
           phone: form.data.phone,
           namaBank: form.data.namaBank,
           noRekening: form.data.noRekening,
-          atasNama: form.data.atasNama
+          namaRekening: form.data.namaRekening
         }
       });
 

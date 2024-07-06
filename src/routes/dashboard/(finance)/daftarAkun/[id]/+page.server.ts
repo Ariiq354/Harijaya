@@ -3,7 +3,7 @@ import { akunTable } from '$lib/server/schema/keuangan';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
-import { superValidate } from 'sveltekit-superforms';
+import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
@@ -29,7 +29,8 @@ export const actions: Actions = {
     }
 
     if (!form.data.id) {
-      form.data.id = generateIdFromEntropySize(10);
+      // form.data.id = generateIdFromEntropySize(10);
+      return setError(form, 'deskripsi', 'test error');
     }
 
     await db

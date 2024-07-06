@@ -24,7 +24,7 @@ export const pelangganTable = sqliteTable('pelanggan', {
   npwp: text('npwp').notNull(),
   address: text('address').notNull(),
   namaBank: text('nama_bank').notNull(),
-  atasNama: text('atas_nama').notNull(),
+  namaRekening: text('nama_rekening').notNull(),
   noRekening: text('no_rekening').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')

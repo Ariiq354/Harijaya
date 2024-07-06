@@ -7,7 +7,7 @@ export const formSchema = z.object({
   email: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   phone: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   address: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
-  atasNama: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
+  namaRekening: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   noRekening: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   namaBank: z.string().min(1, { message: 'Data tidak boleh kosong!' })
 });

@@ -92,7 +92,7 @@
         </Form.Field>
         <Form.Field {form} name="phone">
           <Form.Control let:attrs>
-            <Form.Label>Phone</Form.Label>
+            <Form.Label>No. Telepon</Form.Label>
             <Input {...attrs} bind:value={$formData.phone} />
           </Form.Control>
           <Form.FieldErrors />
@@ -118,10 +118,10 @@
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
-        <Form.Field {form} name="atasNama">
+        <Form.Field {form} name="namaRekening">
           <Form.Control let:attrs>
-            <Form.Label>Atas Nama</Form.Label>
-            <Input {...attrs} bind:value={$formData.atasNama} />
+            <Form.Label>Nama Rekening</Form.Label>
+            <Input {...attrs} bind:value={$formData.namaRekening} />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>

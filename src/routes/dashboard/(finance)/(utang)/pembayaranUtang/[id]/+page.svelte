@@ -79,7 +79,7 @@
             <Form.Field {form} name="noTransaksi">
               <Form.Control let:attrs>
                 <Form.Label>Total Nilai</Form.Label>
-                <Input readonly {...attrs} bind:value={$formData.totalNilai} />
+                <Input readonly {...attrs} value={$formData.totalNilai} />
               </Form.Control>
             </Form.Field>
           </div>

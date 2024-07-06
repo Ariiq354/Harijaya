@@ -124,7 +124,7 @@
             </div>
             <div class="flex w-full flex-col gap-2 py-2">
               <Label>Atas Nama</Label>
-              <Input disabled value={data.data.pelanggan?.atasNama} />
+              <Input disabled value={data.data.pelanggan?.namaRekening} />
             </div>
             <div class="relative h-[200px] w-[200px] overflow-hidden rounded-md">
               <a href={data.data.lampiran} target="_blank">

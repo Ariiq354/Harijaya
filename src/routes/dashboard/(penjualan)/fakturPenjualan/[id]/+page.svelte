@@ -143,18 +143,34 @@
               </Form.Control>
               <Form.FieldErrors />
             </Form.Field>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div class="mt-4 flex flex-col gap-2">
+                <Label>Nama Bank</Label>
+                <Input
+                  readonly
+                  value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.namaBank}
+                />
+              </div>
+              <div class="mt-4 flex flex-col gap-2">
+                <Label>No. Rekening</Label>
+                <Input
+                  readonly
+                  value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.noRekening}
+                />
+              </div>
+            </div>
             <div class="mt-4 flex flex-col gap-2">
-              <Label>Email</Label>
+              <Label>Nama Rekening</Label>
               <Input
                 readonly
-                value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.email}
+                value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.namaRekening}
               />
             </div>
           </div>
-          <div class="flex w-full flex-col gap-2 py-2">
+          <div class="flex w-full flex-col gap-2 pt-2">
             <Label>Alamat</Label>
             <Textarea
-              rows={8}
+              class="h-full"
               readonly
               value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.address}
             />
@@ -236,7 +252,9 @@
                   </Form.ElementField>
                 </Table.Cell>
                 <Table.Cell>
-                  {$formData.produk[i].harga * $formData.produk[i].kuantitas}
+                  {($formData.produk[i].harga * $formData.produk[i].kuantitas).toLocaleString(
+                    'id-ID'
+                  )}
                 </Table.Cell>
                 <Table.Cell>
                   <Button
@@ -262,29 +280,6 @@
               </Form.Control>
               <Form.FieldErrors />
             </Form.Field>
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div class="flex w-full flex-col gap-2 py-2">
-                <Label>Nama Bank</Label>
-                <Input
-                  readonly
-                  value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.namaBank}
-                />
-              </div>
-              <div class="flex w-full flex-col gap-2 py-2">
-                <Label>No. Rekening</Label>
-                <Input
-                  readonly
-                  value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.noRekening}
-                />
-              </div>
-            </div>
-            <div class="flex w-full flex-col gap-2 py-2">
-              <Label>Atas Nama</Label>
-              <Input
-                readonly
-                value={data.pelanggan.find((i) => i.id == $formData.pelangganId)?.atasNama}
-              />
-            </div>
             <ImageUpload
               disabled={false}
               url={$formData.lampiran}
@@ -296,7 +291,7 @@
             <div class="flex w-full justify-between">
               <div>Subtotal:</div>
               <div>
-                {subTotal}
+                {subTotal.toLocaleString('id-ID')}
               </div>
             </div>
             <div class="flex w-full justify-between">
@@ -311,7 +306,7 @@
             <div class="flex w-full justify-between">
               <div>Total & PPN:</div>
               <div>
-                {ppnTotal}
+                {ppnTotal.toLocaleString('id-ID')}
               </div>
             </div>
             <div class="flex w-full justify-between">
@@ -341,7 +336,7 @@
             <div class="flex w-full justify-between">
               <div>Grand Total:</div>
               <div>
-                {$formData.total}
+                {$formData.total.toLocaleString('id-ID')}
                 <input type="hidden" bind:value={$formData.total} />
               </div>
             </div>

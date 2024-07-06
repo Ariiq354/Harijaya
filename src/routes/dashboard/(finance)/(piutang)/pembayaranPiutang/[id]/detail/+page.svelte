@@ -46,7 +46,7 @@
           </div>
           <div class="flex w-full flex-col gap-2 py-2">
             <Label>Total</Label>
-            <Input disabled value={data.data.totalNilai} />
+            <Input disabled value={data.data.totalNilai.toLocaleString('id-ID')} />
           </div>
         </div>
         <hr class="my-4" />
@@ -67,7 +67,7 @@
                   {piutang?.fakturPembelian.noFaktur}
                 </Table.Cell>
                 <Table.Cell>
-                  <Input disabled type="number" value={item.nilai} />
+                  <Input disabled value={item.nilai.toLocaleString('id-ID')} />
                 </Table.Cell>
               </Table.Row>
             {/each}
