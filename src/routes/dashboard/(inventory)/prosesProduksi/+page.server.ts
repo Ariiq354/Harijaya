@@ -1,14 +1,21 @@
 import { db } from '$lib/server';
 import { prosesTable } from '$lib/server/schema/inventory';
-import { barangTable } from '$lib/server/schema/penjualan';
-import { fail } from '@sveltejs/kit';
-import { desc, eq, sql } from 'drizzle-orm';
-import type { Actions, PageServerLoad } from './$types';
 import { adjustStok } from '$lib/server/utils';
+import { fail } from '@sveltejs/kit';
+import { desc, eq } from 'drizzle-orm';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
   const prosesData = await db.query.prosesTable.findMany({
-    orderBy: desc(prosesTable.createdAt)
+    orderBy: desc(prosesTable.createdAt),
+    with: {
+      produkProses: {
+        columns: {
+          kuantitas: true,
+          tipeBarang: true
+        }
+      }
+    }
   });
 
   return {

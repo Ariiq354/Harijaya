@@ -10,8 +10,8 @@
 
   export let data: PageData;
 
-  const bahanMentah = data.data.produkProses.filter((i) => i.tipeBarang === 0);
-  const barangJadi = data.data.produkProses.filter((i) => i.tipeBarang === 1);
+  const bahanMentah = data.data.produkProses.filter((i) => i.tipeBarang === 1);
+  const barangJadi = data.data.produkProses.filter((i) => i.tipeBarang === 2);
 </script>
 
 <div class="flex flex-col gap-4">
@@ -61,6 +61,7 @@
             <Table.Row>
               <Table.Head>No.</Table.Head>
               <Table.Head>Barang</Table.Head>
+              <Table.Head>Satuan</Table.Head>
               <Table.Head>Kuantitas</Table.Head>
             </Table.Row>
           </Table.Header>
@@ -74,7 +75,10 @@
                   <Input disabled value={bahanMentah[i].barang?.name} />
                 </Table.Cell>
                 <Table.Cell>
-                  <Input disabled value={bahanMentah[i].kuantitas} />
+                  {bahanMentah[i].barang?.satuan}
+                </Table.Cell>
+                <Table.Cell>
+                  <Input disabled value={bahanMentah[i].kuantitas.toLocaleString('id-ID')} />
                 </Table.Cell>
               </Table.Row>
             {/each}
@@ -89,6 +93,7 @@
             <Table.Row>
               <Table.Head>No.</Table.Head>
               <Table.Head>Barang</Table.Head>
+              <Table.Head>Satuan</Table.Head>
               <Table.Head>Kuantitas</Table.Head>
             </Table.Row>
           </Table.Header>
@@ -102,7 +107,10 @@
                   <Input disabled value={barangJadi[i].barang?.name} />
                 </Table.Cell>
                 <Table.Cell>
-                  <Input disabled value={barangJadi[i].kuantitas} />
+                  {barangJadi[i].barang?.satuan}
+                </Table.Cell>
+                <Table.Cell>
+                  <Input disabled value={barangJadi[i].kuantitas.toLocaleString('id-ID')} />
                 </Table.Cell>
               </Table.Row>
             {/each}

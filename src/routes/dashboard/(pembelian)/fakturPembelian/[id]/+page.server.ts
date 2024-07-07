@@ -40,6 +40,13 @@ export const actions: Actions = {
       });
     }
 
+    const subTotal = form.data.produk.reduce(
+      (acc, item) => acc + Number(item.harga) * Number(item.kuantitas),
+      0
+    );
+    const ppnTotal = form.data.ppn ? subTotal + subTotal * 0.1 : subTotal;
+    const total = ppnTotal + Number(form.data.biayaKirim) + Number(form.data.biayaLainnya);
+
     if (!form.data.id) {
       //Add products
       form.data.id = generateIdFromEntropySize(10);
@@ -53,15 +60,15 @@ export const actions: Actions = {
         tanggal: form.data.tanggal,
         userId: event.locals.user!.id,
         lampiran: form.data.lampiran,
-        total: form.data.total,
+        total: total,
         ppn: form.data.ppn
       });
 
       await db.insert(utangTable).values({
         id: generateIdFromEntropySize(10),
-        nilai: form.data.total,
+        nilai: total,
         noFaktur: form.data.id,
-        sisa: form.data.total
+        sisa: total
       });
 
       form.data.produk.forEach(async (v) => {
@@ -89,7 +96,7 @@ export const actions: Actions = {
           tanggal: form.data.tanggal,
           userId: event.locals.user!.id,
           lampiran: form.data.lampiran,
-          total: form.data.total,
+          total: total,
           ppn: form.data.ppn
         })
         .where(eq(fakturPembelianTable.id, form.data.id));
@@ -97,7 +104,7 @@ export const actions: Actions = {
       await db
         .update(utangTable)
         .set({
-          nilai: form.data.total
+          nilai: total
         })
         .where(eq(utangTable.noFaktur, form.data.id));
 

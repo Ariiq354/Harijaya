@@ -4,12 +4,12 @@ export const formSchema = z.object({
   id: z.string(),
   noStokFisik: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   tanggal: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
-  produk: z
+  produkStok: z
     .array(
       z.object({
         id: z.string(),
         barangId: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
-        tipe: z.coerce.number(),
+        tipe: z.coerce.number().gt(0, { message: 'Tipe tidak boleh kosong' }),
         kuantitas: z.coerce.number()
       })
     )

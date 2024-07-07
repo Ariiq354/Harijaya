@@ -42,6 +42,7 @@ export const actions: Actions = {
       });
       await db.delete(fakturPembelianTable).where(eq(fakturPembelianTable.id, id));
       await db.delete(utangTable).where(eq(utangTable.noFaktur, data!.id));
+      
     } catch (error) {
       return fail(500, { message: 'something went wrong' });
     }

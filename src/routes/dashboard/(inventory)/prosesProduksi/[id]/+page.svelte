@@ -30,6 +30,9 @@
     }
   });
   const { form: formData, enhance, submitting } = form;
+  $formData.noProses = data.trx;
+  $formData.bahanMentah = data.itemBahanMentah ? data.itemBahanMentah : [];
+  $formData.barangJadi = data.itemBarangJadi ? data.itemBarangJadi : [];
 
   function addBahanMentah() {
     $formData.bahanMentah = [
@@ -109,7 +112,7 @@
           <Form.Field {form} name="noProses">
             <Form.Control let:attrs>
               <Form.Label>No. Proses</Form.Label>
-              <Input {...attrs} bind:value={$formData.noProses} />
+              <Input readonly {...attrs} bind:value={$formData.noProses} />
             </Form.Control>
             <Form.FieldErrors />
           </Form.Field>
@@ -125,156 +128,169 @@
         <div class="flex w-full justify-end">
           <Button on:click={addBahanMentah}>Tambah</Button>
         </div>
-        <Form.Fieldset {form} name="bahanMentah">
+        <Form.Fieldset {form} name="bahanMentah" class="grid grid-cols-1 overflow-auto">
           <Form.Legend>List Bahan Mentah</Form.Legend>
-          <Form.Control let:attrs>
-            <Table.Root class="grid w-full grid-cols-1 overflow-auto">
+          <Table.Root class="w-full">
+            <Table.Row>
+              <Table.Head>No.</Table.Head>
+              <Table.Head>Barang</Table.Head>
+              <Table.Head>Satuan</Table.Head>
+              <Table.Head>Kuantitas</Table.Head>
+              <Table.Head>Action</Table.Head>
+            </Table.Row>
+            {#each $formData.bahanMentah as _, i (i)}
+              {@const barang = data.bahanMentah.find(
+                (item) => item.id === $formData.bahanMentah[i].barangId
+              )}
               <Table.Row>
-                <Table.Head>No.</Table.Head>
-                <Table.Head>Barang</Table.Head>
-                <Table.Head>Kuantitas</Table.Head>
-                <Table.Head>Action</Table.Head>
+                <Table.Cell>
+                  {i + 1}
+                  <input hidden bind:value={$formData.bahanMentah[i].id} name="bahanMentah" />
+                </Table.Cell>
+                <Table.Cell>
+                  <Form.ElementField {form} name="bahanMentah[{i}].barangId" class="space-y-0">
+                    <Form.Control let:attrs>
+                      <Select.Root
+                        selected={selectedBahanMentah[i]}
+                        onSelectedChange={(v) => {
+                          v && ($formData.bahanMentah[i].barangId = v.value);
+                        }}
+                      >
+                        <Select.Trigger {...attrs}>
+                          <Select.Value placeholder="Pilih barang..." />
+                        </Select.Trigger>
+                        <Select.Content class="max-h-40 overflow-auto">
+                          {#if data.bahanMentah.length}
+                            {#each data.bahanMentah as item}
+                              <Select.Item value={item.id} label={item.name} />
+                            {/each}
+                          {:else}
+                            <Select.Item value="" label="No Result Found" disabled />
+                          {/if}
+                        </Select.Content>
+                      </Select.Root>
+                      <input
+                        hidden
+                        bind:value={$formData.bahanMentah[i].barangId}
+                        name={attrs.name}
+                      />
+                    </Form.Control>
+                    <Form.FieldErrors />
+                  </Form.ElementField>
+                </Table.Cell>
+                <Table.Cell>
+                  {barang ? barang.satuan : 'Kosong'}
+                </Table.Cell>
+                <Table.Cell>
+                  <Form.ElementField {form} name="bahanMentah[{i}].kuantitas" class="space-y-0">
+                    <Form.Control let:attrs>
+                      <Input
+                        type="number"
+                        {...attrs}
+                        bind:value={$formData.bahanMentah[i].kuantitas}
+                      />
+                    </Form.Control>
+                    <Form.FieldErrors />
+                  </Form.ElementField>
+                </Table.Cell>
+                <Table.Cell>
+                  <Button
+                    class="p-2"
+                    variant="destructive"
+                    on:click={() =>
+                      ($formData.bahanMentah = $formData.bahanMentah.filter((_, ind) => ind !== i))}
+                  >
+                    <Trash2 />
+                  </Button>
+                </Table.Cell>
               </Table.Row>
-              {#each $formData.bahanMentah as _, i (i)}
-                <Table.Row>
-                  <Table.Cell>
-                    {i + 1}
-                    <input hidden bind:value={$formData.bahanMentah[i].id} name={attrs.name} />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Form.ElementField {form} name="bahanMentah[{i}].barangId" class="space-y-0">
-                      <Form.Control let:attrs>
-                        <Select.Root
-                          selected={selectedBahanMentah[i]}
-                          onSelectedChange={(v) => {
-                            v && ($formData.bahanMentah[i].barangId = v.value);
-                          }}
-                        >
-                          <Select.Trigger {...attrs}>
-                            <Select.Value placeholder="Pilih barang..." />
-                          </Select.Trigger>
-                          <Select.Content class="max-h-40 overflow-auto">
-                            {#if data.bahanMentah.length}
-                              {#each data.bahanMentah as item}
-                                <Select.Item value={item.id} label={item.name} />
-                              {/each}
-                            {:else}
-                              <Select.Item value="" label="No Result Found" disabled />
-                            {/if}
-                          </Select.Content>
-                        </Select.Root>
-                        <input
-                          hidden
-                          bind:value={$formData.bahanMentah[i].barangId}
-                          name={attrs.name}
-                        />
-                      </Form.Control>
-                      <Form.FieldErrors />
-                    </Form.ElementField>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Form.ElementField {form} name="bahanMentah[{i}].kuantitas" class="space-y-0">
-                      <Form.Control let:attrs>
-                        <Input
-                          type="number"
-                          {...attrs}
-                          bind:value={$formData.bahanMentah[i].kuantitas}
-                        />
-                      </Form.Control>
-                      <Form.FieldErrors />
-                    </Form.ElementField>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Button
-                      class="p-2"
-                      variant="destructive"
-                      on:click={() =>
-                        ($formData.bahanMentah = $formData.bahanMentah.filter(
-                          (_, ind) => ind !== i
-                        ))}
-                    >
-                      <Trash2 />
-                    </Button>
-                  </Table.Cell>
-                </Table.Row>
-              {/each}
-            </Table.Root>
-            <Form.FieldErrors />
-          </Form.Control>
+            {/each}
+          </Table.Root>
+          <Form.FieldErrors />
         </Form.Fieldset>
         <hr class="my-4" />
         <div class="flex w-full justify-end">
           <Button on:click={addBarangJadi}>Tambah</Button>
         </div>
-        <Form.Fieldset {form} name="barangJadi">
+        <Form.Fieldset {form} name="barangJadi" class="grid w-full grid-cols-1 overflow-auto">
           <Form.Legend>List Barang Jadi</Form.Legend>
-          <Form.Control let:attrs>
-            <Table.Root class="grid w-full grid-cols-1 overflow-auto">
+          <Table.Root class="w-full">
+            <Table.Row>
+              <Table.Head>No.</Table.Head>
+              <Table.Head>Barang</Table.Head>
+              <Table.Head>Satuan</Table.Head>
+              <Table.Head>Kuantitas</Table.Head>
+              <Table.Head>Action</Table.Head>
+            </Table.Row>
+            {#each $formData.barangJadi as _, i (i)}
+              {@const barang = data.barangJadi.find(
+                (item) => item.id === $formData.barangJadi[i].barangId
+              )}
               <Table.Row>
-                <Table.Head>No.</Table.Head>
-                <Table.Head>Barang</Table.Head>
-                <Table.Head>Kuantitas</Table.Head>
-                <Table.Head>Action</Table.Head>
+                <Table.Cell>
+                  {i + 1}
+                  <input hidden bind:value={$formData.barangJadi[i].id} name="barangJadi" />
+                </Table.Cell>
+                <Table.Cell>
+                  <Form.ElementField {form} name="barangJadi[{i}].barangId" class="space-y-0">
+                    <Form.Control let:attrs>
+                      <Select.Root
+                        selected={selectedBarangJadi[i]}
+                        onSelectedChange={(v) => {
+                          v && ($formData.barangJadi[i].barangId = v.value);
+                        }}
+                      >
+                        <Select.Trigger {...attrs}>
+                          <Select.Value placeholder="Pilih barang..." />
+                        </Select.Trigger>
+                        <Select.Content class="max-h-40 overflow-auto">
+                          {#if data.barangJadi.length}
+                            {#each data.barangJadi as item}
+                              <Select.Item value={item.id} label={item.name} />
+                            {/each}
+                          {:else}
+                            <Select.Item value="" label="No Result Found" disabled />
+                          {/if}
+                        </Select.Content>
+                      </Select.Root>
+                      <input
+                        hidden
+                        bind:value={$formData.barangJadi[i].barangId}
+                        name={attrs.name}
+                      />
+                    </Form.Control>
+                    <Form.FieldErrors />
+                  </Form.ElementField>
+                </Table.Cell>
+                <Table.Cell>
+                  {barang ? barang.satuan : 'Kosong'}
+                </Table.Cell>
+                <Table.Cell>
+                  <Form.ElementField {form} name="barangJadi[{i}].kuantitas" class="space-y-0">
+                    <Form.Control let:attrs>
+                      <Input
+                        type="number"
+                        {...attrs}
+                        bind:value={$formData.barangJadi[i].kuantitas}
+                      />
+                    </Form.Control>
+                    <Form.FieldErrors />
+                  </Form.ElementField>
+                </Table.Cell>
+                <Table.Cell>
+                  <Button
+                    class="p-2"
+                    variant="destructive"
+                    on:click={() =>
+                      ($formData.barangJadi = $formData.barangJadi.filter((_, ind) => ind !== i))}
+                  >
+                    <Trash2 />
+                  </Button>
+                </Table.Cell>
               </Table.Row>
-              {#each $formData.barangJadi as _, i (i)}
-                <Table.Row>
-                  <Table.Cell>
-                    {i + 1}
-                    <input hidden bind:value={$formData.barangJadi[i].id} name={attrs.name} />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Form.ElementField {form} name="barangJadi[{i}].barangId" class="space-y-0">
-                      <Form.Control let:attrs>
-                        <Select.Root
-                          selected={selectedBarangJadi[i]}
-                          onSelectedChange={(v) => {
-                            v && ($formData.barangJadi[i].barangId = v.value);
-                          }}
-                        >
-                          <Select.Trigger {...attrs}>
-                            <Select.Value placeholder="Pilih barang..." />
-                          </Select.Trigger>
-                          <Select.Content class="max-h-40 overflow-auto">
-                            {#if data.barangJadi.length}
-                              {#each data.barangJadi as item}
-                                <Select.Item value={item.id} label={item.name} />
-                              {/each}
-                            {:else}
-                              <Select.Item value="" label="No Result Found" disabled />
-                            {/if}
-                          </Select.Content>
-                        </Select.Root>
-                        <input
-                          hidden
-                          bind:value={$formData.barangJadi[i].barangId}
-                          name={attrs.name}
-                        />
-                      </Form.Control>
-                      <Form.FieldErrors />
-                    </Form.ElementField>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Input
-                      type="number"
-                      {...attrs}
-                      bind:value={$formData.barangJadi[i].kuantitas}
-                    />
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Button
-                      class="p-2"
-                      variant="destructive"
-                      on:click={() =>
-                        ($formData.barangJadi = $formData.barangJadi.filter((_, ind) => ind !== i))}
-                    >
-                      <Trash2 />
-                    </Button>
-                  </Table.Cell>
-                </Table.Row>
-              {/each}
-            </Table.Root>
-            <Form.FieldErrors />
-          </Form.Control>
+            {/each}
+          </Table.Root>
+          <Form.FieldErrors />
         </Form.Fieldset>
 
         <Form.Button type="submit" disabled={$submitting} class="col-span-2 mt-4">

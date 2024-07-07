@@ -51,14 +51,24 @@
               <Label>Nama Pelanggan</Label>
               <Input disabled value={data.data.pelanggan?.name} />
             </div>
-            <div class="flex w-full flex-col gap-2 py-2">
-              <Label>Email</Label>
-              <Input disabled value={data.data.pelanggan?.email} />
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div class="mt-4 flex flex-col gap-2">
+                <Label>Nama Bank</Label>
+                <Input disabled value={data.data.pelanggan?.namaBank} />
+              </div>
+              <div class="mt-4 flex flex-col gap-2">
+                <Label>No. Rekening</Label>
+                <Input disabled value={data.data.pelanggan?.noRekening} />
+              </div>
+            </div>
+            <div class="mt-4 flex flex-col gap-2">
+              <Label>Nama Rekening</Label>
+              <Input disabled value={data.data.pelanggan?.namaRekening} />
             </div>
           </div>
-          <div class="flex w-full flex-col gap-2 py-2">
+          <div class="flex w-full flex-col gap-2 pt-2">
             <Label>Alamat</Label>
-            <Textarea rows={6} disabled value={data.data.pelanggan?.address} />
+            <Textarea class="h-full" disabled value={data.data.pelanggan?.address} />
           </div>
         </div>
         <hr class="my-4" />
@@ -92,13 +102,13 @@
                     <Input disabled value={item.barang?.name} />
                   </Table.Cell>
                   <Table.Cell>
-                    <Input disabled type="number" value={item.harga} />
+                    <Input disabled value={item.harga.toLocaleString('id-ID')} />
                   </Table.Cell>
                   <Table.Cell>
-                    <Input disabled type="number" value={item.kuantitas} />
+                    <Input disabled value={item.kuantitas.toLocaleString('id-ID')} />
                   </Table.Cell>
                   <Table.Cell>
-                    {item.harga * item.kuantitas}
+                    {(item.harga * item.kuantitas).toLocaleString('id-ID')}
                   </Table.Cell>
                 </Table.Row>
               {/each}
@@ -112,20 +122,6 @@
               <Label>Atas Nama</Label>
               <Textarea rows={6} disabled value={data.data.catatan} />
             </div>
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div class="flex w-full flex-col gap-2 py-2">
-                <Label>Nama Bank</Label>
-                <Input disabled value={data.data.pelanggan?.namaBank} />
-              </div>
-              <div class="flex w-full flex-col gap-2 py-2">
-                <Label>No. Rekening</Label>
-                <Input disabled value={data.data.pelanggan?.noRekening} />
-              </div>
-            </div>
-            <div class="flex w-full flex-col gap-2 py-2">
-              <Label>Atas Nama</Label>
-              <Input disabled value={data.data.pelanggan?.namaRekening} />
-            </div>
             <div class="relative h-[200px] w-[200px] overflow-hidden rounded-md">
               <a href={data.data.lampiran} target="_blank">
                 <img class="h-full object-cover" alt="lampiran" src={data.data.lampiran} />
@@ -136,7 +132,7 @@
             <div class="flex w-full justify-between">
               <div>Subtotal:</div>
               <div>
-                {subTotal}
+                {subTotal.toLocaleString('id-ID')}
               </div>
             </div>
             <div class="flex w-full justify-between">
@@ -147,34 +143,34 @@
               <div>Total & PPN:</div>
               <div>
                 {#if data.data.ppn}
-                  {subTotal + subTotal * 0.1}
+                  {(subTotal + subTotal * 0.1).toLocaleString('id-ID')}
                 {:else}
-                  {subTotal}
+                  {subTotal.toLocaleString('id-ID')}
                 {/if}
               </div>
             </div>
             <div class="flex w-full justify-between">
               <div>Biaya Kirim:</div>
               <div>
-                {data.data.biayaKirim}
+                {data.data.biayaKirim.toLocaleString('id-ID')}
               </div>
             </div>
             <div class="flex w-full justify-between">
               <div>Biaya Lainnya:</div>
               <div>
-                {data.data.biayaLainnya}
+                {data.data.biayaLainnya.toLocaleString('id-ID')}
               </div>
             </div>
             <div class="flex w-full justify-between">
               <div>Pembulatan:</div>
               <div>
-                {data.data.pembulatan}
+                {data.data.pembulatan.toLocaleString('id-ID')}
               </div>
             </div>
             <div class="flex w-full justify-between">
               <div>Grand Total:</div>
               <div>
-                {data.data.total}
+                {data.data.total.toLocaleString('id-ID')}
               </div>
             </div>
           </div>

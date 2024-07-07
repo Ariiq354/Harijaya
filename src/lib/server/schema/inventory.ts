@@ -47,7 +47,7 @@ export const stokFisikProdukTable = sqliteTable('stok_fisik_produk', {
     .notNull()
     .references(() => barangTable.id, { onDelete: 'cascade' }),
   kuantitas: integer('kuantitas').notNull(),
-  tipe: integer('tipe').notNull(), // 0: kurang, 1: tambah
+  tipe: integer('tipe').notNull(), // 1: kurang, 2: tambah
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
     .default(sql`(CURRENT_TIMESTAMP)`)

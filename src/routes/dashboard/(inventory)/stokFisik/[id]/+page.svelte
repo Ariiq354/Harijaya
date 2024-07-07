@@ -32,26 +32,26 @@
   const { form: formData, enhance, submitting } = form;
 
   function addItem() {
-    $formData.produk = [
-      ...$formData.produk,
+    $formData.produkStok = [
+      ...$formData.produkStok,
       {
         id: '',
         barangId: '',
         kuantitas: 0,
-        tipe: 0
+        tipe: 1
       }
     ];
   }
 
-  $: selectedBarang = $formData.produk.map((p) => {
+  $: selectedBarang = $formData.produkStok.map((p) => {
     const barang = data.barang.find((i) => i.id == p.barangId);
     return barang ? { label: barang.name, value: p.barangId } : undefined;
   });
 
-  $: selectedTipe = $formData.produk.map((p) => {
-    const barang = data.barang.find((i) => i.id == p.barangId);
-    return barang ? { label: barang.tipe === 0 ? '-' : '+', value: p.tipe } : undefined;
-  });
+  $: selectedTipe = $formData.produkStok.map((p) => ({
+    label: Number(p.tipe) === 1 ? '-' : '+',
+    value: String(p.tipe)
+  }));
 </script>
 
 <div class="flex flex-col gap-4">
@@ -96,7 +96,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Form.Field {form} name="noStokFisik">
             <Form.Control let:attrs>
-              <Form.Label>No. Faktur</Form.Label>
+              <Form.Label>No. Stok Fisik</Form.Label>
               <Input {...attrs} bind:value={$formData.noStokFisik} />
             </Form.Control>
             <Form.FieldErrors />
@@ -113,7 +113,7 @@
         <div class="flex w-full justify-end">
           <Button on:click={addItem}>Tambah</Button>
         </div>
-        <Form.Fieldset {form} name="produk" class="grid grid-cols-1 overflow-auto">
+        <Form.Fieldset {form} name="produkStok" class="grid grid-cols-1 overflow-auto">
           <Table.Root class="w-full">
             <Table.Row>
               <Table.Head>No.</Table.Head>
@@ -122,20 +122,19 @@
               <Table.Head>Kuantitas</Table.Head>
               <Table.Head>Action</Table.Head>
             </Table.Row>
-            {#each $formData.produk as item, i (i)}
-              {@const barang = data.barang.find((i) => i.id == item.barangId)}
+            {#each $formData.produkStok as _, i (i)}
               <Table.Row>
                 <Table.Cell>
                   {i + 1}
-                  <input hidden bind:value={$formData.produk[i].id} name="produk" />
+                  <input hidden bind:value={$formData.produkStok[i].id} name="produk" />
                 </Table.Cell>
                 <Table.Cell>
-                  <Form.ElementField {form} name="produk[{i}].barangId" class="space-y-0">
+                  <Form.ElementField {form} name="produkStok[{i}].barangId" class="space-y-0">
                     <Form.Control let:attrs>
                       <Select.Root
                         selected={selectedBarang[i]}
                         onSelectedChange={(v) => {
-                          v && ($formData.produk[i].barangId = v.value);
+                          v && ($formData.produkStok[i].barangId = v.value);
                         }}
                       >
                         <Select.Trigger {...attrs}>
@@ -151,7 +150,11 @@
                           {/if}
                         </Select.Content>
                       </Select.Root>
-                      <input hidden bind:value={$formData.produk[i].barangId} name={attrs.name} />
+                      <input
+                        hidden
+                        bind:value={$formData.produkStok[i].barangId}
+                        name={attrs.name}
+                      />
                     </Form.Control>
                     <Form.FieldErrors />
                   </Form.ElementField>
@@ -160,23 +163,27 @@
                   <Select.Root
                     selected={selectedTipe[i]}
                     onSelectedChange={(v) => {
-                      v && ($formData.produk[i].tipe = v.value);
+                      v && ($formData.produkStok[i].tipe = Number(v.value));
                     }}
                   >
                     <Select.Trigger name="produk">
-                      <Select.Value placeholder="Pilih barang..." />
+                      <Select.Value placeholder="Pilih tipe" />
                     </Select.Trigger>
                     <Select.Content class="max-h-40 overflow-auto">
-                      <Select.Item value="0" label="-" />
-                      <Select.Item value="1" label="+" />
+                      <Select.Item value="1" label="-" />
+                      <Select.Item value="2" label="+" />
                     </Select.Content>
                   </Select.Root>
-                  <input hidden bind:value={$formData.produk[i].tipe} name="produk" />
+                  <input hidden bind:value={$formData.produkStok[i].tipe} name="produk" />
                 </Table.Cell>
                 <Table.Cell>
-                  <Form.ElementField {form} name="produk[{i}].kuantitas" class="space-y-0">
+                  <Form.ElementField {form} name="produkStok[{i}].kuantitas" class="space-y-0">
                     <Form.Control let:attrs>
-                      <Input type="number" {...attrs} bind:value={$formData.produk[i].kuantitas} />
+                      <Input
+                        type="number"
+                        {...attrs}
+                        bind:value={$formData.produkStok[i].kuantitas}
+                      />
                     </Form.Control>
                     <Form.FieldErrors />
                   </Form.ElementField>
@@ -186,7 +193,7 @@
                     class="p-2"
                     variant="destructive"
                     on:click={() =>
-                      ($formData.produk = $formData.produk.filter((_, ind) => ind !== i))}
+                      ($formData.produkStok = $formData.produkStok.filter((_, ind) => ind !== i))}
                   >
                     <Trash2 />
                   </Button>
@@ -194,6 +201,7 @@
               </Table.Row>
             {/each}
           </Table.Root>
+          <Form.FieldErrors />
         </Form.Fieldset>
 
         <Form.Button type="submit" disabled={$submitting} class="col-span-2 mt-4">

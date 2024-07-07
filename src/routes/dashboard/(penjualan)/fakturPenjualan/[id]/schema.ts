@@ -7,7 +7,6 @@ export const formSchema = z.object({
   tanggal: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
   lampiran: z.string(),
   catatan: z.string(),
-  total: z.coerce.number(),
   ppn: z.boolean(),
   biayaKirim: z.coerce.number(),
   biayaLainnya: z.coerce.number(),

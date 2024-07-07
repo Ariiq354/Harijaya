@@ -8,7 +8,7 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
-import { adjustStok } from '$lib/server/utils';
+import { adjustStok, getNumber } from '$lib/server/utils';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -27,30 +27,20 @@ export const load: PageServerLoad = async ({ params }) => {
     }
   });
 
-  if (data) {
-    return {
-      form: await superValidate(
-        {
-          id: data.id,
-          tanggal: data.tanggal,
-          noProses: data.noProses,
-          bahanMentah: data?.produkProses.filter((i) => i.tipeBarang === 1),
-          barangJadi: data?.produkProses.filter((i) => i.tipeBarang === 2)
-        },
-        zod(formSchema)
-      ),
-      bahanMentah,
-      barangJadi,
-      id
-    };
-  } else {
-    return {
-      form: await superValidate(zod(formSchema)),
-      bahanMentah,
-      barangJadi,
-      id
-    };
-  }
+  const trx = await getNumber('PRO', prosesTable, prosesTable.noProses);
+
+  return {
+    form: await superValidate(data, zod(formSchema)),
+    itemBahanMentah: data?.produkProses
+      .filter((i) => i.tipeBarang === 1)
+      .map(({ id, barangId, kuantitas, tipeBarang }) => ({ id, barangId, kuantitas, tipeBarang })),
+    itemBarangJadi: data?.produkProses
+      .filter((i) => i.tipeBarang === 2)
+      .map(({ id, barangId, kuantitas, tipeBarang }) => ({ id, barangId, kuantitas, tipeBarang })),
+    bahanMentah,
+    barangJadi,
+    trx
+  };
 };
 
 export const actions: Actions = {
@@ -62,7 +52,7 @@ export const actions: Actions = {
       });
     }
 
-    form.data.bahanMentah.forEach(async (v, i) => {
+    for (const [i, v] of form.data.bahanMentah.entries()) {
       const barang = await db.query.barangTable.findFirst({
         where: eq(barangTable.id, v.barangId)
       });
@@ -74,15 +64,19 @@ export const actions: Actions = {
         if (oldProduct.barangId === v.barangId) {
           const diff = v.kuantitas - oldProduct.kuantitas;
           if (diff > barang!.stok) {
-            return setError(form, `bahanMentah[${i}].kuantitas`, 'Stok tidak mencukupi');
+            return setError(
+              form,
+              `bahanMentah[${i}].kuantitas`,
+              `Stok hanya tersisa ${barang!.stok + oldProduct.kuantitas}`
+            );
           }
         }
       }
 
       if (v.kuantitas > barang!.stok) {
-        return setError(form, `bahanMentah[${i}].kuantitas`, 'Stok tidak mencukupi');
+        return setError(form, `bahanMentah[${i}].kuantitas`, `Stok hanya tersisa ${barang!.stok}`);
       }
-    });
+    }
 
     const produkProses = [...form.data.bahanMentah, ...form.data.barangJadi];
 

@@ -19,8 +19,6 @@
   import { formSchema } from './schema';
 
   export let data: PageData;
-  let subTotal: number;
-  let ppnTotal: number;
 
   const form = superForm(data.form, {
     dataType: 'json',
@@ -50,18 +48,18 @@
     ];
   }
 
-  $: {
-    subTotal = $formData.produk.reduce(
-      (acc, item) => acc + Number(item.harga) * Number(item.kuantitas),
-      0
-    );
-    ppnTotal = $formData.ppn ? subTotal + subTotal * 0.1 : subTotal;
-    $formData.total =
-      ppnTotal +
-      Number($formData.biayaKirim) +
-      Number($formData.biayaLainnya) +
-      Number($formData.pembulatan);
-  }
+  $: subTotal = $formData.produk.reduce(
+    (acc, item) => acc + Number(item.harga) * Number(item.kuantitas),
+    0
+  );
+
+  $: ppnTotal = $formData.ppn ? subTotal + subTotal * 0.1 : subTotal;
+
+  $: total =
+    ppnTotal +
+    Number($formData.biayaKirim) +
+    Number($formData.biayaLainnya) +
+    Number($formData.pembulatan);
 
   $: selectedPelanggan = $formData.pelangganId
     ? {
@@ -269,6 +267,7 @@
               </Table.Row>
             {/each}
           </Table.Root>
+          <Form.FieldErrors />
         </Form.Fieldset>
         <hr class="my-4" />
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -336,8 +335,8 @@
             <div class="flex w-full justify-between">
               <div>Grand Total:</div>
               <div>
-                {$formData.total.toLocaleString('id-ID')}
-                <input type="hidden" bind:value={$formData.total} />
+                {total}
+                <input type="hidden" value={total} />
               </div>
             </div>
           </div>

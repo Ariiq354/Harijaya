@@ -47,7 +47,7 @@ export const actions: Actions = {
       });
     }
 
-    form.data.produk.forEach(async (v, i) => {
+    for (const [i, v] of form.data.produk.entries()) {
       const barang = await db.query.barangTable.findFirst({
         where: eq(barangTable.id, v.barangId)
       });
@@ -59,15 +59,26 @@ export const actions: Actions = {
         if (oldProduct.barangId === v.barangId) {
           const diff = v.kuantitas - oldProduct.kuantitas;
           if (diff > barang!.stok) {
-            return setError(form, `produk[${i}].kuantitas`, 'Stok tidak mencukupi');
+            return setError(
+              form,
+              `produk[${i}].kuantitas`,
+              `Stok hanya tersisa ${barang!.stok + oldProduct.kuantitas}`
+            );
           }
         }
       }
 
       if (v.kuantitas > barang!.stok) {
-        return setError(form, `produk[${i}].kuantitas`, 'Stok tidak mencukupi');
+        return setError(form, `produk[${i}].kuantitas`, `Stok hanya tersisa ${barang!.stok}`);
       }
-    });
+    }
+
+    const subTotal = form.data.produk.reduce(
+      (acc, item) => acc + Number(item.harga) * Number(item.kuantitas),
+      0
+    );
+    const ppnTotal = form.data.ppn ? subTotal + subTotal * 0.1 : subTotal;
+    const total = subTotal + ppnTotal;
 
     if (!form.data.id) {
       //Add products
@@ -83,15 +94,15 @@ export const actions: Actions = {
         tanggal: form.data.tanggal,
         userId: event.locals.user!.id,
         lampiran: form.data.lampiran,
-        total: form.data.total,
+        total: total,
         ppn: form.data.ppn
       });
 
       await db.insert(piutangTable).values({
         id: generateIdFromEntropySize(10),
-        nilai: form.data.total,
+        nilai: total,
         noFaktur: form.data.id,
-        sisa: form.data.total
+        sisa: total
       });
 
       form.data.produk.forEach(async (v, i) => {
@@ -119,7 +130,7 @@ export const actions: Actions = {
           tanggal: form.data.tanggal,
           userId: event.locals.user!.id,
           lampiran: form.data.lampiran,
-          total: form.data.total,
+          total: total,
           ppn: form.data.ppn
         })
         .where(eq(fakturPenjualanTable.id, form.data.id));
@@ -127,7 +138,7 @@ export const actions: Actions = {
       await db
         .update(piutangTable)
         .set({
-          nilai: form.data.total
+          nilai: total
         })
         .where(eq(piutangTable.noFaktur, form.data.id));
 

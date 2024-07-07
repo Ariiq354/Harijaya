@@ -37,8 +37,8 @@ export const actions: Actions = {
       });
     }
 
-    form.data.produk.forEach(async (v, i) => {
-      if (v.tipe === 0) {
+    for (const [i, v] of form.data.produkStok.entries()) {
+      if (v.tipe === 1) {
         const barang = await db.query.barangTable.findFirst({
           where: eq(barangTable.id, v.barangId)
         });
@@ -47,19 +47,26 @@ export const actions: Actions = {
         });
 
         if (oldProduct) {
-          if (oldProduct.barangId === v.barangId) {
-            const diff = v.kuantitas - oldProduct.kuantitas;
-            if (diff > barang!.stok) {
-              return setError(form, `produk[${i}].kuantitas`, 'Stok tidak mencukupi');
+          if (oldProduct.tipe === 1) {
+            if (oldProduct.barangId === v.barangId) {
+              const diff = v.kuantitas - oldProduct.kuantitas;
+              if (diff > barang!.stok) {
+                return setError(form, `produkStok[${i}].kuantitas`, 'Stok tidak mencukupi');
+              }
+            }
+          } else {
+            const stokAsli = barang!.stok - oldProduct.kuantitas;
+            if (v.kuantitas > stokAsli) {
+              return setError(form, `produkStok[${i}].kuantitas`, 'Stok tidak mencukupi');
             }
           }
         }
 
         if (v.kuantitas > barang!.stok) {
-          return setError(form, `produk[${i}].kuantitas`, 'Stok tidak mencukupi');
+          return setError(form, `produkStok[${i}].kuantitas`, 'Stok tidak mencukupi');
         }
       }
-    });
+    }
 
     if (!form.data.id) {
       //Add products
@@ -70,7 +77,7 @@ export const actions: Actions = {
         tanggal: form.data.tanggal
       });
 
-      form.data.produk.forEach(async (v) => {
+      form.data.produkStok.forEach(async (v) => {
         v.id = generateIdFromEntropySize(10);
         await adjustStok(v.tipe, v.kuantitas, v.barangId);
         await db.insert(stokFisikProdukTable).values({
@@ -96,21 +103,21 @@ export const actions: Actions = {
       });
 
       const deletedProducts = originalProducts.filter(
-        (op) => !form.data.produk.some((up) => up.id === op.id)
+        (op) => !form.data.produkStok.some((up) => up.id === op.id)
       );
       deletedProducts.forEach(async (v) => {
-        await adjustStok(v.tipe === 0 ? 1 : 0, v.kuantitas, v.barangId);
+        await adjustStok(v.tipe === 1 ? 1 : 0, v.kuantitas, v.barangId);
         await db.delete(stokFisikProdukTable).where(eq(stokFisikProdukTable.id, v.id));
       });
 
-      const updatedProducts = form.data.produk.filter((up) =>
+      const updatedProducts = form.data.produkStok.filter((up) =>
         originalProducts.some((op) => op.id === up.id)
       );
       updatedProducts.forEach(async (v) => {
         const originalProduct = originalProducts.find((op) => op.id === v.id);
 
         await adjustStok(
-          v.tipe === 0 ? 1 : 0,
+          v.tipe === 1 ? 1 : 0,
           originalProduct!.kuantitas,
           originalProduct!.barangId
         );
@@ -126,7 +133,7 @@ export const actions: Actions = {
           .where(eq(stokFisikProdukTable.id, v.id));
       });
 
-      const addedProducts = form.data.produk.filter(
+      const addedProducts = form.data.produkStok.filter(
         (up) => !originalProducts.some((op) => op.id === up.id)
       );
       addedProducts.forEach(async (v) => {

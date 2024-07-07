@@ -13,6 +13,10 @@
     id: string;
     tanggal: string;
     noProses: string;
+    produkProses: {
+      kuantitas: number;
+      tipeBarang: number;
+    }[];
   };
 
   export let data: itemType[];
@@ -38,6 +42,24 @@
     table.column({
       accessor: 'tanggal',
       header: 'Tgl. Pembelian'
+    }),
+    table.column({
+      accessor: ({ produkProses }) => produkProses,
+      header: 'Bahan Mentah',
+      cell: ({ value }) => {
+        return value
+          .reduce((acc, item) => (item.tipeBarang === 1 ? acc + item.kuantitas : acc), 0)
+          .toLocaleString('id-ID');
+      }
+    }),
+    table.column({
+      accessor: ({ produkProses }) => produkProses,
+      header: 'Barang Jadi',
+      cell: ({ value }) => {
+        return value
+          .reduce((acc, item) => (item.tipeBarang === 2 ? acc + item.kuantitas : acc), 0)
+          .toLocaleString('id-ID');
+      }
     }),
     table.column({
       accessor: ({ id }) => id,

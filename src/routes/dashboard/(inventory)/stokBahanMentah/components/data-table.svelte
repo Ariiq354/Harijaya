@@ -30,7 +30,10 @@
     }),
     table.column({
       accessor: 'stok',
-      header: 'Stok'
+      header: 'Stok',
+      cell: ({ value }) => {
+        return value.toLocaleString('id-ID');
+      }
     })
   ]);
 

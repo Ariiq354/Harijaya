@@ -49,14 +49,12 @@
     ];
   }
 
-  $: {
-    subTotal = $formData.produk.reduce(
-      (acc, item) => acc + Number(item.harga) * Number(item.kuantitas),
-      0
-    );
-    ppnTotal = $formData.ppn ? subTotal + subTotal * 0.1 : subTotal;
-    $formData.total = ppnTotal + Number($formData.biayaKirim) + Number($formData.biayaLainnya);
-  }
+  $: subTotal = $formData.produk.reduce(
+    (acc, item) => acc + Number(item.harga) * Number(item.kuantitas),
+    0
+  );
+  $: ppnTotal = $formData.ppn ? subTotal + subTotal * 0.1 : subTotal;
+  $: total = ppnTotal + Number($formData.biayaKirim) + Number($formData.biayaLainnya);
 
   $: selectedSupplier = $formData.supplierId
     ? {
@@ -319,8 +317,7 @@
             <div class="flex w-full justify-between">
               <div>Grand Total:</div>
               <div>
-                {$formData.total.toLocaleString('id-ID')}
-                <input type="hidden" bind:value={$formData.total} />
+                {total.toLocaleString('id-ID')}
               </div>
             </div>
           </div>
