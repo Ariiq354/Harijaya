@@ -79,7 +79,7 @@
             <Form.Field {form} name="noTransaksi">
               <Form.Control let:attrs>
                 <Form.Label>Total Nilai</Form.Label>
-                <Input readonly {...attrs} value={$formData.totalNilai} />
+                <Input class="text-right" readonly {...attrs} value={$formData.totalNilai} />
               </Form.Control>
             </Form.Field>
           </div>
@@ -107,6 +107,7 @@
                     <Form.Control let:attrs>
                       <Input
                         type="number"
+                        class="text-right"
                         min={0}
                         max={data.form.data.utangItem[i].nilai + (utang?.sisa ?? 0)}
                         {...attrs}

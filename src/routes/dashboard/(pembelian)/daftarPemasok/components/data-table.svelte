@@ -35,12 +35,12 @@
       header: 'Alamat'
     }),
     table.column({
-      accessor: ({ namaBank, namaRekening }) => ({ namaBank, namaRekening }),
+      accessor: ({ namaBank, noRekening }) => ({ namaBank, noRekening }),
       header: 'Bank',
       cell: ({ value }) => {
         return createRender(DataRender, {
           namaBank: value.namaBank,
-          namaRekening: value.namaRekening
+          noRekening: value.noRekening
         });
       }
     }),

@@ -75,7 +75,11 @@
                 {/if}
               </Table.Cell>
               <Table.Cell>
-                <Input disabled value={data.data.produkStok[i].kuantitas.toLocaleString('id-ID')} />
+                <Input
+                  class="text-right"
+                  disabled
+                  value={data.data.produkStok[i].kuantitas.toLocaleString('id-ID')}
+                />
               </Table.Cell>
             </Table.Row>
           {/each}

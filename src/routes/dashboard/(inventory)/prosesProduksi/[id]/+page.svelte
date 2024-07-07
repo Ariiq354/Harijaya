@@ -185,6 +185,7 @@
                   <Form.ElementField {form} name="bahanMentah[{i}].kuantitas" class="space-y-0">
                     <Form.Control let:attrs>
                       <Input
+                        class="text-right"
                         type="number"
                         {...attrs}
                         bind:value={$formData.bahanMentah[i].kuantitas}
@@ -269,6 +270,7 @@
                   <Form.ElementField {form} name="barangJadi[{i}].kuantitas" class="space-y-0">
                     <Form.Control let:attrs>
                       <Input
+                        class="text-right"
                         type="number"
                         {...attrs}
                         bind:value={$formData.barangJadi[i].kuantitas}

@@ -234,12 +234,22 @@
                   </Form.ElementField>
                 </Table.Cell>
                 <Table.Cell>
-                  <Input type="number" bind:value={$formData.produk[i].harga} name="produk" />
+                  <Input
+                    type="number"
+                    class="text-right"
+                    bind:value={$formData.produk[i].harga}
+                    name="produk"
+                  />
                 </Table.Cell>
                 <Table.Cell>
-                  <Input type="number" bind:value={$formData.produk[i].kuantitas} name="produk" />
+                  <Input
+                    type="number"
+                    class="text-right"
+                    bind:value={$formData.produk[i].kuantitas}
+                    name="produk"
+                  />
                 </Table.Cell>
-                <Table.Cell>
+                <Table.Cell class="text-right">
                   {($formData.produk[i].harga * $formData.produk[i].kuantitas).toLocaleString(
                     'id-ID'
                   )}
@@ -302,7 +312,12 @@
               <div>Biaya Kirim:</div>
               <Form.Field {form} name="biayaKirim">
                 <Form.Control let:attrs>
-                  <Input type="number" {...attrs} bind:value={$formData.biayaKirim} />
+                  <Input
+                    type="number"
+                    class="text-right"
+                    {...attrs}
+                    bind:value={$formData.biayaKirim}
+                  />
                 </Form.Control>
               </Form.Field>
             </div>
@@ -310,7 +325,12 @@
               <div>Biaya Lainnya:</div>
               <Form.Field {form} name="biayaLainnya">
                 <Form.Control let:attrs>
-                  <Input type="number" {...attrs} bind:value={$formData.biayaLainnya} />
+                  <Input
+                    type="number"
+                    class="text-right"
+                    {...attrs}
+                    bind:value={$formData.biayaLainnya}
+                  />
                 </Form.Control>
               </Form.Field>
             </div>

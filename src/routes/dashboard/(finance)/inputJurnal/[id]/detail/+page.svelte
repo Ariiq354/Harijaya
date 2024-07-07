@@ -48,7 +48,7 @@
         </div>
         <div class="flex w-full flex-col gap-2 py-2">
           <Label>Nominal</Label>
-          <Input disabled value={data.data.nominal.toLocaleString('id-ID')} />
+          <Input class="text-right" disabled value={data.data.nominal.toLocaleString('id-ID')} />
         </div>
         <div class="flex w-full flex-col gap-2 py-2">
           <Label>Akun Debit</Label>

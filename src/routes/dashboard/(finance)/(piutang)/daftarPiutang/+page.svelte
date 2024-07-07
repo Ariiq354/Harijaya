@@ -163,7 +163,7 @@
                       <Table.Cell>{i + 1}</Table.Cell>
                       {#each row.cells as cell (cell.id)}
                         <Subscribe attrs={cell.attrs()} let:attrs>
-                          <Table.Cell {...attrs} class="last:text-center">
+                          <Table.Cell {...attrs} class="number-3 number-4 last:text-center">
                             <Render of={cell.render()} />
                           </Table.Cell>
                         </Subscribe>
@@ -173,11 +173,12 @@
                           <Input
                             type="number"
                             min={0}
+                            class="text-right"
                             max={data.piutangData[exist].sisa}
                             bind:value={$formData.piutang[exist].nilai}
                           />
                         {:else}
-                          <Input disabled />
+                          <Input type="number" min={0} max={100} disabled />
                         {/if}
                       </Table.Cell>
                       <Table.Cell>
@@ -190,7 +191,7 @@
                 {/each}
                 <Table.Row>
                   <Table.Cell colspan={4} class="text-right">Total:</Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell class="text-right">
                     <input hidden bind:value={$formData.total} type="number" />
                     {$formData.total.toLocaleString('id-ID')}
                   </Table.Cell>

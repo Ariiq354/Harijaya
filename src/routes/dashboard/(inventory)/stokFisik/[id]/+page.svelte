@@ -180,6 +180,7 @@
                   <Form.ElementField {form} name="produkStok[{i}].kuantitas" class="space-y-0">
                     <Form.Control let:attrs>
                       <Input
+                        class="text-right"
                         type="number"
                         {...attrs}
                         bind:value={$formData.produkStok[i].kuantitas}

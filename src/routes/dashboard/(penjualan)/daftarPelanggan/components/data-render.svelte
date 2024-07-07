@@ -2,7 +2,7 @@
   import type { selectAkun } from '$lib/server/schema/keuangan';
 
   export let namaBank: string;
-  export let namaRekening: string;
+  export let noRekening: string;
 </script>
 
-<p>{namaBank + ' - ' + namaRekening}</p>
+<p>{namaBank + ' - ' + noRekening}</p>

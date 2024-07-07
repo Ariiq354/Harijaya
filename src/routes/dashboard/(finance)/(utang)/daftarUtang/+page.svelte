@@ -163,7 +163,7 @@
                       <Table.Cell>{i + 1}</Table.Cell>
                       {#each row.cells as cell (cell.id)}
                         <Subscribe attrs={cell.attrs()} let:attrs>
-                          <Table.Cell {...attrs} class="last:text-center">
+                          <Table.Cell {...attrs} class="number-3 number-4 last:text-center">
                             <Render of={cell.render()} />
                           </Table.Cell>
                         </Subscribe>
@@ -173,6 +173,7 @@
                           <Input
                             type="number"
                             min={0}
+                            class="text-right"
                             max={data.utangData[exist].sisa}
                             bind:value={$formData.utang[exist].nilai}
                           />
@@ -188,7 +189,7 @@
                 {/each}
                 <Table.Row>
                   <Table.Cell colspan={4} class="text-right">Total:</Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell class="text-right">
                     <input hidden bind:value={$formData.total} type="number" />
                     {$formData.total.toLocaleString('id-ID')}
                   </Table.Cell>
@@ -227,3 +228,7 @@
     </Card.Content>
   </Card.Root>
 </div>
+
+<style>
+  /* your styles go here */
+</style>

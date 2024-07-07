@@ -105,7 +105,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="number last:text-center">
+                  <Table.Cell {...attrs} class="number-4 last:text-center">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>

@@ -78,7 +78,11 @@
                   {bahanMentah[i].barang?.satuan}
                 </Table.Cell>
                 <Table.Cell>
-                  <Input disabled value={bahanMentah[i].kuantitas.toLocaleString('id-ID')} />
+                  <Input
+                    class="text-right"
+                    disabled
+                    value={bahanMentah[i].kuantitas.toLocaleString('id-ID')}
+                  />
                 </Table.Cell>
               </Table.Row>
             {/each}
@@ -110,7 +114,11 @@
                   {barangJadi[i].barang?.satuan}
                 </Table.Cell>
                 <Table.Cell>
-                  <Input disabled value={barangJadi[i].kuantitas.toLocaleString('id-ID')} />
+                  <Input
+                    disabled
+                    class="text-right"
+                    value={barangJadi[i].kuantitas.toLocaleString('id-ID')}
+                  />
                 </Table.Cell>
               </Table.Row>
             {/each}

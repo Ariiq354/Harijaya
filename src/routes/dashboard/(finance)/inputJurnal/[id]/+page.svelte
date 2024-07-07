@@ -89,7 +89,13 @@
         <Form.Field {form} name="nominal">
           <Form.Control let:attrs>
             <Form.Label>Nominal</Form.Label>
-            <Input type="number" {...attrs} bind:value={$formData.nominal} placeholder="Rp" />
+            <Input
+              type="number"
+              {...attrs}
+              bind:value={$formData.nominal}
+              class="text-right"
+              placeholder="Rp"
+            />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>

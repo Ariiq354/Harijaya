@@ -102,12 +102,22 @@
                     <Input disabled value={item.barang?.name} />
                   </Table.Cell>
                   <Table.Cell>
-                    <Input disabled type="number" value={item.harga.toLocaleString('id-ID')} />
+                    <Input
+                      disabled
+                      class="text-right"
+                      type="number"
+                      value={item.harga.toLocaleString('id-ID')}
+                    />
                   </Table.Cell>
                   <Table.Cell>
-                    <Input disabled type="number" value={item.kuantitas.toLocaleString('id-ID')} />
+                    <Input
+                      disabled
+                      class="text-right"
+                      type="number"
+                      value={item.kuantitas.toLocaleString('id-ID')}
+                    />
                   </Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell class="text-right">
                     {(item.harga * item.kuantitas).toLocaleString('id-ID')}
                   </Table.Cell>
                 </Table.Row>

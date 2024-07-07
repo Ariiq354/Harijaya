@@ -79,7 +79,12 @@
             <Form.Field {form} name="noTransaksi">
               <Form.Control let:attrs>
                 <Form.Label>Total Nilai</Form.Label>
-                <Input readonly {...attrs} value={$formData.totalNilai.toLocaleString('id-ID')} />
+                <Input
+                  class="text-right"
+                  readonly
+                  {...attrs}
+                  value={$formData.totalNilai.toLocaleString('id-ID')}
+                />
               </Form.Control>
             </Form.Field>
           </div>
@@ -108,6 +113,7 @@
                       <Input
                         type="number"
                         min={0}
+                        class="text-right"
                         max={data.form.data.piutangItem[i].nilai + (piutang?.sisa ?? 0)}
                         {...attrs}
                         bind:value={$formData.piutangItem[i].nilai}

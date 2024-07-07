@@ -239,17 +239,27 @@
                   </Form.ElementField>
                 </Table.Cell>
                 <Table.Cell>
-                  <Input type="number" name="produk" bind:value={$formData.produk[i].harga} />
+                  <Input
+                    type="number"
+                    class="text-right"
+                    name="produk"
+                    bind:value={$formData.produk[i].harga}
+                  />
                 </Table.Cell>
                 <Table.Cell>
                   <Form.ElementField {form} name="produk[{i}].kuantitas" class="space-y-0">
                     <Form.Control let:attrs>
-                      <Input type="number" {...attrs} bind:value={$formData.produk[i].kuantitas} />
+                      <Input
+                        type="number"
+                        class="text-right"
+                        {...attrs}
+                        bind:value={$formData.produk[i].kuantitas}
+                      />
                     </Form.Control>
                     <Form.FieldErrors />
                   </Form.ElementField>
                 </Table.Cell>
-                <Table.Cell>
+                <Table.Cell class="text-right">
                   {($formData.produk[i].harga * $formData.produk[i].kuantitas).toLocaleString(
                     'id-ID'
                   )}
@@ -312,7 +322,12 @@
               <div>Biaya Kirim:</div>
               <Form.Field {form} name="biayaKirim">
                 <Form.Control let:attrs>
-                  <Input type="number" {...attrs} bind:value={$formData.biayaKirim} />
+                  <Input
+                    type="number"
+                    class="text-right"
+                    {...attrs}
+                    bind:value={$formData.biayaKirim}
+                  />
                 </Form.Control>
               </Form.Field>
             </div>
@@ -320,7 +335,12 @@
               <div>Biaya Lainnya:</div>
               <Form.Field {form} name="biayaLainnya">
                 <Form.Control let:attrs>
-                  <Input type="number" {...attrs} bind:value={$formData.biayaLainnya} />
+                  <Input
+                    type="number"
+                    class="text-right"
+                    {...attrs}
+                    bind:value={$formData.biayaLainnya}
+                  />
                 </Form.Control>
               </Form.Field>
             </div>
@@ -328,7 +348,12 @@
               <div>Pembulatan:</div>
               <Form.Field {form} name="pembulatan">
                 <Form.Control let:attrs>
-                  <Input type="number" {...attrs} bind:value={$formData.pembulatan} />
+                  <Input
+                    type="number"
+                    class="text-right"
+                    {...attrs}
+                    bind:value={$formData.pembulatan}
+                  />
                 </Form.Control>
               </Form.Field>
             </div>
