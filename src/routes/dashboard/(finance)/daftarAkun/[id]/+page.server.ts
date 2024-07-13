@@ -29,8 +29,7 @@ export const actions: Actions = {
     }
 
     if (!form.data.id) {
-      // form.data.id = generateIdFromEntropySize(10);
-      return setError(form, 'deskripsi', 'test error');
+      form.data.id = generateIdFromEntropySize(10);
     }
 
     await db

@@ -13,7 +13,6 @@
     class="flex w-full items-center justify-center gap-4 border-b-2 border-black px-4 py-3 text-2xl"
   >
     <img src="/hrj.png" alt="logo" class="h-12" />
-    <!-- <h1 class="font-serif">HARIJAYA</h1> -->
   </div>
 
   <div class="p-4">

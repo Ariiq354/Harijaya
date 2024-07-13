@@ -21,10 +21,23 @@
   };
 
   Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+  const plugin = {
+    id: 'customCanvasBackgroundColor',
+    //@ts-ignore
+    beforeDraw: (chart, args, options) => {
+      const { ctx } = chart;
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-over';
+      ctx.fillStyle = options.color || '#99ffff';
+      ctx.fillRect(0, 0, chart.width, chart.height);
+      ctx.restore();
+    }
+  };
 </script>
 
 <Bar
   data={config}
+  class="bg-white"
   options={{
     responsive: true,
     plugins: {

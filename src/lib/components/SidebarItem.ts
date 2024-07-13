@@ -1,10 +1,39 @@
-import { BriefcaseBusiness, HandCoins, LayoutDashboard, ShoppingCart, Wallet } from 'lucide-svelte';
+import {
+  BookMarked,
+  BriefcaseBusiness,
+  HandCoins,
+  LayoutDashboard,
+  ShoppingCart,
+  Wallet
+} from 'lucide-svelte';
 
 export const sidebarItem = [
   {
     href: '/dashboard',
     icon: LayoutDashboard,
     title: 'Dashboard'
+  },
+  {
+    icon: BookMarked,
+    title: 'Laporan',
+    child: [
+      {
+        href: '/dashboard/bukuBesar',
+        title: 'Buku Besar'
+      },
+      {
+        href: '/dashboard/daftarTransaksi',
+        title: 'Daftar Transaksi'
+      },
+      {
+        href: '/dashboard/labaRugi',
+        title: 'Laba Rugi'
+      },
+      {
+        href: '/dashboard/neraca',
+        title: 'Neraca'
+      }
+    ]
   },
   {
     icon: HandCoins,

@@ -18,8 +18,10 @@
 </script>
 
 <div class="sticky top-0 z-10 flex items-center border-b-2 border-black bg-white">
-  <h1 class="ml-4 w-full font-serif text-2xl font-semibold">Harijaya - Fillet & Grill</h1>
-  <div class="z-20 flex h-full w-full justify-between gap-4 p-4 md:justify-end">
+  <h1 class="ml-4 hidden w-full font-serif text-2xl font-semibold md:block">
+    Harijaya - Fillet & Grill
+  </h1>
+  <div class="z-20 flex h-full w-full items-center justify-between gap-4 p-4 md:justify-end">
     <Sheet.Root open={isOpen} onOpenChange={(open) => (isOpen = open)}>
       <Sheet.Trigger class="block md:hidden">
         <Menu />

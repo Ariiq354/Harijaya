@@ -42,11 +42,11 @@
   </div>
 </div>
 <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-  <div class="rounded-lg border-2 p-4">
+  <div class="rounded-lg border-2 bg-white p-4">
     <h1 class="mb-4 text-center text-xl font-bold">Pembelian vs Penjualan</h1>
     <Bar />
   </div>
-  <div class="rounded-lg border-2 p-4">
+  <div class="rounded-lg border-2 bg-white p-4">
     <h1 class="mb-4 text-center text-xl font-bold">Omset Overview</h1>
     <Line />
   </div>
