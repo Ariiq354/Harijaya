@@ -99,3 +99,18 @@ export function getLastMonths(month: number) {
 
   return lastFourMonths.reverse(); // Optional: reverse to get in chronological order
 }
+
+export const tipeAkun = [
+  'aktiva lainnya',
+  'aktiva tetap',
+  'biaya lainnya',
+  'biaya usaha',
+  'kas & setara kas',
+  'modal usaha',
+  'persediaan barang',
+  'pendapatan lainnya',
+  'pendapatan usaha',
+  'piutang usaha',
+  'utang lainnya',
+  'utang usaha'
+];

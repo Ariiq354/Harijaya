@@ -6,7 +6,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
   const akunData = await db.query.akunTable.findMany({
-    orderBy: [desc(akunTable.createdAt)]
+    orderBy: [akunTable.kode]
   });
 
   return {

@@ -14,6 +14,7 @@
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
+  import { tipeAkun } from '$lib/utils';
 
   export let data: PageData;
 
@@ -111,18 +112,12 @@
               </Select.Trigger>
               <Select.Content>
                 <ScrollArea class="h-40">
-                  <Select.Item value="aktiva lainnya" label="Aktiva lainnya" />
-                  <Select.Item value="aktiva tetap" label="Aktiva tetap" />
-                  <Select.Item value="biaya lainnya" label="Biaya lainnya" />
-                  <Select.Item value="biaya usaha" label="Biaya usaha" />
-                  <Select.Item value="kas & setara kas" label="Kas & setara kas" />
-                  <Select.Item value="modal usaha" label="Modal usaha" />
-                  <Select.Item value="persediaan barang" label="Persediaan barang" />
-                  <Select.Item value="pendapatan lainnya" label="Pendapatan lainnya" />
-                  <Select.Item value="pendapatan usaha" label="Pendapatan usaha" />
-                  <Select.Item value="piutang usaha" label="Piutang usaha" />
-                  <Select.Item value="utang lainnya" label="Utang lainnya" />
-                  <Select.Item value="utang usaha" label="Utang usaha" />
+                  {#each tipeAkun as item}
+                    <Select.Item
+                      value={item}
+                      label={item.charAt(0).toUpperCase() + item.slice(1)}
+                    />
+                  {/each}
                 </ScrollArea>
               </Select.Content>
             </Select.Root>
