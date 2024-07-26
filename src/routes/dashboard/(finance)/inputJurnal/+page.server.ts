@@ -7,8 +7,7 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async () => {
   const jurnalData = await db.query.jurnalTable.findMany({
     with: {
-      akunDebit: true,
-      akunKredit: true
+      akun: true
     },
     orderBy: [desc(jurnalTable.createdAt)]
   });

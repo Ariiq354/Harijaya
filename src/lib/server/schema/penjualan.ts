@@ -1,6 +1,7 @@
 import { relations, sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { userTable } from './auth';
+import { pembayaranPiutangItemTable, pembayaranPiutangTable } from './keuangan';
 
 export const barangTable = sqliteTable('barang', {
   id: text('id').notNull().primaryKey(),
@@ -34,14 +35,15 @@ export const pelangganTable = sqliteTable('pelanggan', {
 
 export const fakturPenjualanTable = sqliteTable('faktur_penjualan', {
   id: text('id').notNull().primaryKey(),
-  pelangganId: text('pelanggan_id').references(() => pelangganTable.id, { onDelete: 'set null' }),
-  noFaktur: text('no_faktur').notNull(),
+  pelangganId: text('pelanggan_id').references(() => pelangganTable.id, {
+    onDelete: 'set null'
+  }),
+  noFaktur: text('no_faktur').notNull().unique(),
   tanggal: text('tanggal').notNull(),
   userId: text('user_id').references(() => userTable.id, { onDelete: 'set null' }),
   lampiran: text('lampiran').notNull(),
   catatan: text('catatan').notNull(),
   ppn: integer('ppn', { mode: 'boolean' }).notNull(), // 0: tidak, 1: iya
-  pembulatan: integer('pembulatan').notNull(),
   biayaKirim: integer('biaya_kirim').notNull(),
   biayaLainnya: integer('biaya_lainnya').notNull(),
   total: integer('total').notNull(),
@@ -53,9 +55,9 @@ export const fakturPenjualanTable = sqliteTable('faktur_penjualan', {
 
 export const penjualanProdukTable = sqliteTable('penjualan_produk', {
   id: text('id').notNull().primaryKey(),
-  penjualanId: text('penjualan_id')
+  noPenjualan: text('no_penjualan')
     .notNull()
-    .references(() => fakturPenjualanTable.id, {
+    .references(() => fakturPenjualanTable.noFaktur, {
       onDelete: 'cascade'
     }),
   barangId: text('barang_id')
@@ -74,13 +76,14 @@ export const fakturPenjualanRelations = relations(fakturPenjualanTable, ({ one, 
     fields: [fakturPenjualanTable.pelangganId],
     references: [pelangganTable.id]
   }),
-  produk: many(penjualanProdukTable)
+  produk: many(penjualanProdukTable),
+  pembayaran: many(pembayaranPiutangItemTable)
 }));
 
 export const penjualanProdukRelations = relations(penjualanProdukTable, ({ one }) => ({
   fakturPenjualan: one(fakturPenjualanTable, {
-    fields: [penjualanProdukTable.penjualanId],
-    references: [fakturPenjualanTable.id]
+    fields: [penjualanProdukTable.noPenjualan],
+    references: [fakturPenjualanTable.noFaktur]
   }),
   barang: one(barangTable, {
     fields: [penjualanProdukTable.barangId],

@@ -5,7 +5,7 @@ export const formSchema = z.object({
   piutang: z
     .array(
       z.object({
-        piutangId: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
+        noFaktur: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
         nilai: z.coerce.number()
       })
     )

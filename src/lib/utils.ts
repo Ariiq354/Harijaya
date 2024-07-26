@@ -101,16 +101,16 @@ export function getLastMonths(month: number) {
 }
 
 export const tipeAkun = [
-  'aktiva lainnya',
-  'aktiva tetap',
-  'biaya lainnya',
-  'biaya usaha',
   'kas & setara kas',
-  'modal usaha',
-  'persediaan barang',
-  'pendapatan lainnya',
-  'pendapatan usaha',
   'piutang usaha',
+  'persediaan barang',
+  'aktiva tetap',
+  'aktiva lainnya',
+  'utang usaha',
   'utang lainnya',
-  'utang usaha'
+  'modal usaha',
+  'pendapatan usaha',
+  'pendapatan lainnya',
+  'biaya usaha',
+  'biaya lainnya'
 ];

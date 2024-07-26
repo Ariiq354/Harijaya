@@ -166,12 +166,6 @@
               </div>
             </div>
             <div class="flex w-full justify-between">
-              <div>Pembulatan:</div>
-              <div>
-                {data.data.pembulatan.toLocaleString('id-ID')}
-              </div>
-            </div>
-            <div class="flex w-full justify-between">
               <div>Grand Total:</div>
               <div>
                 {data.data.total.toLocaleString('id-ID')}

@@ -86,14 +86,14 @@
     $formData.utang = [
       ...$formData.utang,
       {
-        utangId: id,
+        noFaktur: id,
         nilai: 0
       }
     ];
   }
 
   function deleteItem(id: string) {
-    $formData.utang = $formData.utang.filter((item) => item.utangId !== id);
+    $formData.utang = $formData.utang.filter((item) => item.noFaktur !== id);
   }
 </script>
 
@@ -156,7 +156,7 @@
               <Table.Body {...$tableBodyAttrs}>
                 {#each $pageRows as row, i (row.id)}
                   {@const exist = $formData.utang.findIndex(
-                    (item) => item.utangId === data.utangData[i].id
+                    (item) => item.noFaktur === data.utangData[i].noFaktur
                   )}
                   <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
                     <Table.Row {...rowAttrs}>
@@ -182,7 +182,9 @@
                         {/if}
                       </Table.Cell>
                       <Table.Cell>
-                        <Checkbox onCheckedChange={(e) => handleChange(e, data.utangData[i].id)} />
+                        <Checkbox
+                          onCheckedChange={(e) => handleChange(e, data.utangData[i].noFaktur)}
+                        />
                       </Table.Cell>
                     </Table.Row>
                   </Subscribe>

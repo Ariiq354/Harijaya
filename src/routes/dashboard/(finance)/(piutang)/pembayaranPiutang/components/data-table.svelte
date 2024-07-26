@@ -27,7 +27,7 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'noTransaksi',
+      accessor: 'noPembayaran',
       header: 'No. Pembayaran'
     }),
     table.column({

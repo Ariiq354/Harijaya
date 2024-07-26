@@ -55,11 +55,7 @@
 
   $: ppnTotal = $formData.ppn ? subTotal + subTotal * 0.1 : subTotal;
 
-  $: total =
-    ppnTotal +
-    Number($formData.biayaKirim) +
-    Number($formData.biayaLainnya) +
-    Number($formData.pembulatan);
+  $: total = ppnTotal + Number($formData.biayaKirim) + Number($formData.biayaLainnya);
 
   $: selectedPelanggan = $formData.pelangganId
     ? {
@@ -340,19 +336,6 @@
                     class="text-right"
                     {...attrs}
                     bind:value={$formData.biayaLainnya}
-                  />
-                </Form.Control>
-              </Form.Field>
-            </div>
-            <div class="flex w-full justify-between">
-              <div>Pembulatan:</div>
-              <Form.Field {form} name="pembulatan">
-                <Form.Control let:attrs>
-                  <Input
-                    type="number"
-                    class="text-right"
-                    {...attrs}
-                    bind:value={$formData.pembulatan}
                   />
                 </Form.Control>
               </Form.Field>

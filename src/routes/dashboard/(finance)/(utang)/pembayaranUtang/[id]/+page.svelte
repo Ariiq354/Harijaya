@@ -69,14 +69,14 @@
           </Form.Control>
         </Form.Field>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Form.Field {form} name="noTransaksi">
+          <Form.Field {form} name="noPembayaran">
             <Form.Control let:attrs>
               <Form.Label>No. Pembayaran</Form.Label>
-              <Input readonly {...attrs} bind:value={$formData.noTransaksi} />
+              <Input readonly {...attrs} bind:value={$formData.noPembayaran} />
             </Form.Control>
           </Form.Field>
           <div>
-            <Form.Field {form} name="noTransaksi">
+            <Form.Field {form} name="totalNilai">
               <Form.Control let:attrs>
                 <Form.Label>Total Nilai</Form.Label>
                 <Input class="text-right" readonly {...attrs} value={$formData.totalNilai} />
@@ -93,7 +93,7 @@
               <Table.Head>Nilai</Table.Head>
             </Table.Row>
             {#each $formData.utangItem as item, i (i)}
-              {@const utang = data.utang.find((utang) => utang.id === item.noUtang)}
+              {@const utang = data.utang.find((utang) => utang.noFaktur === item.noFaktur)}
               <Table.Row>
                 <Table.Cell>
                   {i + 1}

@@ -82,7 +82,7 @@ export const actions: Actions = {
         await adjustStok(v.tipe, v.kuantitas, v.barangId);
         await db.insert(stokFisikProdukTable).values({
           id: v.id,
-          stokFisikId: form.data.id,
+          noStokFisik: form.data.noStokFisik,
           barangId: v.barangId,
           kuantitas: v.kuantitas,
           tipe: v.tipe
@@ -99,7 +99,7 @@ export const actions: Actions = {
         .where(eq(stokFisikTable.id, form.data.id));
 
       const originalProducts = await db.query.stokFisikProdukTable.findMany({
-        where: eq(stokFisikProdukTable.stokFisikId, form.data.id)
+        where: eq(stokFisikProdukTable.noStokFisik, form.data.noStokFisik)
       });
 
       const deletedProducts = originalProducts.filter(
@@ -141,7 +141,7 @@ export const actions: Actions = {
         await db.insert(stokFisikProdukTable).values({
           id: generateIdFromEntropySize(10),
           tipe: v.tipe,
-          stokFisikId: form.data.id,
+          noStokFisik: form.data.noStokFisik,
           barangId: v.barangId,
           kuantitas: v.kuantitas
         });

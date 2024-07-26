@@ -82,10 +82,8 @@ export const actions: Actions = {
 
     if (!form.data.id) {
       //Add products
-      form.data.id = generateIdFromEntropySize(10);
       await db.insert(fakturPenjualanTable).values({
-        id: form.data.id,
-        pembulatan: form.data.pembulatan,
+        id: generateIdFromEntropySize(10),
         biayaKirim: form.data.biayaKirim,
         biayaLainnya: form.data.biayaLainnya,
         catatan: form.data.catatan,
@@ -111,7 +109,7 @@ export const actions: Actions = {
 
         await db.insert(penjualanProdukTable).values({
           id: v.id,
-          penjualanId: form.data.id,
+          noPenjualan: form.data.noFaktur,
           harga: v.harga,
           barangId: v.barangId,
           kuantitas: v.kuantitas
@@ -143,7 +141,7 @@ export const actions: Actions = {
         .where(eq(piutangTable.noFaktur, form.data.id));
 
       const originalProducts = await db.query.penjualanProdukTable.findMany({
-        where: eq(penjualanProdukTable.penjualanId, form.data.id)
+        where: eq(penjualanProdukTable.noPenjualan, form.data.noFaktur)
       });
 
       const deletedProducts = originalProducts.filter(
@@ -180,7 +178,7 @@ export const actions: Actions = {
         await adjustStok(0, v.kuantitas, v.barangId);
         await db.insert(penjualanProdukTable).values({
           id: v.id,
-          penjualanId: form.data.id,
+          noPenjualan: form.data.noFaktur,
           harga: v.harga,
           barangId: v.barangId,
           kuantitas: v.kuantitas

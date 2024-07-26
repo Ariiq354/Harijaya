@@ -4,12 +4,12 @@ import { barangTable } from '$lib/server/schema/penjualan';
 import { adjustStok } from '$lib/server/utils';
 import { fail } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
-import { generateIdFromEntropySize } from 'lucia';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
 import { utangTable } from '$lib/server/schema/keuangan';
+import { generateIdFromEntropySize } from 'lucia';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -49,9 +49,8 @@ export const actions: Actions = {
 
     if (!form.data.id) {
       //Add products
-      form.data.id = generateIdFromEntropySize(10);
       await db.insert(fakturPembelianTable).values({
-        id: form.data.id,
+        id: generateIdFromEntropySize(10),
         biayaKirim: form.data.biayaKirim,
         biayaLainnya: form.data.biayaLainnya,
         catatan: form.data.catatan,
@@ -67,17 +66,16 @@ export const actions: Actions = {
       await db.insert(utangTable).values({
         id: generateIdFromEntropySize(10),
         nilai: total,
-        noFaktur: form.data.id,
+        noFaktur: form.data.noFaktur,
         sisa: total
       });
 
       form.data.produk.forEach(async (v) => {
-        v.id = generateIdFromEntropySize(10);
         await adjustStok(1, v.kuantitas, v.barangId);
 
         await db.insert(pembelianProdukTable).values({
           id: v.id,
-          pembelianId: form.data.id,
+          noPembelian: form.data.noFaktur,
           harga: v.harga,
           barangId: v.barangId,
           kuantitas: v.kuantitas
@@ -109,7 +107,7 @@ export const actions: Actions = {
         .where(eq(utangTable.noFaktur, form.data.id));
 
       const originalProducts = await db.query.pembelianProdukTable.findMany({
-        where: eq(pembelianProdukTable.pembelianId, form.data.id)
+        where: eq(pembelianProdukTable.noPembelian, form.data.noFaktur)
       });
 
       const deletedProducts = originalProducts.filter(
@@ -146,10 +144,10 @@ export const actions: Actions = {
         await adjustStok(1, v.kuantitas, v.barangId);
         await db.insert(pembelianProdukTable).values({
           id: generateIdFromEntropySize(10),
-          pembelianId: form.data.id,
+          kuantitas: v.kuantitas,
+          noPembelian: form.data.noFaktur,
           harga: v.harga,
-          barangId: v.barangId,
-          kuantitas: v.kuantitas
+          barangId: v.barangId
         });
       });
     }

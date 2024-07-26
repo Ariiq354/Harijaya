@@ -11,8 +11,7 @@
   import DataTableRenderNama from './data-table-render-nama.svelte';
 
   type customType = selectJurnal & {
-    akunDebit: selectAkun | null;
-    akunKredit: selectAkun | null;
+    akun: selectAkun | null;
   };
 
   export let data: customType[];
@@ -40,18 +39,14 @@
       header: 'Tgl. Transaksi'
     }),
     table.column({
-      accessor: ({ akunDebit, akunKredit }) => ({
-        akunDebit,
-        akunKredit
-      }),
+      accessor: ({ akun }) => akun,
       header: 'Nama Akun',
       cell: ({ value }) => {
-        if (!value.akunDebit || !value.akunKredit) {
+        if (!value) {
           return 'Akun tidak ada';
         } else {
           return createRender(DataTableRenderNama, {
-            akunDebit: value.akunDebit,
-            akunKredit: value.akunKredit
+            akun: value
           });
         }
       }

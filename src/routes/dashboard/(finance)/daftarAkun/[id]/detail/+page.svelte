@@ -47,11 +47,11 @@
         <Input disabled value={data.data.nama} />
       </div>
       <div class="flex w-full flex-col gap-2 py-2">
-        <Label>Nama Akun</Label>
+        <Label>Kategori</Label>
         <Input disabled value={data.data.kategori} />
       </div>
       <div class="flex w-full flex-col gap-2 py-2">
-        <Label>Nama Akun</Label>
+        <Label>Deskripsi</Label>
         <Textarea rows={8} disabled value={data.data.deskripsi} />
       </div>
     </Card.Content>

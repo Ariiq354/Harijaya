@@ -2,6 +2,7 @@ import { relations, sql } from 'drizzle-orm';
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { userTable } from './auth';
 import { barangTable } from './penjualan';
+import { pembayaranUtangItemTable, pembayaranUtangTable } from './keuangan';
 
 export const supplierTable = sqliteTable('supplier', {
   id: text('id').notNull().primaryKey(),
@@ -22,7 +23,7 @@ export const supplierTable = sqliteTable('supplier', {
 export const fakturPembelianTable = sqliteTable('faktur_pembelian', {
   id: text('id').notNull().primaryKey(),
   supplierId: text('supplier_id').references(() => supplierTable.id, { onDelete: 'set null' }),
-  noFaktur: text('no_faktur').notNull(),
+  noFaktur: text('no_faktur').notNull().unique(),
   tanggal: text('tanggal').notNull(),
   userId: text('user_id').references(() => userTable.id, { onDelete: 'set null' }),
   lampiran: text('lampiran').notNull(),
@@ -39,9 +40,9 @@ export const fakturPembelianTable = sqliteTable('faktur_pembelian', {
 
 export const pembelianProdukTable = sqliteTable('pembelian_produk', {
   id: text('id').notNull().primaryKey(),
-  pembelianId: text('pembelian_id')
+  noPembelian: text('no_pembelian')
     .notNull()
-    .references(() => fakturPembelianTable.id, { onDelete: 'cascade' }),
+    .references(() => fakturPembelianTable.noFaktur, { onDelete: 'cascade' }),
   barangId: text('barang_id')
     .notNull()
     .references(() => barangTable.id, { onDelete: 'cascade' }),
@@ -58,13 +59,14 @@ export const fakturPembelianRelations = relations(fakturPembelianTable, ({ one, 
     fields: [fakturPembelianTable.supplierId],
     references: [supplierTable.id]
   }),
-  produk: many(pembelianProdukTable)
+  produk: many(pembelianProdukTable),
+  pembayaran: many(pembayaranUtangItemTable)
 }));
 
 export const pembelianProdukRelations = relations(pembelianProdukTable, ({ one }) => ({
   fakturPembelian: one(fakturPembelianTable, {
-    fields: [pembelianProdukTable.pembelianId],
-    references: [fakturPembelianTable.id]
+    fields: [pembelianProdukTable.noPembelian],
+    references: [fakturPembelianTable.noFaktur]
   }),
   barang: one(barangTable, {
     fields: [pembelianProdukTable.barangId],

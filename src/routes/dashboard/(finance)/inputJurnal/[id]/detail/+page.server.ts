@@ -7,15 +7,15 @@ import type { PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
   const data = await db.query.jurnalTable.findFirst({
-    where: eq(jurnalTable.id, id)
+    where: eq(jurnalTable.id, id),
+    with: {
+      akun: true
+    }
   });
-
-  const akun = await db.query.akunTable.findMany();
 
   if (!data) redirect(302, '/dashboard/inputJurnal');
 
   return {
-    data,
-    akun
+    data
   };
 };

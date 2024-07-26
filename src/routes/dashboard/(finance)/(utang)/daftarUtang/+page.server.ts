@@ -42,11 +42,11 @@ export const actions: Actions = {
 
     const id = generateIdFromEntropySize(10);
 
-    const trx = await getNumber('BYR', pembayaranUtangTable, pembayaranUtangTable.noTransaksi);
+    const trx = await getNumber('BYR', pembayaranUtangTable, pembayaranUtangTable.noPembayaran);
 
     await db.insert(pembayaranUtangTable).values({
       id: id,
-      noTransaksi: trx,
+      noPembayaran: trx,
       tanggal: getDashedDate(),
       totalNilai: form.data.total
     });
@@ -57,14 +57,14 @@ export const actions: Actions = {
         id: idItem,
         nilai: i.nilai,
         noPembayaran: id,
-        noUtang: i.utangId
+        noFaktur: i.noFaktur
       });
       await db
         .update(utangTable)
         .set({
           sisa: sql<number>`${utangTable.sisa} - ${i.nilai}`
         })
-        .where(eq(utangTable.id, i.utangId));
+        .where(eq(utangTable.noFaktur, i.noFaktur));
     });
 
     return {

@@ -2,11 +2,11 @@ import { db } from '$lib/server';
 import { akunTable } from '$lib/server/schema/keuangan';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import { generateIdFromEntropySize } from 'lucia';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { generateIdFromEntropySize } from 'lucia';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -26,6 +26,14 @@ export const actions: Actions = {
       return fail(400, {
         form
       });
+    }
+
+    const exist = await db.query.akunTable.findFirst({
+      where: eq(akunTable.kode, form.data.kode)
+    });
+
+    if (exist) {
+      return setError(form, 'kode', 'Kode akun sudah ada');
     }
 
     if (!form.data.id) {

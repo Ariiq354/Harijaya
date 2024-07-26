@@ -86,14 +86,14 @@
     $formData.piutang = [
       ...$formData.piutang,
       {
-        piutangId: id,
+        noFaktur: id,
         nilai: 0
       }
     ];
   }
 
   function deleteItem(id: string) {
-    $formData.piutang = $formData.piutang.filter((item) => item.piutangId !== id);
+    $formData.piutang = $formData.piutang.filter((item) => item.noFaktur !== id);
   }
 </script>
 
@@ -156,7 +156,7 @@
               <Table.Body {...$tableBodyAttrs}>
                 {#each $pageRows as row, i (row.id)}
                   {@const exist = $formData.piutang.findIndex(
-                    (item) => item.piutangId === data.piutangData[i].id
+                    (item) => item.noFaktur === data.piutangData[i].noFaktur
                   )}
                   <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
                     <Table.Row {...rowAttrs}>
@@ -183,7 +183,7 @@
                       </Table.Cell>
                       <Table.Cell>
                         <Checkbox
-                          onCheckedChange={(e) => handleChange(e, data.piutangData[i].id)}
+                          onCheckedChange={(e) => handleChange(e, data.piutangData[i].noFaktur)}
                         />
                       </Table.Cell>
                     </Table.Row>

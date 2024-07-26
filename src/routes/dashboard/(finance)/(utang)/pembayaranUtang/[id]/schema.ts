@@ -2,13 +2,13 @@ import { z } from 'zod';
 
 export const formSchema = z.object({
   id: z.string(),
-  noTransaksi: z.string(),
+  noPembayaran: z.string(),
   totalNilai: z.coerce.number(),
   utangItem: z
     .array(
       z.object({
         id: z.string(),
-        noUtang: z.string().nullable(),
+        noFaktur: z.string().nullable(),
         nilai: z.coerce.number()
       })
     )

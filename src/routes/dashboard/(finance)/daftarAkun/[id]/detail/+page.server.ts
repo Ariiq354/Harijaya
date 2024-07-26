@@ -10,12 +10,9 @@ export const load: PageServerLoad = async ({ params }) => {
     where: eq(akunTable.id, id)
   });
 
-  const akun = await db.query.akunTable.findMany();
-
   if (!data) redirect(302, '/dashboard/daftarAkun');
 
   return {
-    data,
-    akun
+    data
   };
 };

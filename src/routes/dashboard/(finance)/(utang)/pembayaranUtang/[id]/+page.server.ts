@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ params }) => {
       utangItem: {
         columns: {
           id: true,
-          noUtang: true,
+          noFaktur: true,
           nilai: true
         }
       }
@@ -31,10 +31,11 @@ export const load: PageServerLoad = async ({ params }) => {
   const utang = await db.query.utangTable.findMany({
     where: inArray(
       utangTable.id,
-      data.utangItem.map((utang) => utang.noUtang!)
+      data.utangItem.map((utang) => utang.noFaktur!)
     ),
     columns: {
       id: true,
+      noFaktur: true,
       sisa: true
     },
     with: {
@@ -80,7 +81,7 @@ export const actions: Actions = {
         .set({
           sisa: sql<number>`${utangTable.nilai} - ${v.nilai}`
         })
-        .where(eq(utangTable.id, v.noUtang!));
+        .where(eq(utangTable.noFaktur, v.noFaktur!));
     });
 
     return {

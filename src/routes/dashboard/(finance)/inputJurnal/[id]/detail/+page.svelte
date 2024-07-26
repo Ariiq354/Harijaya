@@ -2,16 +2,12 @@
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
   import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
-  import * as Form from '$lib/components/ui/form';
   import { Input } from '$lib/components/ui/input';
-  import * as Select from '$lib/components/ui/select';
-  import { ArrowLeft, Loader2 } from 'lucide-svelte';
-  import type { PageData } from './$types';
   import Label from '$lib/components/ui/label/label.svelte';
+  import { ArrowLeft } from 'lucide-svelte';
+  import type { PageData } from './$types';
 
   export let data: PageData;
-  const akunDebit = data.akun.find((i) => i.id == data.data.akunDebit);
-  const akunKredit = data.akun.find((i) => i.id == data.data.akunKredit);
 </script>
 
 <div class="flex flex-col gap-4">
@@ -51,9 +47,9 @@
           <Input class="text-right" disabled value={data.data.nominal.toLocaleString('id-ID')} />
         </div>
         <div class="flex w-full flex-col gap-2 py-2">
-          <Label>Akun Debit</Label>
-          {#if akunDebit}
-            <Input disabled value={akunDebit.nama} />
+          <Label>Akun</Label>
+          {#if data.data.akun}
+            <Input disabled value={data.data.akun.nama} />
           {:else}
             <Input disabled value="Akun tidak ada" />
           {/if}
@@ -69,14 +65,6 @@
         <div class="flex w-full flex-col gap-2 py-2">
           <Label>Deskripsi</Label>
           <Input disabled value={data.data.deskripsi} />
-        </div>
-        <div class="flex w-full flex-col gap-2 py-2">
-          <Label>Akun Kredit</Label>
-          {#if akunKredit}
-            <Input disabled value={akunKredit.nama} />
-          {:else}
-            <Input disabled value="Akun tidak ada" />
-          {/if}
         </div>
       </div>
     </Card.Content>

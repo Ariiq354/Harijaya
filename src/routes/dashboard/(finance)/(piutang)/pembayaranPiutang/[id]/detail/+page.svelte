@@ -42,7 +42,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div class="flex w-full flex-col gap-2 py-2">
             <Label>No. Pembayaran</Label>
-            <Input disabled value={data.data.noTransaksi} />
+            <Input disabled value={data.data.noPembayaran} />
           </div>
           <div class="flex w-full flex-col gap-2 py-2">
             <Label>Total</Label>
@@ -64,7 +64,7 @@
           </Table.Header>
           <Table.Body>
             {#each data.data.piutangItem as item, i (item)}
-              {@const piutang = data.piutang.find((piutang) => piutang.id === item.noPiutang)}
+              {@const piutang = data.piutang.find((piutang) => piutang.noFaktur === item.noFaktur)}
               <Table.Row>
                 <Table.Cell>{i + 1}</Table.Cell>
                 <Table.Cell>

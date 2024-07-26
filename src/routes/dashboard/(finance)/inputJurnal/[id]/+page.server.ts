@@ -3,17 +3,20 @@ import { jurnalTable } from '$lib/server/schema/keuangan';
 import { getNumber } from '$lib/server/utils';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import { generateIdFromEntropySize } from 'lucia';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { generateIdFromEntropySize } from 'lucia';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
   let trx;
   const data = await db.query.jurnalTable.findFirst({
-    where: eq(jurnalTable.id, id)
+    where: eq(jurnalTable.id, id),
+    with: {
+      akun: true
+    }
   });
 
   const akun = await db.query.akunTable.findMany();
@@ -53,8 +56,7 @@ export const actions: Actions = {
         nominal: form.data.nominal,
         noReferensi: form.data.noReferensi,
         tanggal: form.data.tanggal,
-        akunDebit: form.data.akunDebit,
-        akunKredit: form.data.akunKredit
+        noAkun: form.data.noAkun
       })
       .onConflictDoUpdate({
         target: jurnalTable.id,
@@ -64,8 +66,7 @@ export const actions: Actions = {
           nominal: form.data.nominal,
           noReferensi: form.data.noReferensi,
           tanggal: form.data.tanggal,
-          akunDebit: form.data.akunDebit,
-          akunKredit: form.data.akunKredit
+          noAkun: form.data.noAkun
         }
       });
 

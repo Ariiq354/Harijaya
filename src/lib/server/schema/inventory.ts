@@ -4,7 +4,7 @@ import { barangTable } from './penjualan';
 
 export const prosesTable = sqliteTable('proses', {
   id: text('id').notNull().primaryKey(),
-  noProses: text('no_proses').notNull(),
+  noProses: text('no_proses').notNull().unique(),
   tanggal: text('tanggal').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
@@ -14,9 +14,9 @@ export const prosesTable = sqliteTable('proses', {
 
 export const prosesProdukTable = sqliteTable('proses_produk', {
   id: text('id').notNull().primaryKey(),
-  prosesId: text('proses_id')
+  noProses: text('no_proses')
     .notNull()
-    .references(() => prosesTable.id, { onDelete: 'cascade' }),
+    .references(() => prosesTable.noProses, { onDelete: 'cascade' }),
   barangId: text('barang_id')
     .notNull()
     .references(() => barangTable.id, { onDelete: 'cascade' }),
@@ -30,7 +30,7 @@ export const prosesProdukTable = sqliteTable('proses_produk', {
 
 export const stokFisikTable = sqliteTable('stok_fisik', {
   id: text('id').notNull().primaryKey(),
-  noStokFisik: text('no_stok_fisik').notNull(),
+  noStokFisik: text('no_stok_fisik').notNull().unique(),
   tanggal: text('tanggal').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
@@ -40,9 +40,9 @@ export const stokFisikTable = sqliteTable('stok_fisik', {
 
 export const stokFisikProdukTable = sqliteTable('stok_fisik_produk', {
   id: text('id').notNull().primaryKey(),
-  stokFisikId: text('stok_fisik_id')
+  noStokFisik: text('noStokFisik')
     .notNull()
-    .references(() => stokFisikTable.id, { onDelete: 'cascade' }),
+    .references(() => stokFisikTable.noStokFisik, { onDelete: 'cascade' }),
   barangId: text('barang_id')
     .notNull()
     .references(() => barangTable.id, { onDelete: 'cascade' }),
@@ -54,14 +54,14 @@ export const stokFisikProdukTable = sqliteTable('stok_fisik_produk', {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
 
-export const prosesRelations = relations(prosesTable, ({ one, many }) => ({
+export const prosesRelations = relations(prosesTable, ({ many }) => ({
   produkProses: many(prosesProdukTable)
 }));
 
 export const prosesProdukRelations = relations(prosesProdukTable, ({ one }) => ({
   proses: one(prosesTable, {
-    fields: [prosesProdukTable.prosesId],
-    references: [prosesTable.id]
+    fields: [prosesProdukTable.noProses],
+    references: [prosesTable.noProses]
   }),
   barang: one(barangTable, {
     fields: [prosesProdukTable.barangId],
@@ -69,14 +69,14 @@ export const prosesProdukRelations = relations(prosesProdukTable, ({ one }) => (
   })
 }));
 
-export const stokFisiRelations = relations(stokFisikTable, ({ one, many }) => ({
+export const stokFisiRelations = relations(stokFisikTable, ({ many }) => ({
   produkStok: many(stokFisikProdukTable)
 }));
 
 export const stokFisikProdukRelations = relations(stokFisikProdukTable, ({ one }) => ({
   stokFisik: one(stokFisikTable, {
-    fields: [stokFisikProdukTable.stokFisikId],
-    references: [stokFisikTable.id]
+    fields: [stokFisikProdukTable.noStokFisik],
+    references: [stokFisikTable.noStokFisik]
   }),
   barang: one(barangTable, {
     fields: [stokFisikProdukTable.barangId],

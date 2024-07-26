@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ params }) => {
     with: {
       utangItem: {
         columns: {
-          noUtang: true,
+          noFaktur: true,
           nilai: true
         }
       }
@@ -23,10 +23,11 @@ export const load: PageServerLoad = async ({ params }) => {
   const utang = await db.query.utangTable.findMany({
     where: inArray(
       utangTable.id,
-      data.utangItem.map((utang) => utang.noUtang!)
+      data.utangItem.map((utang) => utang.noFaktur!)
     ),
     columns: {
       id: true,
+      noFaktur: true,
       sisa: true
     },
     with: {

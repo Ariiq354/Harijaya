@@ -1,7 +1,7 @@
 import { db } from '$lib/server';
 import { akunTable } from '$lib/server/schema/keuangan';
 import { fail } from '@sveltejs/kit';
-import { desc, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

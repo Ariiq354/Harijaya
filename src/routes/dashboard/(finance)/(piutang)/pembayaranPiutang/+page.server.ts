@@ -37,7 +37,7 @@ export const actions: Actions = {
           .set({
             sisa: sql<number>`${piutangTable.sisa} + ${i.nilai}`
           })
-          .where(eq(piutangTable.id, i.noPiutang!));
+          .where(eq(piutangTable.noFaktur, i.noFaktur!));
       });
 
       await db.delete(pembayaranPiutangTable).where(eq(pembayaranPiutangTable.id, id));

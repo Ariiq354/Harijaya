@@ -8,7 +8,7 @@
   import * as Select from '$lib/components/ui/select';
   import { ArrowLeft, Loader2 } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
-  import { superForm } from 'sveltekit-superforms';
+  import SuperDebug, { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import type { PageData } from './$types';
   import { formSchema } from './schema';
@@ -30,17 +30,10 @@
   const { form: formData, enhance, submitting } = form;
   $formData.kodeTransaksi = data.trx;
 
-  $: selectedAkunDebit = $formData.akunDebit
+  $: selectedAkun = $formData.noAkun
     ? {
-        label: data.akun.find((i) => i.id == $formData.akunDebit)?.nama,
-        value: $formData.akunDebit
-      }
-    : undefined;
-
-  $: selectedAkunKredit = $formData.akunKredit
-    ? {
-        label: data.akun.find((i) => i.id == $formData.akunKredit)?.nama,
-        value: $formData.akunKredit
+        label: data.akun.find((i) => i.kode == $formData.noAkun)?.nama,
+        value: $formData.noAkun
       }
     : undefined;
 </script>
@@ -76,7 +69,7 @@
       <form method="POST" use:enhance class="grid grid-cols-1 gap-2 md:grid-cols-2">
         <Form.Field {form} name="id" class="hidden">
           <Form.Control let:attrs>
-            <input hidden name={attrs.name} bind:value={$formData.id} />
+            <input name={attrs.name} bind:value={$formData.id} />
           </Form.Control>
         </Form.Field>
         <Form.Field {form} name="kodeTransaksi">
@@ -99,29 +92,29 @@
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
-        <Form.Field {form} name="akunDebit">
+        <Form.Field {form} name="noAkun">
           <Form.Control let:attrs>
-            <Form.Label>Akun Debit</Form.Label>
+            <Form.Label>Akun</Form.Label>
             <Select.Root
-              selected={selectedAkunDebit}
+              selected={selectedAkun}
               onSelectedChange={(v) => {
-                v && ($formData.akunDebit = v.value);
+                v && ($formData.noAkun = v.value);
               }}
             >
               <Select.Trigger {...attrs}>
-                <Select.Value class="capitalize" placeholder="Pilih Kategori Akun" />
+                <Select.Value class="capitalize" placeholder="Pilih Akun" />
               </Select.Trigger>
               <Select.Content class="max-h-40 overflow-auto">
                 {#if data.akun.length}
                   {#each data.akun as item}
-                    <Select.Item value={item.id} label={item.nama} />
+                    <Select.Item value={item.kode} label={item.nama} />
                   {/each}
                 {:else}
                   <Select.Item disabled value="" label="No Result Found" />
                 {/if}
               </Select.Content>
             </Select.Root>
-            <input hidden bind:value={$formData.akunDebit} name={attrs.name} />
+            <input hidden bind:value={$formData.noAkun} name={attrs.name} />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
@@ -144,32 +137,6 @@
           <Form.Control let:attrs>
             <Form.Label>Deskripsi</Form.Label>
             <Input {...attrs} bind:value={$formData.deskripsi} />
-          </Form.Control>
-          <Form.FieldErrors />
-        </Form.Field>
-        <Form.Field {form} name="akunKredit">
-          <Form.Control let:attrs>
-            <Form.Label>Akun Debit</Form.Label>
-            <Select.Root
-              selected={selectedAkunKredit}
-              onSelectedChange={(v) => {
-                v && ($formData.akunKredit = v.value);
-              }}
-            >
-              <Select.Trigger {...attrs}>
-                <Select.Value class="capitalize" placeholder="Pilih Kategori Akun" />
-              </Select.Trigger>
-              <Select.Content class="max-h-40 overflow-auto">
-                {#if data.akun.length}
-                  {#each data.akun as item}
-                    <Select.Item value={item.id} label={item.nama} />
-                  {/each}
-                {:else}
-                  <Select.Item disabled value="" label="No Result Found" />
-                {/if}
-              </Select.Content>
-            </Select.Root>
-            <input hidden bind:value={$formData.akunKredit} name={attrs.name} />
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
