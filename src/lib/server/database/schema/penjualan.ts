@@ -10,6 +10,18 @@ export const barangTable = sqliteTable('barang', {
   satuan: text('satuan').notNull(),
   tipe: integer('tipe').notNull(), // 1: mentah, 2: jadi
   status: integer('status').notNull(), // 1: tidak aktif, 2: aktif
+  createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const barangHargaTable = sqliteTable('barang_harga', {
+  id: text('id').notNull().primaryKey(),
+  barangId: text('barang_id')
+    .notNull()
+    .references(() => barangTable.id, { onDelete: 'cascade' }),
+  harga: integer('harga').notNull(),
   stok: integer('stok').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at')
@@ -91,8 +103,28 @@ export const penjualanProdukRelations = relations(penjualanProdukTable, ({ one }
   })
 }));
 
-export type selectBarang = typeof barangTable.$inferSelect;
+export const barangRelations = relations(barangTable, ({ many }) => ({
+  barangHarga: many(barangHargaTable)
+}));
 
-export type selectPelanggan = typeof pelangganTable.$inferSelect;
+export const barangHargaRelations = relations(barangHargaTable, ({ one }) => ({
+  barang: one(barangTable, {
+    fields: [barangHargaTable.barangId],
+    references: [barangTable.id]
+  })
+}));
 
-export type selectFakturPenjualan = typeof fakturPenjualanTable.$inferSelect;
+export type Barang = typeof barangTable.$inferSelect;
+export type NewBarang = typeof barangTable.$inferInsert;
+
+export type BarangHarga = typeof barangHargaTable.$inferSelect;
+export type NewBarangHarga = typeof barangHargaTable.$inferInsert;
+
+export type Pelanggan = typeof pelangganTable.$inferSelect;
+export type NewPelanggan = typeof pelangganTable.$inferInsert;
+
+export type FakturPenjualan = typeof fakturPenjualanTable.$inferSelect;
+export type NewFakturPenjualan = typeof fakturPenjualanTable.$inferInsert;
+
+export type PenjualanProduk = typeof penjualanProdukTable.$inferSelect;
+export type NewPenjualanProduk = typeof penjualanProdukTable.$inferInsert;

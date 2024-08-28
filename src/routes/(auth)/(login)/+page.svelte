@@ -15,8 +15,8 @@
   const form = superForm(data.form, {
     validators: zodClient(formSchema),
 
-    async onUpdate({ form }) {
-      if (form.valid) {
+    async onUpdate({ result }) {
+      if ((result.type = 'success')) {
         toast.success('Login sukses');
         await goto('/dashboard');
       }

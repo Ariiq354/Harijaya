@@ -1,6 +1,6 @@
-import { db } from '$lib/server';
-import { jurnalTable } from '$lib/server/schema/keuangan';
-import { getNumber } from '$lib/server/utils';
+import { db } from '$lib/server/database';
+import { jurnalTable } from '$lib/server/database/schema/keuangan';
+import { getNumber } from '$lib/server/common';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { superValidate } from 'sveltekit-superforms';

@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-  import { writable } from 'svelte/store';
-  import type { selectSupplier } from '$lib/server/schema/pembelian';
-  import * as Table from '$lib/components/ui/table';
-  import DataTableActions from './data-table-action.svelte';
-  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import * as Table from '$lib/components/ui/table';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
+  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
+  import { writable } from 'svelte/store';
   import DataRender from './data-render.svelte';
+  import DataTableActions from './data-table-action.svelte';
+  import type { Supplier } from '$lib/server/database/schema/pembelian';
 
-  export let data: selectSupplier[];
+  export let data: Supplier[];
 
   const tableData = writable(data);
   $: tableData.set(data);

@@ -1,5 +1,5 @@
-import { db } from '$lib/server';
-import { fakturPembelianTable } from '$lib/server/schema/pembelian';
+import { db } from '$lib/server/database';
+import { fakturPembelianTable } from '$lib/server/database/schema/pembelian';
 import { redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';

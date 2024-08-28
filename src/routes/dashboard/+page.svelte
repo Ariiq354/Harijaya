@@ -11,22 +11,22 @@
   <div class="flex flex-col gap-4 rounded-lg border-2 bg-white p-4">
     <h1 class="text-lg font-semibold">Hutang</h1>
     <div class="text-2xl font-bold">
-      Rp {data.utang[0].jumlah.toLocaleString('id-ID')}
+      Rp {data.jumlahUtang.toLocaleString('id-ID')}
     </div>
-    <p>Jumlah Faktur Pembelian {data.fakturPembelian[0].jumlah}</p>
+    <p>Jumlah Utang</p>
   </div>
   <div class="flex flex-col gap-4 rounded-lg border-2 bg-white p-4">
     <h1 class="text-lg font-semibold">Piutang</h1>
     <div class="text-2xl font-bold">
-      Rp {data.piutang[0].jumlah.toLocaleString('id-ID')}
+      Rp {data.jumlahPiutang.toLocaleString('id-ID')}
     </div>
-    <p>Jumlah Faktur Penjualan {data.fakturPenjualan[0].jumlah}</p>
+    <p>Jumlah Piutang</p>
   </div>
   <div class="flex flex-row items-center gap-4 rounded-lg border-2 bg-white p-4">
     <Boxes size={80} strokeWidth={0.75} />
     <div class="flex w-full flex-col items-end justify-center gap-2 text-right">
       <p class="text-2xl font-bold">
-        {data.barang[0].jumlah}
+        {data.countBarang}
       </p>
       <p class="text-lg">Barang</p>
     </div>
@@ -35,7 +35,7 @@
     <Store size={80} strokeWidth={0.75} />
     <div class="flex w-full flex-col items-end justify-center gap-2 text-right">
       <p class="text-2xl font-bold">
-        {data.supplier[0].jumlah}
+        {data.countSupplier}
       </p>
       <p class="text-lg">Supplier</p>
     </div>

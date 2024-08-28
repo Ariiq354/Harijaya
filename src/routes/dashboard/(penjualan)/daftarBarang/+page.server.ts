@@ -1,5 +1,5 @@
-import { db } from '$lib/server';
-import { barangTable } from '$lib/server/schema/penjualan';
+import { db } from '$lib/server/database';
+import { barangTable } from '$lib/server/database/schema/penjualan';
 import { desc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 

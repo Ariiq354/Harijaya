@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectFakturPembelian } from '$lib/server/schema/pembelian';
+  import type { FakturPembelian } from '$lib/server/database/schema/pembelian';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
@@ -9,11 +9,18 @@
   import { Input } from '$lib/components/ui/input';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-  type itemType = selectFakturPembelian & {
+  type itemType = FakturPembelian & {
     supplier: {
       name: string | null;
     } | null;
+    pembayaran: {
+      id: string;
+    }[];
   };
+
+  function arrayHasAnyItem<T>(array: T[]) {
+    return array.length > 0;
+  }
 
   export let data: itemType[];
 
@@ -51,10 +58,13 @@
       }
     }),
     table.column({
-      accessor: ({ id }) => id,
+      accessor: ({ id, pembayaran }) => ({ id, pembayaran }),
       header: 'Action',
       cell: ({ value }) => {
-        return createRender(DataTableActions, { id: value });
+        return createRender(DataTableActions, {
+          id: value.id,
+          bayar: arrayHasAnyItem(value.pembayaran)
+        });
       },
       plugins: {
         sort: {

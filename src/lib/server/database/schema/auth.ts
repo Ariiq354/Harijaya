@@ -18,3 +18,6 @@ export const sessionTable = sqliteTable('session', {
     .references(() => userTable.id, { onDelete: 'cascade' }),
   expiresAt: int('expires_at').notNull()
 });
+
+export type User = typeof userTable.$inferSelect;
+export type NewUser = typeof userTable.$inferInsert;

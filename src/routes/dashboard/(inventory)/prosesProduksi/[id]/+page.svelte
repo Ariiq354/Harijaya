@@ -41,7 +41,8 @@
         id: '',
         barangId: '',
         kuantitas: 0,
-        tipeBarang: 1
+        tipeBarang: 1,
+        harga: 0
       }
     ];
   }
@@ -53,7 +54,8 @@
         id: '',
         barangId: '',
         kuantitas: 0,
-        tipeBarang: 2
+        tipeBarang: 2,
+        harga: 0
       }
     ];
   }
@@ -63,9 +65,17 @@
     return barang ? { label: barang.name, value: p.barangId } : undefined;
   });
 
+  $: selectedBahanMentahHarga = $formData.bahanMentah.map((p) => {
+    return { label: p.harga.toString(), value: p.harga };
+  });
+
   $: selectedBarangJadi = $formData.barangJadi.map((p) => {
     const barang = data.barangJadi.find((i) => i.id == p.barangId);
     return barang ? { label: barang.name, value: p.barangId } : undefined;
+  });
+
+  $: selectedBarangJadiHarga = $formData.barangJadi.map((p) => {
+    return { label: p.harga.toString(), value: p.harga };
   });
 </script>
 
@@ -134,6 +144,7 @@
             <Table.Row>
               <Table.Head>No.</Table.Head>
               <Table.Head>Barang</Table.Head>
+              <Table.Head>Harga</Table.Head>
               <Table.Head>Satuan</Table.Head>
               <Table.Head>Kuantitas</Table.Head>
               <Table.Head>Action</Table.Head>
@@ -179,6 +190,33 @@
                   </Form.ElementField>
                 </Table.Cell>
                 <Table.Cell>
+                  <Form.ElementField {form} name="bahanMentah[{i}].harga" class="space-y-0">
+                    <Form.Control let:attrs>
+                      <Select.Root
+                        selected={selectedBahanMentahHarga[i]}
+                        onSelectedChange={(v) => {
+                          v && ($formData.bahanMentah[i].harga = v.value);
+                        }}
+                      >
+                        <Select.Trigger {...attrs}>
+                          <Select.Value placeholder="Pilih harga..." />
+                        </Select.Trigger>
+                        <Select.Content class="max-h-40 overflow-auto">
+                          {#if barang}
+                            {#each barang.barangHarga as item}
+                              <Select.Item value={item.harga} label={item.harga.toString()} />
+                            {/each}
+                          {:else}
+                            <Select.Item value="" label="No Result Found" disabled />
+                          {/if}
+                        </Select.Content>
+                      </Select.Root>
+                      <input hidden bind:value={$formData.bahanMentah[i].harga} name={attrs.name} />
+                    </Form.Control>
+                    <Form.FieldErrors />
+                  </Form.ElementField>
+                </Table.Cell>
+                <Table.Cell>
                   {barang ? barang.satuan : 'Kosong'}
                 </Table.Cell>
                 <Table.Cell>
@@ -219,6 +257,7 @@
             <Table.Row>
               <Table.Head>No.</Table.Head>
               <Table.Head>Barang</Table.Head>
+              <Table.Head>Harga</Table.Head>
               <Table.Head>Satuan</Table.Head>
               <Table.Head>Kuantitas</Table.Head>
               <Table.Head>Action</Table.Head>
@@ -259,6 +298,33 @@
                         bind:value={$formData.barangJadi[i].barangId}
                         name={attrs.name}
                       />
+                    </Form.Control>
+                    <Form.FieldErrors />
+                  </Form.ElementField>
+                </Table.Cell>
+                <Table.Cell>
+                  <Form.ElementField {form} name="barangJadi[{i}].harga" class="space-y-0">
+                    <Form.Control let:attrs>
+                      <Select.Root
+                        selected={selectedBarangJadiHarga[i]}
+                        onSelectedChange={(v) => {
+                          v && ($formData.barangJadi[i].harga = v.value);
+                        }}
+                      >
+                        <Select.Trigger {...attrs}>
+                          <Select.Value placeholder="Pilih harga..." />
+                        </Select.Trigger>
+                        <Select.Content class="max-h-40 overflow-auto">
+                          {#if barang}
+                            {#each barang.barangHarga as item}
+                              <Select.Item value={item.harga} label={item.harga.toString()} />
+                            {/each}
+                          {:else}
+                            <Select.Item value="" label="No Result Found" disabled />
+                          {/if}
+                        </Select.Content>
+                      </Select.Root>
+                      <input hidden bind:value={$formData.barangJadi[i].harga} name={attrs.name} />
                     </Form.Control>
                     <Form.FieldErrors />
                   </Form.ElementField>

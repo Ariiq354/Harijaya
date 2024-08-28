@@ -1,9 +1,10 @@
-import { db } from '$lib/server';
-import { prosesTable } from '$lib/server/schema/inventory';
-import { adjustStok } from '$lib/server/utils';
+import { db } from '$lib/server/database';
+import { prosesTable } from '$lib/server/database/schema/inventory';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
+import { jurnalTable } from '$lib/server/database/schema/keuangan';
+import { updateStokUseCase } from '$lib/server/use-cases/stok';
 
 export const load: PageServerLoad = async () => {
   const prosesData = await db.query.prosesTable.findMany({
@@ -31,16 +32,31 @@ export const actions: Actions = {
     }
 
     try {
+      let totalMentah = 0;
+      let totalJadi = 0;
+
       const data = await db.query.prosesTable.findFirst({
         where: eq(prosesTable.id, id),
         with: {
           produkProses: true
         }
       });
+
       data?.produkProses.forEach(async (i) => {
-        await adjustStok(i.tipeBarang, i.kuantitas, i.barangId);
+        await updateStokUseCase(
+          i.barangId,
+          i.tipeBarang === 1 ? i.kuantitas : -i.kuantitas,
+          i.harga
+        );
+        if (i.tipeBarang === 1) {
+          totalMentah += i.kuantitas;
+        } else {
+          totalJadi += i.kuantitas;
+        }
       });
+
       await db.delete(prosesTable).where(eq(prosesTable.id, id));
+      await db.delete(jurnalTable).where(eq(jurnalTable.kodeTransaksi, data!.noProses));
     } catch (error) {
       return fail(500, { message: 'something went wrong' });
     }

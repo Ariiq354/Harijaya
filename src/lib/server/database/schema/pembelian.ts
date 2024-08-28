@@ -1,8 +1,8 @@
 import { relations, sql } from 'drizzle-orm';
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { userTable } from './auth';
+import { pembayaranUtangItemTable } from './keuangan';
 import { barangTable } from './penjualan';
-import { pembayaranUtangItemTable, pembayaranUtangTable } from './keuangan';
 
 export const supplierTable = sqliteTable('supplier', {
   id: text('id').notNull().primaryKey(),
@@ -27,7 +27,6 @@ export const fakturPembelianTable = sqliteTable('faktur_pembelian', {
   tanggal: text('tanggal').notNull(),
   userId: text('user_id').references(() => userTable.id, { onDelete: 'set null' }),
   lampiran: text('lampiran').notNull(),
-  ppn: integer('ppn', { mode: 'boolean' }).notNull(), // 0: tidak, 1: iya
   biayaKirim: integer('biaya_kirim').notNull(),
   catatan: text('catatan').notNull(),
   biayaLainnya: integer('biaya_lainnya').notNull(),
@@ -74,6 +73,11 @@ export const pembelianProdukRelations = relations(pembelianProdukTable, ({ one }
   })
 }));
 
-export type selectSupplier = typeof supplierTable.$inferSelect;
+export type Supplier = typeof supplierTable.$inferSelect;
+export type NewSupplier = typeof supplierTable.$inferInsert;
 
-export type selectFakturPembelian = typeof fakturPembelianTable.$inferSelect;
+export type FakturPembelian = typeof fakturPembelianTable.$inferSelect;
+export type NewFakturPembelian = typeof fakturPembelianTable.$inferInsert;
+
+export type PembelianProduk = typeof pembelianProdukTable.$inferSelect;
+export type NewPembelianProduk = typeof pembelianProdukTable.$inferInsert;

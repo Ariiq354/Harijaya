@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectAkun } from '$lib/server/schema/keuangan';
+  import type { Akun } from '$lib/server/database/schema/keuangan';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
@@ -9,7 +9,7 @@
   import { Input } from '$lib/components/ui/input';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-  export let data: selectAkun[];
+  export let data: Akun[];
 
   const tableData = writable(data);
   $: tableData.set(data);

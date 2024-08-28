@@ -1,5 +1,5 @@
-import { db } from '$lib/server';
-import { fakturPenjualanTable } from '$lib/server/schema/penjualan';
+import { db } from '$lib/server/database';
+import { fakturPenjualanTable } from '$lib/server/database/schema/penjualan';
 import { redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';

@@ -1,20 +1,21 @@
-import { db } from '$lib/server';
-import { stokFisikProdukTable, stokFisikTable } from '$lib/server/schema/inventory';
-import { barangTable } from '$lib/server/schema/penjualan';
-import { adjustStok } from '$lib/server/utils';
+import { db } from '$lib/server/database';
+import { stokFisikProdukTable, stokFisikTable } from '$lib/server/database/schema/inventory';
+import { barangHargaTable, barangTable } from '$lib/server/database/schema/penjualan';
 import { fail } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { updateStokUseCase } from '$lib/server/use-cases/stok';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
   const barang = await db.query.barangTable.findMany({
     where: eq(barangTable.status, 2)
   });
+  const barangHarga = await db.query.barangHargaTable.findMany();
   const data = await db.query.stokFisikTable.findFirst({
     where: eq(stokFisikTable.id, id),
     with: {
@@ -24,7 +25,8 @@ export const load: PageServerLoad = async ({ params }) => {
 
   return {
     form: await superValidate(data, zod(formSchema)),
-    barang
+    barang,
+    barangHarga
   };
 };
 
@@ -39,8 +41,8 @@ export const actions: Actions = {
 
     for (const [i, v] of form.data.produkStok.entries()) {
       if (v.tipe === 1) {
-        const barang = await db.query.barangTable.findFirst({
-          where: eq(barangTable.id, v.barangId)
+        const barang = await db.query.barangHargaTable.findFirst({
+          where: and(eq(barangHargaTable.barangId, v.barangId), eq(barangHargaTable.harga, v.harga))
         });
         const oldProduct = await db.query.stokFisikProdukTable.findFirst({
           where: eq(stokFisikProdukTable.id, v.id)
@@ -79,11 +81,12 @@ export const actions: Actions = {
 
       form.data.produkStok.forEach(async (v) => {
         v.id = generateIdFromEntropySize(10);
-        await adjustStok(v.tipe, v.kuantitas, v.barangId);
+        await updateStokUseCase(v.barangId, v.kuantitas, v.harga);
         await db.insert(stokFisikProdukTable).values({
           id: v.id,
           noStokFisik: form.data.noStokFisik,
           barangId: v.barangId,
+          harga: v.harga,
           kuantitas: v.kuantitas,
           tipe: v.tipe
         });
@@ -106,7 +109,7 @@ export const actions: Actions = {
         (op) => !form.data.produkStok.some((up) => up.id === op.id)
       );
       deletedProducts.forEach(async (v) => {
-        await adjustStok(v.tipe === 1 ? 1 : 0, v.kuantitas, v.barangId);
+        await updateStokUseCase(v.barangId, v.tipe === 1 ? v.kuantitas : -v.kuantitas, v.harga);
         await db.delete(stokFisikProdukTable).where(eq(stokFisikProdukTable.id, v.id));
       });
 
@@ -116,12 +119,12 @@ export const actions: Actions = {
       updatedProducts.forEach(async (v) => {
         const originalProduct = originalProducts.find((op) => op.id === v.id);
 
-        await adjustStok(
-          v.tipe === 1 ? 1 : 0,
-          originalProduct!.kuantitas,
-          originalProduct!.barangId
+        await updateStokUseCase(
+          originalProduct!.barangId,
+          v.tipe === 1 ? v.kuantitas : -v.kuantitas,
+          originalProduct!.harga
         );
-        await adjustStok(v.tipe, v.kuantitas, v.barangId);
+        await updateStokUseCase(v.barangId, v.tipe === 1 ? -v.kuantitas : v.kuantitas, v.harga);
 
         await db
           .update(stokFisikProdukTable)
@@ -137,11 +140,12 @@ export const actions: Actions = {
         (up) => !originalProducts.some((op) => op.id === up.id)
       );
       addedProducts.forEach(async (v) => {
-        await adjustStok(v.tipe, v.kuantitas, v.barangId);
+        await updateStokUseCase(v.barangId, v.tipe === 1 ? -v.kuantitas : v.kuantitas, v.harga);
         await db.insert(stokFisikProdukTable).values({
           id: generateIdFromEntropySize(10),
           tipe: v.tipe,
           noStokFisik: form.data.noStokFisik,
+          harga: v.harga,
           barangId: v.barangId,
           kuantitas: v.kuantitas
         });

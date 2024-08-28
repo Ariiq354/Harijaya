@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectJurnal, selectAkun } from '$lib/server/schema/keuangan';
+  import type { Jurnal, Akun } from '$lib/server/database/schema/keuangan';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
@@ -10,8 +10,8 @@
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import DataTableRenderNama from './data-table-render-nama.svelte';
 
-  type customType = selectJurnal & {
-    akun: selectAkun | null;
+  type customType = Jurnal & {
+    akun: Akun | null;
   };
 
   export let data: customType[];

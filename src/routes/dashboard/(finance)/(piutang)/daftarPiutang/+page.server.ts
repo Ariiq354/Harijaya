@@ -1,10 +1,10 @@
-import { db } from '$lib/server';
+import { db } from '$lib/server/database';
 import {
   pembayaranPiutangItemTable,
   pembayaranPiutangTable,
   piutangTable
-} from '$lib/server/schema/keuangan';
-import { getNumber } from '$lib/server/utils';
+} from '$lib/server/database/schema/keuangan';
+import { getNumber } from '$lib/server/common';
 import { getDashedDate } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { desc, eq, sql } from 'drizzle-orm';
@@ -13,6 +13,7 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { updateJurnalUseCase } from '$lib/server/use-cases/jurnal';
 
 export const load: PageServerLoad = async () => {
   const piutangData = await db.query.piutangTable.findMany({
@@ -52,9 +53,11 @@ export const actions: Actions = {
     });
 
     form.data.piutang.forEach(async (i) => {
-      const idItem = generateIdFromEntropySize(10);
+      await updateJurnalUseCase(i.noFaktur, '1-10002', i.nilai);
+      await updateJurnalUseCase(i.noFaktur, '1-20001', -i.nilai);
+
       await db.insert(pembayaranPiutangItemTable).values({
-        id: idItem,
+        id: generateIdFromEntropySize(10),
         nilai: i.nilai,
         noPembayaran: id,
         noFaktur: i.noFaktur

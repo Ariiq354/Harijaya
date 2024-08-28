@@ -1,13 +1,12 @@
-import { db } from '$lib/server';
-import { adjustStok } from '$lib/server/utils';
-import { fail } from '@sveltejs/kit';
-import { desc, eq, sql } from 'drizzle-orm';
-import type { Actions, PageServerLoad } from './$types';
+import { db } from '$lib/server/database';
 import {
   pembayaranPiutangItemTable,
   pembayaranPiutangTable,
   piutangTable
-} from '$lib/server/schema/keuangan';
+} from '$lib/server/database/schema/keuangan';
+import { fail } from '@sveltejs/kit';
+import { desc, eq, sql } from 'drizzle-orm';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
   const pembayaranPiutangData = await db.query.pembayaranPiutangTable.findMany({

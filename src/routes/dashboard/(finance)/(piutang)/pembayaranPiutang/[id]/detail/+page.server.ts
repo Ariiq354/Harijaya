@@ -1,5 +1,5 @@
-import { db } from '$lib/server';
-import { pembayaranPiutangTable, piutangTable } from '$lib/server/schema/keuangan';
+import { db } from '$lib/server/database';
+import { pembayaranPiutangTable, piutangTable } from '$lib/server/database/schema/keuangan';
 import { redirect } from '@sveltejs/kit';
 import { eq, inArray } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';

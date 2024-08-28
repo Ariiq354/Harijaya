@@ -2,6 +2,7 @@
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
   import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
+  import * as Table from '$lib/components/ui/table';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { ArrowLeft } from 'lucide-svelte';
@@ -52,6 +53,27 @@
         <Label>Satuan</Label>
         <Input disabled value={data.data.satuan} />
       </div>
+      <h1 class="my-4 font-semibold">Detail Stok</h1>
+      <Table.Root class="">
+        <Table.Header>
+          <Table.Row>
+            <Table.Head>No.</Table.Head>
+            <Table.Head>Tanggal</Table.Head>
+            <Table.Head>Harga</Table.Head>
+            <Table.Head>Stok</Table.Head>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {#each data.data.barangHarga as item, i (item.id)}
+            <Table.Row>
+              <Table.Cell>{i + 1}</Table.Cell>
+              <Table.Cell>{item.createdAt}</Table.Cell>
+              <Table.Cell>{item.harga}</Table.Cell>
+              <Table.Cell>{item.stok}</Table.Cell>
+            </Table.Row>
+          {/each}
+        </Table.Body>
+      </Table.Root>
     </Card.Content>
   </Card.Root>
 </div>

@@ -1,13 +1,14 @@
-import { db } from '$lib/server';
-import { adjustStok } from '$lib/server/utils';
-import { fail } from '@sveltejs/kit';
-import { desc, eq, sql } from 'drizzle-orm';
-import type { Actions, PageServerLoad } from './$types';
+import { db } from '$lib/server/database';
 import {
+  jurnalTable,
   pembayaranUtangItemTable,
   pembayaranUtangTable,
   utangTable
-} from '$lib/server/schema/keuangan';
+} from '$lib/server/database/schema/keuangan';
+import { fail } from '@sveltejs/kit';
+import { desc, eq, sql } from 'drizzle-orm';
+import type { Actions, PageServerLoad } from './$types';
+import { updateJurnalUseCase } from '$lib/server/use-cases/jurnal';
 
 export const load: PageServerLoad = async () => {
   const pembayaranUtangData = await db.query.pembayaranUtangTable.findMany({
@@ -32,6 +33,8 @@ export const actions: Actions = {
       });
 
       data.forEach(async (i) => {
+        await updateJurnalUseCase(i.noFaktur, '2-10001', -i.nilai);
+        await updateJurnalUseCase(i.noFaktur, '1-10002', i.nilai);
         await db
           .update(utangTable)
           .set({

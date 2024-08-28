@@ -1,18 +1,20 @@
-import { db } from '$lib/server';
+import { db } from '$lib/server/database';
+import { piutangTable } from '$lib/server/database/schema/keuangan';
 import {
+  barangHargaTable,
   barangTable,
   fakturPenjualanTable,
   penjualanProdukTable
-} from '$lib/server/schema/penjualan';
+} from '$lib/server/database/schema/penjualan';
+import { updateStokUseCase } from '$lib/server/use-cases/stok';
+import { getNumber } from '$lib/server/common';
 import { fail } from '@sveltejs/kit';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
-import { adjustStok, getNumber } from '$lib/server/utils';
-import { piutangTable } from '$lib/server/schema/keuangan';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -48,8 +50,8 @@ export const actions: Actions = {
     }
 
     for (const [i, v] of form.data.produk.entries()) {
-      const barang = await db.query.barangTable.findFirst({
-        where: eq(barangTable.id, v.barangId)
+      const barang = await db.query.barangHargaTable.findFirst({
+        where: and(eq(barangHargaTable.barangId, v.barangId), eq(barangHargaTable.harga, v.harga))
       });
       const oldProduct = await db.query.penjualanProdukTable.findFirst({
         where: eq(penjualanProdukTable.id, v.id)
@@ -105,7 +107,7 @@ export const actions: Actions = {
 
       form.data.produk.forEach(async (v, i) => {
         v.id = generateIdFromEntropySize(10);
-        await adjustStok(0, v.kuantitas, v.barangId);
+        await updateStokUseCase(v.barangId, -v.kuantitas, v.harga);
 
         await db.insert(penjualanProdukTable).values({
           id: v.id,
@@ -148,7 +150,7 @@ export const actions: Actions = {
         (op) => !form.data.produk.some((up) => up.id === op.id)
       );
       deletedProducts.forEach(async (v) => {
-        await adjustStok(1, v.kuantitas, v.barangId);
+        await updateStokUseCase(v.barangId, v.kuantitas, v.harga);
         await db.delete(penjualanProdukTable).where(eq(penjualanProdukTable.id, v.id));
       });
 
@@ -158,8 +160,12 @@ export const actions: Actions = {
       updatedProducts.forEach(async (v) => {
         const originalProduct = originalProducts.find((op) => op.id === v.id);
 
-        await adjustStok(1, originalProduct!.kuantitas, originalProduct!.barangId);
-        await adjustStok(0, v.kuantitas, v.barangId);
+        await updateStokUseCase(
+          originalProduct!.barangId,
+          originalProduct!.kuantitas,
+          originalProduct!.harga
+        );
+        await updateStokUseCase(v.barangId, -v.kuantitas, v.harga);
 
         await db
           .update(penjualanProdukTable)
@@ -175,7 +181,7 @@ export const actions: Actions = {
         (up) => !originalProducts.some((op) => op.id === up.id)
       );
       addedProducts.forEach(async (v) => {
-        await adjustStok(0, v.kuantitas, v.barangId);
+        await updateStokUseCase(v.barangId, -v.kuantitas, v.harga);
         await db.insert(penjualanProdukTable).values({
           id: v.id,
           noPenjualan: form.data.noFaktur,

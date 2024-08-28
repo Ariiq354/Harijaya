@@ -1,10 +1,10 @@
-import { db } from '$lib/server';
-import { fakturPenjualanTable } from '$lib/server/schema/penjualan';
-import { adjustStok } from '$lib/server/utils';
+import { db } from '$lib/server/database';
+import { fakturPenjualanTable } from '$lib/server/database/schema/penjualan';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
-import { piutangTable } from '$lib/server/schema/keuangan';
+import { piutangTable } from '$lib/server/database/schema/keuangan';
+import { updateStokUseCase } from '$lib/server/use-cases/stok';
 
 export const load: PageServerLoad = async () => {
   const fakturPenjualanData = await db.query.fakturPenjualanTable.findMany({
@@ -38,7 +38,7 @@ export const actions: Actions = {
         }
       });
       data?.produk.forEach(async (i) => {
-        await adjustStok(1, i.kuantitas, i.barangId);
+        await updateStokUseCase(i.barangId, i.kuantitas, i.harga);
       });
       await db.delete(fakturPenjualanTable).where(eq(fakturPenjualanTable.id, id));
       await db.delete(piutangTable).where(eq(piutangTable.noFaktur, data!.id));

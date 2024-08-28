@@ -2,13 +2,18 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
-  import type { selectBarang } from '$lib/server/schema/penjualan';
+  import type { Barang, BarangHarga } from '$lib/server/database/schema/penjualan';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import { Render, Subscribe, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
 
-  export let data: selectBarang[];
+  type selectType = {
+    barang: Barang | null;
+    barang_harga: BarangHarga;
+  };
+
+  export let data: selectType[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -25,11 +30,21 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: 'name',
-      header: 'Nama Barang'
+      accessor: ({ barang }) => barang,
+      header: 'Nama Barang',
+      cell: ({ value }) => {
+        return value!.name;
+      }
     }),
     table.column({
-      accessor: 'stok',
+      accessor: ({ barang_harga }) => barang_harga.harga,
+      header: 'Harga Barang',
+      cell: ({ value }) => {
+        return value.toLocaleString('id-ID');
+      }
+    }),
+    table.column({
+      accessor: ({ barang_harga }) => barang_harga.stok,
       header: 'Stok',
       cell: ({ value }) => {
         return value.toLocaleString('id-ID');

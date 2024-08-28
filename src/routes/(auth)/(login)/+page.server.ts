@@ -1,14 +1,15 @@
-import { db } from '$lib/server';
 import { lucia } from '$lib/server/auth';
+import { loginUseCase } from '$lib/server/use-cases/auth';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms';
-import { Argon2id } from 'oslo/password';
+import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { formSchema } from './schema';
 import type { Actions, PageServerLoad } from './$types';
+import { formSchema } from './schema';
 
 export const load: PageServerLoad = async (event) => {
-  if (event.locals.user) redirect(302, '/dashboard');
+  if (event.locals.user) {
+    redirect(302, '/dashboard');
+  }
 
   return {
     form: await superValidate(zod(formSchema))
@@ -24,26 +25,22 @@ export const actions: Actions = {
       });
     }
 
-    const exist = await db.query.userTable.findFirst({
-      where: (users, { eq }) => eq(users.username, form.data.username)
-    });
+    try {
+      const res = await loginUseCase(form.data.username, form.data.password);
 
-    if (!exist) {
-      error(401, 'Username atau password salah');
+      const session = await lucia.createSession(res.id, {});
+      const sessionCookie = lucia.createSessionCookie(session.id);
+      event.cookies.set(sessionCookie.name, sessionCookie.value, {
+        path: '.',
+        ...sessionCookie.attributes
+      });
+    } catch (err: any) {
+      if (err.message === 'Username atau password salah') {
+        return setError(form, 'username', 'Username atau password salah');
+      } else {
+        error(500, err);
+      }
     }
-
-    const validPassword = await new Argon2id().verify(exist.password!, form.data.password);
-
-    if (!validPassword) {
-      error(401, 'Username atau password salah');
-    }
-
-    const session = await lucia.createSession(exist.id, {});
-    const sessionCookie = lucia.createSessionCookie(session.id);
-    event.cookies.set(sessionCookie.name, sessionCookie.value, {
-      path: '.',
-      ...sessionCookie.attributes
-    });
 
     return {
       form
@@ -52,7 +49,7 @@ export const actions: Actions = {
 
   logout: async (event) => {
     if (!event.locals.session) {
-      return fail(401);
+      return error(401, { message: 'Unauthenticated' });
     }
 
     await lucia.invalidateSession(event.locals.session.id);

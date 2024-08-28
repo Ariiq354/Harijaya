@@ -1,9 +1,11 @@
+import { getDashedDate, getDate } from '$lib/utils';
 import { eq, like, sql } from 'drizzle-orm';
-import { db } from '.';
 import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
-import { getDate } from '$lib/utils';
-import { jurnalTable } from './schema/keuangan';
-import { barangTable } from './schema/penjualan';
+import { generateIdFromEntropySize, type User } from 'lucia';
+import { db } from './database';
+import { barangHargaTable } from './database/schema/penjualan';
+import { jurnalTable } from './database/schema/keuangan';
+import { error } from '@sveltejs/kit';
 
 export async function getNumber(
   code: string,
@@ -22,22 +24,4 @@ export async function getNumber(
     .where(like(column, sql`${code + '-'} || strftime('%Y%m%d', 'now') || '-%'`));
 
   return code + '-' + getDate() + '-' + num[0].num;
-}
-
-export async function adjustStok(tipe: number, kuantitas: number, barangId: string) {
-  if (tipe === 0) {
-    await db
-      .update(barangTable)
-      .set({
-        stok: sql<number>`${barangTable.stok} - ${kuantitas}`
-      })
-      .where(eq(barangTable.id, barangId!));
-  } else {
-    await db
-      .update(barangTable)
-      .set({
-        stok: sql<number>`${barangTable.stok} + ${kuantitas}`
-      })
-      .where(eq(barangTable.id, barangId!));
-  }
 }

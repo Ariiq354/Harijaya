@@ -1,5 +1,5 @@
-import { db } from '$lib/server';
-import { barangTable } from '$lib/server/schema/penjualan';
+import { db } from '$lib/server/database';
+import { barangTable } from '$lib/server/database/schema/penjualan';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
@@ -40,8 +40,7 @@ export const actions: Actions = {
         name: form.data.name,
         deskripsi: form.data.deskripsi,
         satuan: form.data.satuan,
-        status: form.data.status,
-        stok: 0
+        status: form.data.status
       })
       .onConflictDoUpdate({
         target: barangTable.id,

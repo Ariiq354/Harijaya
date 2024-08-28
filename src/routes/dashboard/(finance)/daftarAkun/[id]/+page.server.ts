@@ -1,5 +1,5 @@
-import { db } from '$lib/server';
-import { akunTable } from '$lib/server/schema/keuangan';
+import { db } from '$lib/server/database';
+import { akunTable } from '$lib/server/database/schema/keuangan';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { setError, superValidate } from 'sveltekit-superforms';

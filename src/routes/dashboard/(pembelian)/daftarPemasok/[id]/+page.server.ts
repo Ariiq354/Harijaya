@@ -1,5 +1,5 @@
-import { db } from '$lib/server';
-import { supplierTable } from '$lib/server/schema/pembelian';
+import { db } from '$lib/server/database';
+import { supplierTable } from '$lib/server/database/schema/pembelian';
 import { fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { generateIdFromEntropySize } from 'lucia';
@@ -7,12 +7,11 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { getSupplierByIdUseCase, submitDataSupplierUseCase } from '$lib/server/use-cases/supplier';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
-  const data = await db.query.supplierTable.findFirst({
-    where: eq(supplierTable.id, id)
-  });
+  const data = await getSupplierByIdUseCase(id);
 
   return {
     form: await superValidate(data, zod(formSchema))
@@ -28,36 +27,7 @@ export const actions: Actions = {
       });
     }
 
-    if (!form.data.id) {
-      form.data.id = generateIdFromEntropySize(10);
-    }
-
-    await db
-      .insert(supplierTable)
-      .values({
-        id: form.data.id,
-        name: form.data.name,
-        npwp: form.data.npwp,
-        phone: form.data.phone,
-        address: form.data.address,
-        email: form.data.email,
-        namaRekening: form.data.namaRekening,
-        noRekening: form.data.noRekening,
-        namaBank: form.data.namaBank
-      })
-      .onConflictDoUpdate({
-        target: supplierTable.id,
-        set: {
-          name: form.data.name,
-          npwp: form.data.npwp,
-          phone: form.data.phone,
-          address: form.data.address,
-          email: form.data.email,
-          namaRekening: form.data.namaRekening,
-          noRekening: form.data.noRekening,
-          namaBank: form.data.namaBank
-        }
-      });
+    await submitDataSupplierUseCase(form.data);
 
     return {
       form

@@ -4,7 +4,6 @@
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
   import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
-  import { Checkbox } from '$lib/components/ui/checkbox';
   import * as Form from '$lib/components/ui/form';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
@@ -19,8 +18,6 @@
   import { formSchema } from './schema';
 
   export let data: PageData;
-  let subTotal: number;
-  let ppnTotal: number;
 
   const form = superForm(data.form, {
     dataType: 'json',
@@ -53,8 +50,7 @@
     (acc, item) => acc + Number(item.harga) * Number(item.kuantitas),
     0
   );
-  $: ppnTotal = $formData.ppn ? subTotal + subTotal * 0.1 : subTotal;
-  $: total = ppnTotal + Number($formData.biayaKirim) + Number($formData.biayaLainnya);
+  $: total = subTotal + Number($formData.biayaKirim) + Number($formData.biayaLainnya);
 
   $: selectedSupplier = $formData.supplierId
     ? {
@@ -290,22 +286,7 @@
             <div class="flex w-full justify-between">
               <div>Subtotal:</div>
               <div>
-                {subTotal.toLocaleString('id-ID')}
-              </div>
-            </div>
-            <div class="flex w-full justify-between">
-              <div>PPN:</div>
-              <Form.Field {form} name="ppn">
-                <Form.Control let:attrs>
-                  <Checkbox {...attrs} bind:checked={$formData.ppn} />
-                  <input name={attrs.name} value={$formData.ppn} hidden />
-                </Form.Control>
-              </Form.Field>
-            </div>
-            <div class="flex w-full justify-between">
-              <div>Total & PPN:</div>
-              <div>
-                {ppnTotal.toLocaleString('id-ID')}
+                <Input disabled class="text-right" value={subTotal.toLocaleString('id-ID')} />
               </div>
             </div>
             <div class="flex w-full justify-between">
@@ -337,7 +318,7 @@
             <div class="flex w-full justify-between">
               <div>Grand Total:</div>
               <div>
-                {total.toLocaleString('id-ID')}
+                <Input disabled class="text-right" value={total.toLocaleString('id-ID')} />
               </div>
             </div>
           </div>

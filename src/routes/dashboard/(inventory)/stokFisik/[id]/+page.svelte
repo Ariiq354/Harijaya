@@ -38,6 +38,7 @@
         id: '',
         barangId: '',
         kuantitas: 0,
+        harga: 0,
         tipe: 1
       }
     ];
@@ -46,6 +47,13 @@
   $: selectedBarang = $formData.produkStok.map((p) => {
     const barang = data.barang.find((i) => i.id == p.barangId);
     return barang ? { label: barang.name, value: p.barangId } : undefined;
+  });
+
+  $: selectedBarangHarga = $formData.produkStok.map((p) => {
+    return {
+      label: String(p.harga),
+      value: p.harga
+    };
   });
 
   $: selectedTipe = $formData.produkStok.map((p) => ({
@@ -118,6 +126,7 @@
             <Table.Row>
               <Table.Head>No.</Table.Head>
               <Table.Head>Barang</Table.Head>
+              <Table.Head>Harga</Table.Head>
               <Table.Head>Tipe</Table.Head>
               <Table.Head>Kuantitas</Table.Head>
               <Table.Head>Action</Table.Head>
@@ -155,6 +164,33 @@
                         bind:value={$formData.produkStok[i].barangId}
                         name={attrs.name}
                       />
+                    </Form.Control>
+                    <Form.FieldErrors />
+                  </Form.ElementField>
+                </Table.Cell>
+                <Table.Cell>
+                  <Form.ElementField {form} name="produkStok[{i}].harga" class="space-y-0">
+                    <Form.Control let:attrs>
+                      <Select.Root
+                        selected={selectedBarangHarga[i]}
+                        onSelectedChange={(v) => {
+                          v && ($formData.produkStok[i].harga = v.value);
+                        }}
+                      >
+                        <Select.Trigger {...attrs}>
+                          <Select.Value placeholder="Pilih harga barang..." />
+                        </Select.Trigger>
+                        <Select.Content class="max-h-40 overflow-auto">
+                          {#if $formData.produkStok[i].barangId}
+                            {#each data.barangHarga.filter((item) => item.barangId === $formData.produkStok[i].barangId) as item}
+                              <Select.Item value={item.harga} label={String(item.harga)} />
+                            {/each}
+                          {:else}
+                            <Select.Item value="" label="No Result Found" disabled />
+                          {/if}
+                        </Select.Content>
+                      </Select.Root>
+                      <input hidden bind:value={$formData.produkStok[i].harga} name={attrs.name} />
                     </Form.Control>
                     <Form.FieldErrors />
                   </Form.ElementField>

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { selectAkun } from '$lib/server/schema/keuangan';
+  import type { Akun } from '$lib/server/database/schema/keuangan';
 
-  export let akun: selectAkun;
+  export let akun: Akun;
 </script>
 
 <div class="flex flex-col">

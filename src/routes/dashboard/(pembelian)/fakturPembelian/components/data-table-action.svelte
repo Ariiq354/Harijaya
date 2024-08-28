@@ -9,6 +9,7 @@
   import type { SubmitFunction } from '../$types';
 
   export let id: string;
+  export let bayar = false;
   let isOpen = false;
   let loading = false;
 
@@ -63,13 +64,15 @@
       <Copy class="mr-2 h-4 w-4" />
       Detail
     </DropdownMenu.Item>
-    <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
-      <Edit class="mr-2 h-4 w-4" />
-      Edit
-    </DropdownMenu.Item>
-    <DropdownMenu.Item on:click={() => (isOpen = true)}>
-      <Trash class="mr-2 h-4 w-4" />
-      Hapus
-    </DropdownMenu.Item>
+    {#if bayar}
+      <DropdownMenu.Item href={`/dashboard/fakturPembelian/${id}`}>
+        <Edit class="mr-2 h-4 w-4" />
+        Edit
+      </DropdownMenu.Item>
+      <DropdownMenu.Item on:click={() => (isOpen = true)}>
+        <Trash class="mr-2 h-4 w-4" />
+        Hapus
+      </DropdownMenu.Item>
+    {/if}
   </DropdownMenu.Content>
 </DropdownMenu.Root>

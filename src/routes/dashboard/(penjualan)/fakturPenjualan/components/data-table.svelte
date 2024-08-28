@@ -2,14 +2,14 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
-  import type { selectFakturPenjualan } from '$lib/server/schema/penjualan';
+  import type { FakturPenjualan } from '$lib/server/database/schema/penjualan';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import { Render, Subscribe, createRender, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
   import DataTableActions from './data-table-action.svelte';
 
-  type itemType = selectFakturPenjualan & {
+  type itemType = FakturPenjualan & {
     pelanggan: {
       name: string | null;
     } | null;

@@ -19,7 +19,7 @@ export const jurnalTable = sqliteTable('jurnal', {
   id: text('id').notNull().primaryKey(),
   kodeTransaksi: text('kode_transaksi').notNull(),
   tanggal: text('tanggal').notNull(),
-  noReferensi: text('no_referensi'),
+  noReferensi: text('no_referensi').notNull(),
   nominal: integer('nominal').notNull(),
   deskripsi: text('deskripsi').notNull(),
   noAkun: text('no_akun').references(() => akunTable.kode, { onDelete: 'set null' }),
@@ -158,14 +158,20 @@ export const pembayaranPiutangItemRelations = relations(pembayaranPiutangItemTab
   })
 }));
 
-export type selectAkun = typeof akunTable.$inferSelect;
+export type Akun = typeof akunTable.$inferSelect;
+export type NewAkun = typeof akunTable.$inferInsert;
 
-export type selectJurnal = typeof jurnalTable.$inferSelect;
+export type Jurnal = typeof jurnalTable.$inferSelect;
+export type NewJurnal = typeof jurnalTable.$inferInsert;
 
-export type selectUtang = typeof utangTable.$inferSelect;
+export type Utang = typeof utangTable.$inferSelect;
+export type NewUtang = typeof utangTable.$inferInsert;
 
-export type selectPiutang = typeof piutangTable.$inferSelect;
+export type Piutang = typeof piutangTable.$inferSelect;
+export type NewPiutang = typeof piutangTable.$inferInsert;
 
-export type selectPembayaranUtang = typeof pembayaranUtangTable.$inferSelect;
+export type PembayaranUtang = typeof pembayaranUtangTable.$inferSelect;
+export type NewPembayaranUtang = typeof pembayaranUtangTable.$inferInsert;
 
-export type selectPembayaranPiutang = typeof pembayaranPiutangTable.$inferSelect;
+export type PembayaranPiutang = typeof pembayaranPiutangTable.$inferSelect;
+export type NewPembayaranPiutang = typeof pembayaranPiutangTable.$inferInsert;

@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
-  import { writable } from 'svelte/store';
-  import type { selectFakturPembelian } from '$lib/server/schema/pembelian';
-  import * as Table from '$lib/components/ui/table';
-  import DataTableActions from './data-table-action.svelte';
-  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import * as Table from '$lib/components/ui/table';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { createRender, createTable, Render, Subscribe } from 'svelte-headless-table';
+  import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
+  import { writable } from 'svelte/store';
+  import DataTableActions from './data-table-action.svelte';
 
   type itemType = {
     id: string;

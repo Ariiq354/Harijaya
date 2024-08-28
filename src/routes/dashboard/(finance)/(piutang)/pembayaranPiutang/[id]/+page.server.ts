@@ -1,15 +1,16 @@
-import { db } from '$lib/server';
+import { db } from '$lib/server/database';
 import {
   pembayaranPiutangItemTable,
   pembayaranPiutangTable,
   piutangTable
-} from '$lib/server/schema/keuangan';
+} from '$lib/server/database/schema/keuangan';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
+import { updateJurnalUseCase } from '$lib/server/use-cases/jurnal';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -70,6 +71,9 @@ export const actions: Actions = {
       .where(eq(pembayaranPiutangTable.id, form.data.id));
 
     form.data.piutangItem.forEach(async (v) => {
+      await updateJurnalUseCase(v.noFaktur, '1-10002', -v.nilai);
+      await updateJurnalUseCase(v.noFaktur, '1-20001', v.nilai);
+
       await db
         .update(pembayaranPiutangItemTable)
         .set({

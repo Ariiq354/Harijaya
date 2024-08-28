@@ -1,5 +1,5 @@
-import { db } from '$lib/server';
-import { stokFisikTable } from '$lib/server/schema/inventory';
+import { db } from '$lib/server/database';
+import { stokFisikTable } from '$lib/server/database/schema/inventory';
 import { redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';

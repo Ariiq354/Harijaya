@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe, createRender } from 'svelte-headless-table';
   import { writable } from 'svelte/store';
-  import type { selectPelanggan } from '$lib/server/schema/penjualan';
+  import type { Pelanggan } from '$lib/server/database/schema/penjualan';
   import * as Table from '$lib/components/ui/table';
   import DataTableActions from './data-table-action.svelte';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
@@ -10,7 +10,7 @@
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import DataRender from './data-render.svelte';
 
-  export let data: selectPelanggan[];
+  export let data: Pelanggan[];
 
   const tableData = writable(data);
   $: tableData.set(data);

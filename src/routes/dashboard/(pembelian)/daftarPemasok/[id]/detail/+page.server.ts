@@ -1,14 +1,10 @@
-import { db } from '$lib/server';
-import { supplierTable } from '$lib/server/schema/pembelian';
-import { eq } from 'drizzle-orm';
-import type { PageServerLoad } from './$types';
+import { getSupplierByIdUseCase } from '$lib/server/use-cases/supplier';
 import { redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
-  const data = await db.query.supplierTable.findFirst({
-    where: eq(supplierTable.id, id)
-  });
+  const data = await getSupplierByIdUseCase(id);
 
   if (!data) redirect(302, '/dashboard/daftarPemasok');
 

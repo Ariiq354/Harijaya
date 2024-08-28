@@ -10,7 +10,8 @@ export const formSchema = z.object({
         id: z.string(),
         barangId: z.string().min(1, { message: 'Data tidak boleh kosong!' }),
         tipe: z.coerce.number().gt(0, { message: 'Tipe tidak boleh kosong' }),
-        kuantitas: z.coerce.number()
+        kuantitas: z.coerce.number(),
+        harga: z.number()
       })
     )
     .min(1, { message: 'Data tidak boleh kosong!' })
