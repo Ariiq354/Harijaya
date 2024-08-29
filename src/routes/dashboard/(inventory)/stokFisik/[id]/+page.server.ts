@@ -70,6 +70,14 @@ export const actions: Actions = {
       }
     }
 
+    for (const [index, item] of form.data.entries()){
+      if(item.tipe === 1) {
+        await updateJurnalUseCase(item., '1-30001', -totalMentah);
+        await updateJurnalUseCase(form.data.noProses, '1-30002', totalJadi);
+      }
+    }
+
+
     if (!form.data.id) {
       //Add products
       form.data.id = generateIdFromEntropySize(10);

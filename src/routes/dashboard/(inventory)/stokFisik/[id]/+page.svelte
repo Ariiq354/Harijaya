@@ -171,25 +171,37 @@
                 <Table.Cell>
                   <Form.ElementField {form} name="produkStok[{i}].harga" class="space-y-0">
                     <Form.Control let:attrs>
-                      <Select.Root
-                        selected={selectedBarangHarga[i]}
-                        onSelectedChange={(v) => {
-                          v && ($formData.produkStok[i].harga = v.value);
-                        }}
-                      >
-                        <Select.Trigger {...attrs}>
-                          <Select.Value placeholder="Pilih harga barang..." />
-                        </Select.Trigger>
-                        <Select.Content class="max-h-40 overflow-auto">
-                          {#if $formData.produkStok[i].barangId}
-                            {#each data.barangHarga.filter((item) => item.barangId === $formData.produkStok[i].barangId) as item}
-                              <Select.Item value={item.harga} label={String(item.harga)} />
-                            {/each}
-                          {:else}
-                            <Select.Item value="" label="No Result Found" disabled />
-                          {/if}
-                        </Select.Content>
-                      </Select.Root>
+                      {#if $formData.produkStok[i].barangId}
+                        {@const listHarga = data.barangHarga.filter(
+                          (item) => item.barangId === $formData.produkStok[i].barangId
+                        )}
+                        {#if listHarga.length > 0}
+                          <Select.Root
+                            selected={selectedBarangHarga[i]}
+                            onSelectedChange={(v) => {
+                              v && ($formData.produkStok[i].harga = v.value);
+                            }}
+                          >
+                            <Select.Trigger {...attrs}>
+                              <Select.Value placeholder="Pilih harga barang..." />
+                            </Select.Trigger>
+                            <Select.Content class="max-h-40 overflow-auto">
+                              {#each listHarga as item}
+                                <Select.Item value={item.harga} label={String(item.harga)} />
+                              {/each}
+                            </Select.Content>
+                          </Select.Root>
+                        {:else}
+                          <Input
+                            class="block"
+                            type="number"
+                            {...attrs}
+                            bind:value={$formData.produkStok[i].harga}
+                          />
+                        {/if}
+                      {:else}
+                        <Input disabled class="block" type="number" />
+                      {/if}
                       <input hidden bind:value={$formData.produkStok[i].harga} name={attrs.name} />
                     </Form.Control>
                     <Form.FieldErrors />
