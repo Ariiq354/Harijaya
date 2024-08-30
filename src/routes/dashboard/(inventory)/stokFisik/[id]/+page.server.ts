@@ -9,6 +9,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 import { formSchema } from './schema';
 import { updateStokUseCase } from '$lib/server/use-cases/stok';
+import { updateJurnalUseCase } from '$lib/server/use-cases/jurnal';
 
 export const load: PageServerLoad = async ({ params }) => {
   const id = params.id;
@@ -70,13 +71,15 @@ export const actions: Actions = {
       }
     }
 
-    for (const [index, item] of form.data.entries()){
-      if(item.tipe === 1) {
-        await updateJurnalUseCase(item., '1-30001', -totalMentah);
-        await updateJurnalUseCase(form.data.noProses, '1-30002', totalJadi);
+    for (const [index, item] of form.data.produkStok.entries()) {
+      if (item.tipe === 1) {
+        await updateJurnalUseCase(form.data.noStokFisik, '5-10012', -item.harga);
+        await updateJurnalUseCase(form.data.noStokFisik, '1-30001', -item.kuantitas);
+      } else {
+        await updateJurnalUseCase(form.data.noStokFisik, '4-10009', item.harga);
+        await updateJurnalUseCase(form.data.noStokFisik, '1-30001', item.kuantitas);
       }
     }
-
 
     if (!form.data.id) {
       //Add products
