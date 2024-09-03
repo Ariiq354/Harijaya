@@ -9,13 +9,11 @@ import type { NewSupplier } from '$lib/server/database/schema/pembelian';
 import { generateIdFromEntropySize } from 'lucia';
 
 export async function getSupplierUseCase() {
-  const data = await getAllSupplier();
-  return data;
+  return await getAllSupplier();
 }
 
 export async function getSupplierByIdUseCase(id: string) {
-  const data = await getSupplierById(id);
-  return data;
+  return await getSupplierById(id);
 }
 
 export async function submitDataSupplierUseCase(data: NewSupplier) {

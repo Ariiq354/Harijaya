@@ -2,8 +2,8 @@ import { getBarangByTypeAndStatusUseCase } from '$lib/server/use-cases/barang';
 import {
   dataSubmitFakturPembelian,
   getFakturPembelianByIdUseCase
-} from '$lib/server/use-cases/fakturPembelian';
-import { getSupplierUseCase } from '$lib/server/use-cases/supplier';
+} from '$lib/server/use-cases/pembelian/fakturPembelian';
+import { getSupplierUseCase } from '$lib/server/use-cases/pembelian/supplier';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';

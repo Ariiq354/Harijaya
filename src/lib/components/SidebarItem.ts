@@ -106,27 +106,27 @@ export const sidebarItem = [
         title: 'Stok Fisik'
       }
     ]
-  },
-  {
-    icon: BookMarked,
-    title: 'Laporan',
-    child: [
-      {
-        href: '/dashboard/bukuBesar',
-        title: 'Buku Besar'
-      },
-      {
-        href: '/dashboard/daftarTransaksi',
-        title: 'Daftar Transaksi'
-      },
-      {
-        href: '/dashboard/neraca',
-        title: 'Neraca'
-      },
-      {
-        href: '/dashboard/labaRugi',
-        title: 'Laba Rugi'
-      }
-    ]
   }
+  // {
+  //   icon: BookMarked,
+  //   title: 'Laporan',
+  //   child: [
+  //     {
+  //       href: '/dashboard/bukuBesar',
+  //       title: 'Buku Besar'
+  //     },
+  //     {
+  //       href: '/dashboard/daftarTransaksi',
+  //       title: 'Daftar Transaksi'
+  //     },
+  //     {
+  //       href: '/dashboard/neraca',
+  //       title: 'Neraca'
+  //     },
+  //     {
+  //       href: '/dashboard/labaRugi',
+  //       title: 'Laba Rugi'
+  //     }
+  //   ]
+  // }
 ];

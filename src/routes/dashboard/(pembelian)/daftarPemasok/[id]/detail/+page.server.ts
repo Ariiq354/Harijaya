@@ -1,4 +1,4 @@
-import { getSupplierByIdUseCase } from '$lib/server/use-cases/supplier';
+import { getSupplierByIdUseCase } from '$lib/server/use-cases/pembelian/supplier';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 

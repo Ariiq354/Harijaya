@@ -1,7 +1,7 @@
 import {
   deleteFakturPembelianUseCase,
   getAllFakturPembelianUseCase
-} from '$lib/server/use-cases/fakturPembelian';
+} from '$lib/server/use-cases/pembelian/fakturPembelian';
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 

@@ -1,4 +1,7 @@
-import { deleteSupplierUseCase, getSupplierUseCase } from '$lib/server/use-cases/supplier';
+import {
+  deleteSupplierUseCase,
+  getSupplierUseCase
+} from '$lib/server/use-cases/pembelian/supplier';
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 

@@ -1,4 +1,4 @@
-import { getFakturPembelianByIdWithBarangUseCase } from '$lib/server/use-cases/fakturPembelian';
+import { getFakturPembelianByIdWithBarangUseCase } from '$lib/server/use-cases/pembelian/fakturPembelian';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
