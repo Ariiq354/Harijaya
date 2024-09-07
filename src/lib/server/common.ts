@@ -1,11 +1,7 @@
-import { getDashedDate, getDate } from '$lib/utils';
-import { eq, like, sql } from 'drizzle-orm';
+import { getDate } from '$lib/utils';
+import { like, sql } from 'drizzle-orm';
 import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
-import { generateIdFromEntropySize, type User } from 'lucia';
 import { db } from './database';
-import { barangHargaTable } from './database/schema/penjualan';
-import { jurnalTable } from './database/schema/keuangan';
-import { error } from '@sveltejs/kit';
 
 export async function getNumber(
   code: string,
