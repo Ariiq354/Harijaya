@@ -5,34 +5,22 @@ import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 import {
   getAllAkunUseCase,
-  getBukuBesarInitUseCase
+  getBukuBesarInitUseCase,
+  getTotalBukuBesarBeforeInitUseCase,
+  getTotalBukuBesarAfterInitUseCase
 } from '$lib/server/use-cases/laporan/bukuBesar';
+import { getCurrentMonth, getCurrentYear } from '$lib/utils';
 
 export const load: PageServerLoad = async () => {
   const akun = await getAllAkunUseCase();
-  const jurnalData = await getBukuBesarInitUseCase();
-
-  console.log(jurnalData);
+  const jurnalData = await getBukuBesarInitUseCase(getCurrentYear(), getCurrentMonth());
+  const totalAwal = await getTotalBukuBesarBeforeInitUseCase(getCurrentYear(), getCurrentMonth());
+  const totalAkhir = await getTotalBukuBesarAfterInitUseCase(getCurrentYear(), getCurrentMonth());
 
   return {
     jurnalData,
-    akun
+    akun,
+    totalAwal,
+    totalAkhir
   };
-};
-
-export const actions: Actions = {
-  delete: async ({ url }) => {
-    const id = url.searchParams.get('id');
-    if (!id) {
-      return fail(400, { message: 'invalid request' });
-    }
-
-    try {
-      await db.delete(jurnalTable).where(eq(jurnalTable.id, id));
-    } catch (error) {
-      return fail(500, { message: 'something went wrong' });
-    }
-
-    return;
-  }
 };

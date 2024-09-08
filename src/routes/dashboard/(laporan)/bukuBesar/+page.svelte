@@ -5,19 +5,26 @@
   import { Plus } from 'lucide-svelte';
   import * as Select from '$lib/components/ui/select';
   import type { PageData } from './$types';
-  import DataTable from './components/data-table.svelte';
+  import { toast } from 'svelte-sonner';
+  import { getCurrentMonth, getCurrentMonthName, getCurrentYear } from '$lib/utils';
 
   export let data: PageData;
 
-  let selectedAkun;
+  let selectedAkun: String;
   let searchQuery = '';
+
+  let dataJurnal = data.jurnalData;
+  let totalAwal = data.totalAwal;
+  let totalAkhir = data.totalAkhir;
 
   $: filteredAkun = data.akun.filter((item) =>
     item.nama.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  let selectedPeriod: String = 'monthly';
-  let selectedYear: String = new Date().getFullYear().toString();
-  let selectedMonth: String = (new Date().getMonth() + 1).toString();
+  let period: string = 'monthly';
+  let month: string = getCurrentMonth();
+  let year: string = getCurrentYear();
+
+  let isLoading = false;
 
   // Generate list of years from 2023 to the current year
   const currentYear = new Date().getFullYear();
@@ -53,6 +60,33 @@
       currency: 'IDR'
     }).format(num);
   }
+
+  async function searchDataJurnal() {
+    try {
+      const body = {
+        year,
+        month: period === 'monthly' ? month : null,
+        noAkun: selectedAkun
+      };
+
+      isLoading = true;
+      const res = await fetch('/api/searchJurnalAkun', {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const dataRes = await res.json();
+      dataJurnal = dataRes.bukuBesar;
+      totalAwal = dataRes.before;
+      totalAkhir = dataRes.after;
+      isLoading = false;
+    } catch (error) {
+      toast.error('Something went wrong, please try again');
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4">
@@ -83,8 +117,9 @@
           <!-- Select for Akun -->
 
           <Select.Root
+            selected={{ label: '', value: '' }}
             onSelectedChange={(v) => {
-              selectedAkun = v?.value;
+              v && (selectedAkun = v?.value);
             }}
           >
             <Select.Trigger id="noAkun" class="w-[180px]">
@@ -113,7 +148,7 @@
           <Select.Root
             selected={{ label: 'Montly', value: 'montly' }}
             onSelectedChange={(v) => {
-              v && (selectedPeriod = v?.value);
+              v && (period = v?.value);
             }}
           >
             <Select.Trigger id="selectType" class="w-[180px]">
@@ -129,9 +164,9 @@
           <!-- Select for Year -->
 
           <Select.Root
-            selected={{ label: '2024', value: '2024' }}
+            selected={{ label: getCurrentYear(), value: getCurrentYear() }}
             onSelectedChange={(v) => {
-              v && (selectedYear = v?.value);
+              v && (year = v?.value);
             }}
           >
             <Select.Trigger id="selectYear" class="w-[180px]">
@@ -146,11 +181,11 @@
           </Select.Root>
           <!-- Select for Month -->
 
-          {#if selectedPeriod !== 'yearly'}
+          {#if period !== 'yearly'}
             <Select.Root
-              selected={{ label: 'Januari', value: '01' }}
+              selected={{ label: getCurrentMonthName(), value: getCurrentMonth() }}
               onSelectedChange={(v) => {
-                v && (selectedMonth = v?.value);
+                v && (month = v?.value);
               }}
             >
               <Select.Trigger id="selectMonth" class="w-[180px]">
@@ -165,7 +200,7 @@
             </Select.Root>
           {/if}
         </div>
-        <Button>Search</Button>
+        <Button disabled={isLoading} on:click={searchDataJurnal}>Search</Button>
       </div>
 
       <!-- Display the data in the table -->
@@ -187,9 +222,9 @@
             <td class="p-2"></td>
             <td class="p-2"></td>
             <td class="p-2"></td>
-            <td class="p-2">0</td>
+            <td class="p-2">{totalAwal}</td>
           </tr>
-          {#each data.jurnalData as entry}
+          {#each dataJurnal as entry}
             <tr class=" odd:bg-gray-100">
               <td class="p-2">{entry.deskripsi}</td>
               <td class="p-2">{entry.tanggal}</td>
@@ -213,7 +248,7 @@
             <td class="p-2"></td>
             <td class="p-2"></td>
             <td class="p-2"></td>
-            <td class="p-2">0</td>
+            <td class="p-2">{totalAkhir}</td>
           </tr>
         </tbody>
       </table>

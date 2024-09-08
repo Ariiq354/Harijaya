@@ -82,6 +82,33 @@ export async function getTotalJurnalBeforeDate(
   return data[0].totalNominal ? data[0].totalNominal : 0;
 }
 
+export async function getTotalJurnalAfterDate(
+  year: string,
+  month?: string | null,
+  noAkun?: string | null
+) {
+  const dateFormat = month ? `%Y-%m` : `%Y`;
+  const dateValue = month ? `${year}-${month}` : year;
+  let nextYear = year;
+  let nextMonth = month;
+
+  // Handle month increment with rollover
+  if (month) {
+    nextMonth = ((parseInt(month) % 12) + 1).toString(); // Increment month and handle rollover
+    nextYear = (month === '12' ? parseInt(year) + 1 : year).toString(); // Increment year if month is 12
+  }
+
+  // Format next date with incremented values
+  const dateValuePlus1 = nextMonth ? `${nextYear}-${String(nextMonth).padStart(2, '0')}` : nextYear;
+
+  const baseQuery = sql`SELECT SUM(${jurnalTable.nominal}) as totalNominal FROM ${jurnalTable} WHERE strftime(${dateFormat}, ${jurnalTable.createdAt}) >= ${dateValue} AND strftime(${dateFormat}, ${jurnalTable.createdAt}) <= ${dateValuePlus1}`;
+
+  const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
+
+  const data: { totalNominal: string }[] = await db.all(query);
+  return data[0].totalNominal ? data[0].totalNominal : 0;
+}
+
 export async function getTotalJurnalByDate(year: string, month?: string | null) {
   type resType = {
     nama_akun: string;
