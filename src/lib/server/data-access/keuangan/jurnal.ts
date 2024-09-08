@@ -35,13 +35,13 @@ export async function getJurnalByDate(year: string, month?: string | null, noAku
   return data;
 }
 
-export async function getJurnalBeforePeriod(start: string, noAkun?: string) {
-  const baseQuery = sql`SELECT * FROM ${jurnalTable} WHERE strftime('%Y-%m-%d', ${jurnalTable.createdAt}) < ${start}`;
+export async function getTotalJurnalBeforePeriod(start: string, noAkun?: string) {
+  const baseQuery = sql`SELECT SUM(${jurnalTable.nominal}) as totalNominal FROM ${jurnalTable} WHERE strftime('%Y-%m-%d', ${jurnalTable.createdAt}) < ${start}`;
 
   const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
 
-  const data: Jurnal[] = await db.all(query);
-  return data;
+  const data: { totalNominal: string }[] = await db.all(query);
+  return data[0].totalNominal ? data[0].totalNominal : 0;
 }
 
 export async function getTotalJurnalBeforeDate(
@@ -52,12 +52,12 @@ export async function getTotalJurnalBeforeDate(
   const dateFormat = month ? `%Y-%m` : `%Y`;
   const dateValue = month ? `${year}-${month}` : year;
 
-  const baseQuery = sql`SELECT * FROM ${jurnalTable} WHERE strftime(${dateFormat}, ${jurnalTable.createdAt}) < ${dateValue}`;
+  const baseQuery = sql`SELECT SUM(${jurnalTable.nominal}) as totalNominal FROM ${jurnalTable} WHERE strftime(${dateFormat}, ${jurnalTable.createdAt}) < ${dateValue}`;
 
   const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
 
-  const data: Jurnal[] = await db.all(query);
-  return data;
+  const data: { totalNominal: string }[] = await db.all(query);
+  return data[0].totalNominal ? data[0].totalNominal : 0;
 }
 
 export async function getTotalJurnalByDate(year: string, month?: string | null) {

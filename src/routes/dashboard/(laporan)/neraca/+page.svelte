@@ -5,6 +5,8 @@
 
   export let data: PageData;
 
+  let dataJurnal = data.data;
+
   const stopIndexAktiva = tipeAkun.indexOf('aktiva lainnya');
   const stopIndexPasiva = tipeAkun.indexOf('modal usaha');
 
@@ -20,11 +22,17 @@
     .filter((item) => pasivaItems.includes(item.kategori))
     .map((item) => item.nama);
 
-  const filteredDataAktiva = data.data.filter((item) => namaAkunAktiva.includes(item.nama_akun));
-  const filteredDataPasiva = data.data.filter((item) => namaAkunPasiva.includes(item.nama_akun));
+  const filteredDataAktiva = dataJurnal.filter((item) => namaAkunAktiva.includes(item.nama_akun));
+  const filteredDataPasiva = dataJurnal.filter((item) => namaAkunPasiva.includes(item.nama_akun));
 
   const totalAktiva = filteredDataAktiva.reduce((a, item) => (a += item.totalNominal), 0);
   const totalPasiva = filteredDataPasiva.reduce((a, item) => (a += item.totalNominal), 0);
+
+  let monthState = '';
+  let yearState = '';
+  async function searchDataJurnal(year: string, month: string) {
+    // dataJurnal = await getTotalJurnalByDateUseCase(year, month);
+  }
 </script>
 
 <div class="flex flex-col gap-4">
