@@ -105,6 +105,11 @@ export function getCurrentMonth() {
   return (currentDate.getMonth() + 1).toString().padStart(2, '0');
 }
 
+export function getCurrentYear() {
+  const currentDate = new Date();
+  return currentDate.getFullYear().toString();
+}
+
 export const tipeAkun = [
   'kas & setara kas',
   'piutang usaha',

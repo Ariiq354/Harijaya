@@ -30,8 +30,10 @@
   const totalAktiva = filteredDataAktiva.reduce((a, item) => (a += item.totalNominal), 0);
   const totalPasiva = filteredDataPasiva.reduce((a, item) => (a += item.totalNominal), 0);
 
-  let method: 'Monthly' | 'Yearly' = 'Monthly';
-  let yearState = '';
+  let method: string = 'Monthly';
+  let month: string = '01';
+  let year: string = '2024';
+
   async function searchDataJurnal(year: string, month: string) {
     // dataJurnal = await getTotalJurnalByDateUseCase(year, month);
   }
@@ -55,20 +57,63 @@
     </div>
   </div>
   <hr class="border-black" />
-  <div class="flex justify-between rounded-lg border-2 bg-white px-12 py-4">
-    <div>
-      <Select.Root selected={'Monthly'}>
+  <div class="flex justify-between rounded-lg border-2 bg-white px-4 py-4">
+    <div class="flex gap-4">
+      <Select.Root
+        selected={{ label: 'Monthly', value: 'Monthly' }}
+        onSelectedChange={(v) => {
+          v && (method = v.value);
+        }}
+      >
         <Select.Trigger class="w-[180px]">
-          <Select.Value placeholder="Theme" />
+          <Select.Value />
         </Select.Trigger>
         <Select.Content>
           <Select.Item value="Monthly">Monthly</Select.Item>
           <Select.Item value="Yearly">Yearly</Select.Item>
         </Select.Content>
       </Select.Root>
+      {#if method === 'Monthly'}
+        <Select.Root
+          selected={{ label: 'January', value: '01' }}
+          onSelectedChange={(v) => {
+            v && (month = v.value);
+          }}
+        >
+          <Select.Trigger class="w-[180px]">
+            <Select.Value placeholder="Theme" />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Item value="01">January</Select.Item>
+            <Select.Item value="02">February</Select.Item>
+            <Select.Item value="03">March</Select.Item>
+            <Select.Item value="04">April</Select.Item>
+            <Select.Item value="05">May</Select.Item>
+            <Select.Item value="06">June</Select.Item>
+            <Select.Item value="07">July</Select.Item>
+            <Select.Item value="08">August</Select.Item>
+            <Select.Item value="09">September</Select.Item>
+            <Select.Item value="10">October</Select.Item>
+            <Select.Item value="11">November</Select.Item>
+            <Select.Item value="12">December</Select.Item>
+          </Select.Content>
+        </Select.Root>
+      {/if}
+      <Select.Root
+        selected={{ label: '2024', value: '2024' }}
+        onSelectedChange={(v) => {
+          v && (method = v.value);
+        }}
+      >
+        <Select.Trigger class="w-[180px]">
+          <Select.Value placeholder="Theme" />
+        </Select.Trigger>
+        <Select.Content>
+          <Select.Item value="2024">2024</Select.Item>
+          <Select.Item value="2023">2023</Select.Item>
+        </Select.Content>
+      </Select.Root>
     </div>
-    <div>month</div>
-    <div>Year</div>
     <Button>Search</Button>
   </div>
   <div class="rounded-lg border-2 bg-white px-12 py-4">
