@@ -39,7 +39,7 @@
     </div>
     <table class="w-full">
       {#each limitedItems as item, i}
-        {@const daftarAkun = data.data.filter((i) => i.kategori === item)}
+        {@const daftarAkun = data.dataAkun.filter((i) => i.kategori === item)}
         <tr class="border-b-2 odd:bg-gray-100">
           <td colspan="2" class="p-2 font-semibold">
             {item.charAt(0).toUpperCase() + item.slice(1)}
