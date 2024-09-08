@@ -6,12 +6,12 @@ import * as keuangan from './schema/keuangan';
 import * as pembelian from './schema/pembelian';
 import * as penjualan from './schema/penjualan';
 import * as inventory from './schema/inventory';
-import { DATABASE_URL, DATABASE_AUTH_TOKEN } from '$env/static/private';
+// import { DATABASE_URL, DATABASE_AUTH_TOKEN } from '$env/static/private';
 
 const client = createClient({
-  // url: 'file:test.db'
-  url: DATABASE_URL,
-  authToken: DATABASE_AUTH_TOKEN
+  url: 'file:test.db'
+  // url: DATABASE_URL,
+  // authToken: DATABASE_AUTH_TOKEN
 });
 
 export const db = drizzle(client, {

@@ -15,3 +15,5 @@ export const bukuBesarTable = sqliteTable('buku_besar', {
     .default(sql`(CURRENT_TIMESTAMP)`)
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
 });
+
+export type BukuBesar = typeof bukuBesarTable.$inferSelect;
