@@ -9,9 +9,13 @@
   let stopIndexPasiva = tipeAkun.findIndex((item) => item === 'modal usaha');
 
   let limitedItems = tipeAkun.slice(0, stopIndexPasiva + 1);
+
+  const filteredData = data.data.filter((item) => limitedItems.includes(item.nama_akun));
 </script>
 
 <div class="flex flex-col gap-4">
+  filtered item: {filteredData}
+  {limitedItems}
   <Breadcrumb.Root>
     <Breadcrumb.List>
       <Breadcrumb.Item>
@@ -46,9 +50,10 @@
           </td>
         </tr>
         {#each daftarAkun as akun}
+          {@const dataTotalAkun = data.data.find((item) => item.nama_akun === akun.nama)}
           <tr class="border-b-2 odd:bg-gray-100">
             <td class="p-2 indent-10">{akun.nama}</td>
-            <td>0</td>
+            <td>{dataTotalAkun ? dataTotalAkun.totalNominal : 0}</td>
           </tr>
         {/each}
         {#if i === stopIndexAktiva}
