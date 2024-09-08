@@ -2,18 +2,14 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import * as Table from '$lib/components/ui/table';
+  import type { tableJurnalType } from '$lib/server/data-access/keuangan/jurnal';
   import type { Barang, BarangHarga } from '$lib/server/database/schema/penjualan';
   import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import { Render, Subscribe, createTable } from 'svelte-headless-table';
   import { addPagination, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
   import { writable } from 'svelte/store';
 
-  type selectType = {
-    barang: Barang | null;
-    barang_harga: BarangHarga;
-  };
-
-  export let data: selectType[];
+  export let data: tableJurnalType[];
 
   const tableData = writable(data);
   $: tableData.set(data);
@@ -30,24 +26,51 @@
 
   const columns = table.createColumns([
     table.column({
-      accessor: ({ barang }) => barang,
-      header: 'Nama Barang',
+      accessor: 'deskripsi',
+      header: 'Description',
       cell: ({ value }) => {
-        return value!.name;
+        if (value) {
+          return value;
+        } else {
+          return 'No Description';
+        }
       }
     }),
     table.column({
-      accessor: ({ barang_harga }) => barang_harga.harga,
-      header: 'Harga Barang',
+      accessor: 'created_at',
+      header: 'Date',
       cell: ({ value }) => {
-        return value.toLocaleString('id-ID');
+        if (value) {
+          return value.slice(0, 10);
+        } else {
+          return 'No Date';
+        }
       }
     }),
     table.column({
-      accessor: ({ barang_harga }) => barang_harga.stok,
-      header: 'Stok',
+      accessor: 'kode_transaksi',
+      header: 'Code'
+    }),
+    table.column({
+      accessor: ({ nominal }) => nominal,
+      header: 'Debit',
       cell: ({ value }) => {
-        return value.toLocaleString('id-ID');
+        if (value > 0) {
+          return value.toLocaleString('id-ID');
+        } else {
+          return 0;
+        }
+      }
+    }),
+    table.column({
+      accessor: ({ nominal }) => nominal,
+      header: 'Kredit',
+      cell: ({ value }) => {
+        if (value < 0) {
+          return value.toLocaleString('id-ID');
+        } else {
+          return 0;
+        }
       }
     })
   ]);
@@ -55,13 +78,9 @@
   const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
     table.createViewModel(columns);
   const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
-  const { filterValue } = pluginStates.filter;
 </script>
 
 <div>
-  <div class="flex items-center py-4">
-    <Input class="max-w-sm" placeholder="Cari..." type="text" bind:value={$filterValue} />
-  </div>
   <div class="grid grid-cols-1 overflow-auto rounded-md border">
     <Table.Root {...$tableAttrs}>
       <Table.Header>
@@ -98,7 +117,7 @@
               <Table.Cell>{i + 1}</Table.Cell>
               {#each row.cells as cell (cell.id)}
                 <Subscribe attrs={cell.attrs()} let:attrs>
-                  <Table.Cell {...attrs} class="number-3 last:text-center">
+                  <Table.Cell {...attrs} class="number-5 number-6">
                     <Render of={cell.render()} />
                   </Table.Cell>
                 </Subscribe>
