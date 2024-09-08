@@ -1,12 +1,14 @@
 <script lang="ts">
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
-  import { Button } from '$lib/components/ui/button';
-  import * as Card from '$lib/components/ui/card';
-  import { Plus } from 'lucide-svelte';
-  import type { PageData } from './$types';
   import { getDashedDate, tipeAkun } from '$lib/utils';
+  import type { PageData } from './$types';
 
   export let data: PageData;
+
+  let stopIndexAktiva = tipeAkun.findIndex((item) => item === 'aktiva lainnya');
+  let stopIndexPasiva = tipeAkun.findIndex((item) => item === 'modal usaha');
+
+  let limitedItems = tipeAkun.slice(0, stopIndexPasiva + 1);
 </script>
 
 <div class="flex flex-col gap-4">
@@ -36,12 +38,12 @@
       </div>
     </div>
     <table class="w-full">
-      {#each tipeAkun as item}
+      {#each limitedItems as item, i}
         {@const daftarAkun = data.data.filter((i) => i.kategori === item)}
         <tr class="border-b-2 odd:bg-gray-100">
-          <td colspan="2" class="p-2 font-semibold"
-            >{item.charAt(0).toUpperCase() + item.slice(1)}</td
-          >
+          <td colspan="2" class="p-2 font-semibold">
+            {item.charAt(0).toUpperCase() + item.slice(1)}
+          </td>
         </tr>
         {#each daftarAkun as akun}
           <tr class="border-b-2 odd:bg-gray-100">
@@ -49,6 +51,18 @@
             <td>0</td>
           </tr>
         {/each}
+        {#if i === stopIndexAktiva}
+          <tr class="border-b-2 odd:bg-gray-100">
+            <td class="p-2 font-semibold text-blue-400"> Total Aktiva </td>
+            <td>0</td>
+          </tr>
+        {/if}
+        {#if i === stopIndexPasiva}
+          <tr class="border-b-2 odd:bg-gray-100">
+            <td class="p-2 font-semibold text-blue-400"> Total Pasiva </td>
+            <td>0</td>
+          </tr>
+        {/if}
       {/each}
     </table>
   </div>

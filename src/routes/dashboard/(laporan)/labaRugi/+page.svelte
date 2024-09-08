@@ -1,10 +1,13 @@
 <script lang="ts">
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
-  import { Button } from '$lib/components/ui/button';
-  import * as Card from '$lib/components/ui/card';
-  import { Plus } from 'lucide-svelte';
-  import type { PageData } from './$types';
   import { getDashedDate, tipeAkun } from '$lib/utils';
+  import type { PageData } from './$types';
+
+  export let data: PageData;
+
+  let startIndex = tipeAkun.findIndex((item) => item === 'pendapatan usaha');
+  let limitedItems = tipeAkun.slice(startIndex, tipeAkun.length - 1);
+  let stopIndexPendapatan = limitedItems.findIndex((item) => item === 'pendapatan lainnya');
 </script>
 
 <div class="flex flex-col gap-4">
@@ -34,42 +37,32 @@
       </div>
     </div>
     <table class="w-full">
-      <tr class="border-b-2 odd:bg-gray-100">
-        <td colspan="3" class="p-2 font-semibold"> Pendapatan </td>
-      </tr>
-      <tr class="border-b-2 odd:bg-gray-100">
-        <td class="p-2 indent-10"> Pendapatan Jasa </td>
-        <td class="text-right">1000000</td>
-        <td></td>
-      </tr>
-      <tr class="border-b-2 odd:bg-gray-100">
-        <td class="p-2 indent-10"> Pendapatan Penjualan Barang </td>
-        <td class="text-right">1000000</td>
-        <td></td>
-      </tr>
-      <tr class="border-b-2 odd:bg-gray-100">
-        <td class="p-2 indent-10"> Pendapatan Penjualan Per Barang </td>
-        <td class="text-right">1000000</td>
-        <td></td>
-      </tr>
-      <tr class="border-b-2 odd:bg-gray-100">
-        <td class="p-2 indent-10"> Retur Penjualan </td>
-        <td class="text-right">-</td>
-        <td></td>
-      </tr>
-      <tr class="border-b-2 odd:bg-gray-100">
-        <td class="p-2 indent-10"> Potongan Penjualan </td>
-        <td class="text-right">-</td>
-        <td></td>
-      </tr>
-      <tr class="border-b-2 odd:bg-gray-100">
-        <td class="p-2 text-blue-500"> Total Pendapatan </td>
-        <td></td>
-        <td class="p-2 text-right">9182739</td>
-      </tr>
-      <tr class="border-b-2 odd:bg-gray-100">
-        <td colspan="3" class="p-2 font-semibold"> Harga Pokok Penjualan </td>
-      </tr>
+      {#each limitedItems as item, i}
+        {@const daftarAkun = data.data.filter((i) => i.kategori === item)}
+        <tr class="border-b-2 odd:bg-gray-100">
+          <td colspan="2" class="p-2 font-semibold">
+            {item.charAt(0).toUpperCase() + item.slice(1)}
+          </td>
+        </tr>
+        {#each daftarAkun as akun}
+          <tr class="border-b-2 odd:bg-gray-100">
+            <td class="p-2 indent-10">{akun.nama}</td>
+            <td>0</td>
+          </tr>
+        {/each}
+        {#if i === stopIndexPendapatan}
+          <tr class="border-b-2 odd:bg-gray-100">
+            <td class="p-2 font-semibold text-blue-400"> Total Pendapatan </td>
+            <td>0</td>
+          </tr>
+        {/if}
+        {#if i === limitedItems.length - 1}
+          <tr class="border-b-2 odd:bg-gray-100">
+            <td class="p-2 font-semibold text-blue-400"> Total Biaya </td>
+            <td>0</td>
+          </tr>
+        {/if}
+      {/each}
     </table>
   </div>
 </div>
