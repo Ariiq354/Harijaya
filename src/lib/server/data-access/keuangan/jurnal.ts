@@ -35,6 +35,31 @@ export async function getJurnalByDate(year: string, month?: string | null, noAku
   return data;
 }
 
+export async function getJurnalBeforePeriod(start: string, noAkun?: string) {
+  const baseQuery = sql`SELECT * FROM ${jurnalTable} WHERE strftime('%Y-%m-%d', ${jurnalTable.createdAt}) < ${start}`;
+
+  const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
+
+  const data: Jurnal[] = await db.all(query);
+  return data;
+}
+
+export async function getTotalJurnalBeforeDate(
+  year: string,
+  month?: string | null,
+  noAkun?: string | null
+) {
+  const dateFormat = month ? `%Y-%m` : `%Y`;
+  const dateValue = month ? `${year}-${month}` : year;
+
+  const baseQuery = sql`SELECT * FROM ${jurnalTable} WHERE strftime(${dateFormat}, ${jurnalTable.createdAt}) < ${dateValue}`;
+
+  const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
+
+  const data: Jurnal[] = await db.all(query);
+  return data;
+}
+
 export async function getTotalJurnalByDate(year: string, month?: string | null) {
   type resType = {
     nama_akun: string;
