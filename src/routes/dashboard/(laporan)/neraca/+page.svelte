@@ -5,17 +5,29 @@
 
   export let data: PageData;
 
-  let stopIndexAktiva = tipeAkun.findIndex((item) => item === 'aktiva lainnya');
-  let stopIndexPasiva = tipeAkun.findIndex((item) => item === 'modal usaha');
+  const stopIndexAktiva = tipeAkun.indexOf('aktiva lainnya');
+  const stopIndexPasiva = tipeAkun.indexOf('modal usaha');
 
-  let limitedItems = tipeAkun.slice(0, stopIndexPasiva + 1);
+  const limitedItems = tipeAkun.slice(0, stopIndexPasiva + 1);
 
-  const filteredData = data.data.filter((item) => limitedItems.includes(item.nama_akun));
+  const aktivaItems = limitedItems.slice(0, stopIndexAktiva + 1);
+  const pasivaItems = limitedItems.slice(stopIndexAktiva + 1, stopIndexPasiva + 1);
+
+  const namaAkunAktiva = data.dataAkun
+    .filter((item) => aktivaItems.includes(item.kategori))
+    .map((item) => item.nama);
+  const namaAkunPasiva = data.dataAkun
+    .filter((item) => pasivaItems.includes(item.kategori))
+    .map((item) => item.nama);
+
+  const filteredDataAktiva = data.data.filter((item) => namaAkunAktiva.includes(item.nama_akun));
+  const filteredDataPasiva = data.data.filter((item) => namaAkunPasiva.includes(item.nama_akun));
+
+  const totalAktiva = filteredDataAktiva.reduce((a, item) => (a += item.totalNominal), 0);
+  const totalPasiva = filteredDataPasiva.reduce((a, item) => (a += item.totalNominal), 0);
 </script>
 
 <div class="flex flex-col gap-4">
-  filtered item: {filteredData}
-  {limitedItems}
   <Breadcrumb.Root>
     <Breadcrumb.List>
       <Breadcrumb.Item>
@@ -57,15 +69,15 @@
           </tr>
         {/each}
         {#if i === stopIndexAktiva}
-          <tr class="border-b-2 odd:bg-gray-100">
-            <td class="p-2 font-semibold text-blue-400"> Total Aktiva </td>
-            <td>0</td>
+          <tr class="border-b-2 text-blue-400 odd:bg-gray-100">
+            <td class="p-2 font-semibold"> Total Aktiva </td>
+            <td>{totalAktiva}</td>
           </tr>
         {/if}
         {#if i === stopIndexPasiva}
-          <tr class="border-b-2 odd:bg-gray-100">
-            <td class="p-2 font-semibold text-blue-400"> Total Pasiva </td>
-            <td>0</td>
+          <tr class="border-b-2 text-blue-400 odd:bg-gray-100">
+            <td class="p-2 font-semibold"> Total Pasiva </td>
+            <td>{totalPasiva}</td>
           </tr>
         {/if}
       {/each}
