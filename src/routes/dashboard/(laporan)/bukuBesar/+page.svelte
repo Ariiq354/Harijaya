@@ -17,7 +17,7 @@
   );
   let selectedPeriod: String = 'monthly';
   let selectedYear: String = new Date().getFullYear().toString();
-  let selectedMonth;
+  let selectedMonth: String = (new Date().getMonth() + 1).toString();
 
   // Generate list of years from 2023 to the current year
   const currentYear = new Date().getFullYear();
@@ -78,15 +78,16 @@
 
   <Card.Root>
     <Card.Content>
-      <div class="mt-3 flex items-center justify-between">
-        <!-- Select for Akun -->
-        <div class="min-w-48">
+      <div class="flex justify-between rounded-lg border-2 bg-white px-4 py-4">
+        <div class="flex gap-4">
+          <!-- Select for Akun -->
+
           <Select.Root
             onSelectedChange={(v) => {
               selectedAkun = v?.value;
             }}
           >
-            <Select.Trigger id="noAkun">
+            <Select.Trigger id="noAkun" class="w-[180px]">
               <Select.Value class="capitalize" placeholder="Pilih Akun" />
             </Select.Trigger>
 
@@ -107,17 +108,15 @@
               {/if}
             </Select.Content>
           </Select.Root>
-        </div>
+          <!-- Select for Period -->
 
-        <!-- Select for Period -->
-        <div>
           <Select.Root
             selected={{ label: 'Montly', value: 'montly' }}
             onSelectedChange={(v) => {
               v && (selectedPeriod = v?.value);
             }}
           >
-            <Select.Trigger id="selectType">
+            <Select.Trigger id="selectType" class="w-[180px]">
               <Select.Value placeholder="Select Period" />
             </Select.Trigger>
 
@@ -127,16 +126,15 @@
               {/each}
             </Select.Content>
           </Select.Root>
-        </div>
+          <!-- Select for Year -->
 
-        <!-- Select for Year -->
-        <div>
           <Select.Root
+            selected={{ label: '2024', value: '2024' }}
             onSelectedChange={(v) => {
-              selectedYear = v?.value;
+              v && (selectedYear = v?.value);
             }}
           >
-            <Select.Trigger id="selectYear">
+            <Select.Trigger id="selectYear" class="w-[180px]">
               <Select.Value placeholder="Select Year" />
             </Select.Trigger>
 
@@ -146,17 +144,16 @@
               {/each}
             </Select.Content>
           </Select.Root>
-        </div>
+          <!-- Select for Month -->
 
-        <!-- Select for Month -->
-        <div>
           {#if selectedPeriod !== 'yearly'}
             <Select.Root
+              selected={{ label: 'Januari', value: '01' }}
               onSelectedChange={(v) => {
-                selectedMonth = v?.value;
+                v && (selectedMonth = v?.value);
               }}
             >
-              <Select.Trigger id="selectMonth">
+              <Select.Trigger id="selectMonth" class="w-[180px]">
                 <Select.Value placeholder="Select Month" />
               </Select.Trigger>
 
@@ -168,6 +165,7 @@
             </Select.Root>
           {/if}
         </div>
+        <Button>Search</Button>
       </div>
 
       <!-- Display the data in the table -->
@@ -183,24 +181,40 @@
           </tr>
         </thead>
         <tbody>
+          <tr class=" border p-2 odd:bg-gray-100"
+            ><td class="p-2">Saldo Awal</td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+            <td class="p-2">0</td>
+          </tr>
           {#each data.jurnalData as entry}
-            <tr>
-              <td class="border p-2">{entry.deskripsi}</td>
-              <td class="border p-2">{entry.tanggal}</td>
-              <td class="border p-2">{entry.kode_transaksi}</td>
-              <td class="border p-2">
+            <tr class=" odd:bg-gray-100">
+              <td class="p-2">{entry.deskripsi}</td>
+              <td class="p-2">{entry.tanggal}</td>
+              <td class="p-2">{entry.kode_transaksi}</td>
+              <td class="p-2">
                 {#if entry.nominal > 0}
                   {formatNumber(entry.nominal)}
                 {/if}
               </td>
-              <td class="border p-2">
+              <td class="p-2">
                 {#if entry.nominal < 0}
                   {formatNumber(Math.abs(entry.nominal))}
                 {/if}
               </td>
-              <td class="border p-2"> </td>
+              <td class="p-2"> </td>
             </tr>
           {/each}
+          <tr class=" border p-2 odd:bg-gray-100"
+            ><td class="p-2">Saldo Akhir</td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+            <td class="p-2">0</td>
+          </tr>
         </tbody>
       </table>
     </Card.Content>
