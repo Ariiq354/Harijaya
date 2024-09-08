@@ -14,12 +14,6 @@ export async function getAkunById(id: string) {
   return data;
 }
 
-export async function getAllAkun() {
-  const data = await db.query.akunTable.findMany();
-
-  return data;
-}
-
 export async function createAkun(data: NewAkun) {
   await db.insert(akunTable).values(data);
 }

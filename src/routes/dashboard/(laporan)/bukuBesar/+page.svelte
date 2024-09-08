@@ -9,22 +9,22 @@
 
   export let data: PageData;
 
-  // $: selectedAkun = $data.noAkun
-  //   ? {
-  //       label: data.akun.find((i) => i.kode == $data.noAkun)?.nama,
-  //       value: $data.noAkun
-  //     }
-  //   : undefined;
-
   let selectedAkun;
   let searchQuery = '';
-  let selectedYear = '';
+  let selectedYear;
   $: filteredAkun = data.akun.filter((item) =>
     item.nama.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  let selectedPeriod; // Will hold the selected value
+  let selectedPeriod = '';
+  let selectedMonth;
 
-  // Options for the dropdown
+  // Generate list of years from 2023 to the current year
+  const currentYear = new Date().getFullYear();
+  let years = [];
+  for (let year = 2023; year <= currentYear; year++) {
+    years.push({ value: year.toString(), label: year.toString() });
+  }
+
   let options = [
     { value: 'yearly', label: 'Yearly' },
     { value: 'monthly', label: 'Monthly' },
@@ -46,7 +46,12 @@
     { value: '12', label: 'Desember' }
   ];
 
-  let selectedMonth; // Will hold the selected value
+  function formatNumber(num: number): string {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR'
+    }).format(num);
+  }
 </script>
 
 <div class="flex flex-col gap-4">
@@ -61,16 +66,19 @@
       </Breadcrumb.Item>
     </Breadcrumb.List>
   </Breadcrumb.Root>
+
   <div class="flex items-center justify-between">
     <div class="flex flex-col gap-1">
       <h1 class="text-3xl font-bold">Buku Besar</h1>
     </div>
   </div>
+
   <hr class="border-black" />
 
   <Card.Root>
     <Card.Content>
       <div class="mt-3 flex items-center justify-between">
+        <!-- Select for Akun -->
         <Select.Root
           onSelectedChange={(v) => {
             selectedAkun = v?.value;
@@ -97,6 +105,8 @@
             {/if}
           </Select.Content>
         </Select.Root>
+
+        <!-- Select for Period -->
         <Select.Root
           onSelectedChange={(v) => {
             selectedPeriod = v?.value;
@@ -107,31 +117,82 @@
           </Select.Trigger>
 
           <Select.Content class="max-h-40 max-w-sm overflow-auto">
-            <!-- List of dropdown items -->
             {#each options as option}
               <Select.Item value={option.value} label={option.label} />
             {/each}
           </Select.Content>
         </Select.Root>
+
+        <!-- Select for Year -->
         <Select.Root
           onSelectedChange={(v) => {
-            selectedMonth = v?.value;
+            selectedYear = v?.value;
           }}
         >
-          <Select.Trigger id="selectMonth">
-            <Select.Value placeholder="Select Month" />
+          <Select.Trigger id="selectYear">
+            <Select.Value placeholder="Select Year" />
           </Select.Trigger>
 
           <Select.Content class="max-h-40 max-w-sm overflow-auto">
-            <!-- List of dropdown items -->
-            {#each months as month}
-              <Select.Item value={month.value} label={month.label} />
+            {#each years as year}
+              <Select.Item value={year.value} label={year.label} />
             {/each}
           </Select.Content>
         </Select.Root>
+
+        <!-- Select for Month -->
+        {#if selectedPeriod !== 'yearly'}
+          <Select.Root
+            onSelectedChange={(v) => {
+              selectedMonth = v?.value;
+            }}
+          >
+            <Select.Trigger id="selectMonth">
+              <Select.Value placeholder="Select Month" />
+            </Select.Trigger>
+
+            <Select.Content class="max-h-40 max-w-sm overflow-auto">
+              {#each months as month}
+                <Select.Item value={month.value} label={month.label} />
+              {/each}
+            </Select.Content>
+          </Select.Root>
+        {/if}
       </div>
 
-      <DataTable data={data.jurnalData} />
+      <!-- Display the data in the table -->
+      <table class="mt-4 w-full border-collapse">
+        <thead>
+          <tr>
+            <th class="border p-2">Deskripsi</th>
+            <th class="border p-2">Tanggal</th>
+            <th class="border p-2">Kode</th>
+            <th class="border p-2">Debit</th>
+            <th class="border p-2">Kredit</th>
+            <th class="border p-2">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each data.jurnalData as entry}
+            <tr>
+              <td class="border p-2">{entry.deskripsi}</td>
+              <td class="border p-2">{entry.tanggal}</td>
+              <td class="border p-2">{entry.kodeTransaksi}</td>
+              <td class="border p-2">
+                {#if entry.nominal > 0}
+                  {formatNumber(entry.nominal)}
+                {/if}
+              </td>
+              <td class="border p-2">
+                {#if entry.nominal < 0}
+                  {formatNumber(Math.abs(entry.nominal))}
+                {/if}
+              </td>
+              <td class="border p-2"> </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
     </Card.Content>
   </Card.Root>
 </div>

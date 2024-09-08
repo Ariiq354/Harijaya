@@ -1,8 +1,8 @@
 import { getAllAkun } from '$lib/server/data-access/keuangan/akun';
-import { getAllJurnal } from '$lib/server/data-access/keuangan/jurnal';
+import { getAllJurnal, getJurnalByDate } from '$lib/server/data-access/keuangan/jurnal';
 
-export async function getBukuBesarAllUseCase() {
-  return await getAllJurnal();
+export async function getBukuBesarInitUseCase() {
+  return await getJurnalByDate('2024');
 }
 
 export async function getBukuBesarAkunMonthlyUseCase(

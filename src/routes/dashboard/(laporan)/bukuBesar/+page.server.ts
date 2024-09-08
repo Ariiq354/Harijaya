@@ -3,11 +3,16 @@ import { jurnalTable } from '$lib/server/database/schema/keuangan';
 import { fail } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
-import { getAllAkunUseCase, getBukuBesarAllUseCase } from '$lib/server/use-cases/laporan/bukuBesar';
+import {
+  getAllAkunUseCase,
+  getBukuBesarInitUseCase
+} from '$lib/server/use-cases/laporan/bukuBesar';
 
 export const load: PageServerLoad = async () => {
   const akun = await getAllAkunUseCase();
-  const jurnalData = await getBukuBesarAllUseCase();
+  const jurnalData = await getBukuBesarInitUseCase();
+
+  console.log(jurnalData);
 
   return {
     jurnalData,
