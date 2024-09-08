@@ -1,6 +1,16 @@
 import { db } from '$lib/server/database';
 import { jurnalTable, type NewJurnal } from '$lib/server/database/schema/keuangan';
-import { eq, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
+
+export async function getAllJurnal() {
+  const data = await db.query.jurnalTable.findMany({
+    with: {
+      akun: true
+    },
+    orderBy: [desc(jurnalTable.createdAt)]
+  });
+  return data;
+}
 
 export async function getJurnalById(id: string) {
   const data = await db.query.jurnalTable.findFirst({

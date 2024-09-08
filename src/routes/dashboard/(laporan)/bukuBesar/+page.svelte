@@ -8,6 +8,45 @@
   import DataTable from './components/data-table.svelte';
 
   export let data: PageData;
+
+  // $: selectedAkun = $data.noAkun
+  //   ? {
+  //       label: data.akun.find((i) => i.kode == $data.noAkun)?.nama,
+  //       value: $data.noAkun
+  //     }
+  //   : undefined;
+
+  let selectedAkun;
+  let searchQuery = '';
+  let selectedYear = '';
+  $: filteredAkun = data.akun.filter((item) =>
+    item.nama.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  let selectedPeriod; // Will hold the selected value
+
+  // Options for the dropdown
+  let options = [
+    { value: 'yearly', label: 'Yearly' },
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'period', label: 'Period' }
+  ];
+
+  let months = [
+    { value: '01', label: 'Januari' },
+    { value: '02', label: 'Februari' },
+    { value: '03', label: 'Maret' },
+    { value: '04', label: 'April' },
+    { value: '05', label: 'Mei' },
+    { value: '06', label: 'Juni' },
+    { value: '07', label: 'Juli' },
+    { value: '08', label: 'Agustus' },
+    { value: '09', label: 'September' },
+    { value: '10', label: 'Oktober' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'Desember' }
+  ];
+
+  let selectedMonth; // Will hold the selected value
 </script>
 
 <div class="flex flex-col gap-4">
@@ -28,27 +67,70 @@
     </div>
   </div>
   <hr class="border-black" />
+
   <Card.Root>
     <Card.Content>
-      <Select.Root
-        selected={selectedAkun}
-        onSelectedChange={(v) => {
-          v && ($formData.noAkun = v.value);
-        }}
-      >
-        <Select.Trigger id="noAkun">
-          <Select.Value class="capitalize" placeholder="Pilih Akun" />
-        </Select.Trigger>
-        <Select.Content class="max-h-40 overflow-auto">
-          {#if data.akun.length}
-            {#each data.akun as item}
-              <Select.Item value={item.kode} label={item.nama} />
+      <div class="mt-3 flex items-center justify-between">
+        <Select.Root
+          onSelectedChange={(v) => {
+            selectedAkun = v?.value;
+          }}
+        >
+          <Select.Trigger id="noAkun">
+            <Select.Value class="capitalize" placeholder="Pilih Akun" />
+          </Select.Trigger>
+
+          <!-- Search input field -->
+          <Select.Content class="max-h-40 max-w-sm overflow-auto">
+            <input
+              type="text"
+              placeholder="Search Akun..."
+              class="w-full border p-2"
+              bind:value={searchQuery}
+            />
+            {#if filteredAkun.length}
+              {#each filteredAkun as item}
+                <Select.Item value={item.kode} label={item.nama} />
+              {/each}
+            {:else}
+              <Select.Item disabled value="" label="No Result Found" />
+            {/if}
+          </Select.Content>
+        </Select.Root>
+        <Select.Root
+          onSelectedChange={(v) => {
+            selectedPeriod = v?.value;
+          }}
+        >
+          <Select.Trigger id="selectType">
+            <Select.Value placeholder="Select Period" />
+          </Select.Trigger>
+
+          <Select.Content class="max-h-40 max-w-sm overflow-auto">
+            <!-- List of dropdown items -->
+            {#each options as option}
+              <Select.Item value={option.value} label={option.label} />
             {/each}
-          {:else}
-            <Select.Item disabled value="" label="No Result Found" />
-          {/if}
-        </Select.Content>
-      </Select.Root>
+          </Select.Content>
+        </Select.Root>
+        <Select.Root
+          onSelectedChange={(v) => {
+            selectedMonth = v?.value;
+          }}
+        >
+          <Select.Trigger id="selectMonth">
+            <Select.Value placeholder="Select Month" />
+          </Select.Trigger>
+
+          <Select.Content class="max-h-40 max-w-sm overflow-auto">
+            <!-- List of dropdown items -->
+            {#each months as month}
+              <Select.Item value={month.value} label={month.label} />
+            {/each}
+          </Select.Content>
+        </Select.Root>
+      </div>
+
       <DataTable data={data.jurnalData} />
     </Card.Content>
   </Card.Root>
