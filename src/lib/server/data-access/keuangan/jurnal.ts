@@ -1,12 +1,31 @@
 import { db } from '$lib/server/database';
 import { jurnalTable, type NewJurnal } from '$lib/server/database/schema/keuangan';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
 export async function getJurnalById(id: string) {
   const data = await db.query.jurnalTable.findFirst({
     where: (jurnal, { eq }) => eq(jurnal.id, id)
   });
   return data;
+}
+
+export async function getJurnalByPeriod(start: string, end: string, noAkun?: string) {
+  const baseQuery = sql`SELECT * FROM ${jurnalTable} WHERE strftime('%Y-%m-%d', ${jurnalTable.createdAt}) BETWEEN ${start} AND ${end}`;
+
+  const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
+
+  await db.run(query);
+}
+
+export async function getJurnalByDate(year: string, month?: string | null, noAkun?: string | null) {
+  const dateFormat = month ? `%Y-%m` : `%Y`;
+  const dateValue = month ? `${year}-${month}` : year;
+
+  const baseQuery = sql`SELECT * FROM ${jurnalTable} WHERE strftime(${dateFormat}, ${jurnalTable.createdAt}) = ${dateValue}`;
+
+  const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
+
+  await db.run(query);
 }
 
 export async function getJurnalByKode(kode: string) {
