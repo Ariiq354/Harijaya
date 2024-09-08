@@ -36,6 +36,14 @@ export const actions: Actions = {
       return setError(form, 'kode', 'Kode akun sudah ada');
     }
 
+    const existName = await db.query.akunTable.findFirst({
+      where: eq(akunTable.nama, form.data.nama)
+    });
+
+    if (existName) {
+      return setError(form, 'nama', 'Nama akun sudah ada');
+    }
+
     if (!form.data.id) {
       form.data.id = generateIdFromEntropySize(10);
     }

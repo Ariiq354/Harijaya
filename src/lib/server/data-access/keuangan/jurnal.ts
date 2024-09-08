@@ -1,5 +1,10 @@
 import { db } from '$lib/server/database';
-import { jurnalTable, type NewJurnal } from '$lib/server/database/schema/keuangan';
+import {
+  akunTable,
+  jurnalTable,
+  type Jurnal,
+  type NewJurnal
+} from '$lib/server/database/schema/keuangan';
 import { desc, eq, sql } from 'drizzle-orm';
 
 export async function getAllJurnal() {
@@ -24,7 +29,8 @@ export async function getJurnalByPeriod(start: string, end: string, noAkun?: str
 
   const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
 
-  await db.run(query);
+  const data: Jurnal[] = await db.all(query);
+  return data;
 }
 
 export async function getJurnalByDate(year: string, month?: string | null, noAkun?: string | null) {
@@ -35,7 +41,26 @@ export async function getJurnalByDate(year: string, month?: string | null, noAku
 
   const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
 
-  await db.run(query);
+  const data: Jurnal[] = await db.all(query);
+  return data;
+}
+
+export async function getTotalJurnalByDate(year: string, month?: string | null) {
+  type resType = {
+    nama: string;
+    totalNominal: number;
+  };
+
+  const dateFormat = month ? `%Y-%m` : `%Y`;
+  const dateValue = month ? `${year}-${month}` : year;
+
+  const query = sql`SELECT ${akunTable.nama}, SUM(${jurnalTable.nominal}) as totalNominal FROM ${jurnalTable}
+  INNER JOIN ${akunTable} ON ${jurnalTable.noAkun} = ${akunTable.kode}
+  WHERE strftime(${dateFormat}, ${jurnalTable.createdAt}) = ${dateValue}
+  GROUP BY ${akunTable.nama}`;
+
+  const data: resType[] = await db.all(query);
+  return data;
 }
 
 export async function getJurnalByKode(kode: string) {

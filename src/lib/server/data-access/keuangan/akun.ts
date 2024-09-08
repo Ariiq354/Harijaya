@@ -2,6 +2,11 @@ import { db } from '$lib/server/database';
 import { akunTable, type NewAkun } from '$lib/server/database/schema/keuangan';
 import { eq } from 'drizzle-orm';
 
+export async function getAllAkun() {
+  const data = await db.query.akunTable.findMany();
+  return data;
+}
+
 export async function getAkunById(id: string) {
   const data = await db.query.akunTable.findFirst({
     where: (akun, { eq }) => eq(akun.id, id)

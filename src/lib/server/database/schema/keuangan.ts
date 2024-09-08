@@ -6,7 +6,7 @@ import { fakturPenjualanTable } from './penjualan';
 export const akunTable = sqliteTable('akun', {
   id: text('id').notNull().primaryKey(),
   kode: text('kode_akun').notNull().unique(),
-  nama: text('nama_akun').notNull(),
+  nama: text('nama_akun').notNull().unique(),
   kategori: text('kategoriAkun').notNull(),
   deskripsi: text('deskripsi').notNull(),
   createdAt: text('created_at').default(sql`(CURRENT_TIMESTAMP)`),
