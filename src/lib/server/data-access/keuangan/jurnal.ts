@@ -17,6 +17,18 @@ export async function getAllJurnal() {
   return data;
 }
 
+type tableJurnalType = {
+  id: string;
+  created_at: string | null;
+  updated_at: string | null;
+  tanggal: string;
+  deskripsi: string;
+  kode_transaksi: string;
+  no_referensi: string;
+  nominal: number;
+  no_akun: string | null;
+};
+
 export async function getJurnalById(id: string) {
   const data = await db.query.jurnalTable.findFirst({
     where: (jurnal, { eq }) => eq(jurnal.id, id)
@@ -29,7 +41,7 @@ export async function getJurnalByPeriod(start: string, end: string, noAkun?: str
 
   const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
 
-  const data: Jurnal[] = await db.all(query);
+  const data: tableJurnalType[] = await db.all(query);
   return data;
 }
 
@@ -41,8 +53,33 @@ export async function getJurnalByDate(year: string, month?: string | null, noAku
 
   const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
 
-  const data: Jurnal[] = await db.all(query);
+  const data: tableJurnalType[] = await db.all(query);
   return data;
+}
+
+export async function getTotalJurnalBeforePeriod(start: string, noAkun?: string) {
+  const baseQuery = sql`SELECT SUM(${jurnalTable.nominal}) as totalNominal FROM ${jurnalTable} WHERE strftime('%Y-%m-%d', ${jurnalTable.createdAt}) < ${start}`;
+
+  const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
+
+  const data: { totalNominal: string }[] = await db.all(query);
+  return data[0].totalNominal ? data[0].totalNominal : 0;
+}
+
+export async function getTotalJurnalBeforeDate(
+  year: string,
+  month?: string | null,
+  noAkun?: string | null
+) {
+  const dateFormat = month ? `%Y-%m` : `%Y`;
+  const dateValue = month ? `${year}-${month}` : year;
+
+  const baseQuery = sql`SELECT SUM(${jurnalTable.nominal}) as totalNominal FROM ${jurnalTable} WHERE strftime(${dateFormat}, ${jurnalTable.createdAt}) < ${dateValue}`;
+
+  const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
+
+  const data: { totalNominal: string }[] = await db.all(query);
+  return data[0].totalNominal ? data[0].totalNominal : 0;
 }
 
 export async function getTotalJurnalByDate(year: string, month?: string | null) {

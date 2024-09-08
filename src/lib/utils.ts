@@ -100,6 +100,11 @@ export function getLastMonths(month: number) {
   return lastFourMonths.reverse(); // Optional: reverse to get in chronological order
 }
 
+export function getCurrentMonth() {
+  const currentDate = new Date();
+  return (currentDate.getMonth() + 1).toString().padStart(2, '0');
+}
+
 export const tipeAkun = [
   'kas & setara kas',
   'piutang usaha',
