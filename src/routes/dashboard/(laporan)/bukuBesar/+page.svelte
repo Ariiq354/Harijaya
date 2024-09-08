@@ -11,11 +11,12 @@
 
   let selectedAkun;
   let searchQuery = '';
-  let selectedYear;
+
   $: filteredAkun = data.akun.filter((item) =>
     item.nama.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  let selectedPeriod = '';
+  let selectedPeriod: String = 'monthly';
+  let selectedYear: String = new Date().getFullYear().toString();
   let selectedMonth;
 
   // Generate list of years from 2023 to the current year
@@ -79,85 +80,94 @@
     <Card.Content>
       <div class="mt-3 flex items-center justify-between">
         <!-- Select for Akun -->
-        <Select.Root
-          onSelectedChange={(v) => {
-            selectedAkun = v?.value;
-          }}
-        >
-          <Select.Trigger id="noAkun">
-            <Select.Value class="capitalize" placeholder="Pilih Akun" />
-          </Select.Trigger>
-
-          <!-- Search input field -->
-          <Select.Content class="max-h-40 max-w-sm overflow-auto">
-            <input
-              type="text"
-              placeholder="Search Akun..."
-              class="w-full border p-2"
-              bind:value={searchQuery}
-            />
-            {#if filteredAkun.length}
-              {#each filteredAkun as item}
-                <Select.Item value={item.kode} label={item.nama} />
-              {/each}
-            {:else}
-              <Select.Item disabled value="" label="No Result Found" />
-            {/if}
-          </Select.Content>
-        </Select.Root>
-
-        <!-- Select for Period -->
-        <Select.Root
-          onSelectedChange={(v) => {
-            selectedPeriod = v?.value;
-          }}
-        >
-          <Select.Trigger id="selectType">
-            <Select.Value placeholder="Select Period" />
-          </Select.Trigger>
-
-          <Select.Content class="max-h-40 max-w-sm overflow-auto">
-            {#each options as option}
-              <Select.Item value={option.value} label={option.label} />
-            {/each}
-          </Select.Content>
-        </Select.Root>
-
-        <!-- Select for Year -->
-        <Select.Root
-          onSelectedChange={(v) => {
-            selectedYear = v?.value;
-          }}
-        >
-          <Select.Trigger id="selectYear">
-            <Select.Value placeholder="Select Year" />
-          </Select.Trigger>
-
-          <Select.Content class="max-h-40 max-w-sm overflow-auto">
-            {#each years as year}
-              <Select.Item value={year.value} label={year.label} />
-            {/each}
-          </Select.Content>
-        </Select.Root>
-
-        <!-- Select for Month -->
-        {#if selectedPeriod !== 'yearly'}
+        <div class="min-w-48">
           <Select.Root
             onSelectedChange={(v) => {
-              selectedMonth = v?.value;
+              selectedAkun = v?.value;
             }}
           >
-            <Select.Trigger id="selectMonth">
-              <Select.Value placeholder="Select Month" />
+            <Select.Trigger id="noAkun">
+              <Select.Value class="capitalize" placeholder="Pilih Akun" />
+            </Select.Trigger>
+
+            <!-- Search input field -->
+            <Select.Content class="max-h-40 max-w-sm overflow-auto">
+              <input
+                type="text"
+                placeholder="Search Akun..."
+                class="w-full border p-2"
+                bind:value={searchQuery}
+              />
+              {#if filteredAkun.length}
+                {#each filteredAkun as item}
+                  <Select.Item value={item.kode} label={item.nama} />
+                {/each}
+              {:else}
+                <Select.Item disabled value="" label="No Result Found" />
+              {/if}
+            </Select.Content>
+          </Select.Root>
+        </div>
+
+        <!-- Select for Period -->
+        <div>
+          <Select.Root
+            selected={{ label: 'Montly', value: 'montly' }}
+            onSelectedChange={(v) => {
+              v && (selectedPeriod = v?.value);
+            }}
+          >
+            <Select.Trigger id="selectType">
+              <Select.Value placeholder="Select Period" />
             </Select.Trigger>
 
             <Select.Content class="max-h-40 max-w-sm overflow-auto">
-              {#each months as month}
-                <Select.Item value={month.value} label={month.label} />
+              {#each options as option}
+                <Select.Item value={option.value} label={option.label} />
               {/each}
             </Select.Content>
           </Select.Root>
-        {/if}
+        </div>
+
+        <!-- Select for Year -->
+        <div>
+          <Select.Root
+            onSelectedChange={(v) => {
+              selectedYear = v?.value;
+            }}
+          >
+            <Select.Trigger id="selectYear">
+              <Select.Value placeholder="Select Year" />
+            </Select.Trigger>
+
+            <Select.Content class="max-h-40 max-w-sm overflow-auto">
+              {#each years as year}
+                <Select.Item value={year.value} label={year.label} />
+              {/each}
+            </Select.Content>
+          </Select.Root>
+        </div>
+
+        <!-- Select for Month -->
+        <div>
+          {#if selectedPeriod !== 'yearly'}
+            <Select.Root
+              onSelectedChange={(v) => {
+                selectedMonth = v?.value;
+              }}
+            >
+              <Select.Trigger id="selectMonth">
+                <Select.Value placeholder="Select Month" />
+              </Select.Trigger>
+
+              <Select.Content class="max-h-40 max-w-sm overflow-auto">
+                {#each months as month}
+                  <Select.Item value={month.value} label={month.label} />
+                {/each}
+              </Select.Content>
+            </Select.Root>
+          {/if}
+        </div>
       </div>
 
       <!-- Display the data in the table -->
@@ -177,7 +187,7 @@
             <tr>
               <td class="border p-2">{entry.deskripsi}</td>
               <td class="border p-2">{entry.tanggal}</td>
-              <td class="border p-2">{entry.kodeTransaksi}</td>
+              <td class="border p-2">{entry.kode_transaksi}</td>
               <td class="border p-2">
                 {#if entry.nominal > 0}
                   {formatNumber(entry.nominal)}
