@@ -5,7 +5,17 @@ import {
   type Jurnal,
   type NewJurnal
 } from '$lib/server/database/schema/keuangan';
-import { eq, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
+
+export async function getAllJurnal() {
+  const data = await db.query.jurnalTable.findMany({
+    with: {
+      akun: true
+    },
+    orderBy: [desc(jurnalTable.createdAt)]
+  });
+  return data;
+}
 
 type tableJurnalType = {
   id: string;
@@ -65,6 +75,33 @@ export async function getTotalJurnalBeforeDate(
   const dateValue = month ? `${year}-${month}` : year;
 
   const baseQuery = sql`SELECT SUM(${jurnalTable.nominal}) as totalNominal FROM ${jurnalTable} WHERE strftime(${dateFormat}, ${jurnalTable.createdAt}) < ${dateValue}`;
+
+  const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
+
+  const data: { totalNominal: string }[] = await db.all(query);
+  return data[0].totalNominal ? data[0].totalNominal : 0;
+}
+
+export async function getTotalJurnalAfterDate(
+  year: string,
+  month?: string | null,
+  noAkun?: string | null
+) {
+  const dateFormat = month ? `%Y-%m` : `%Y`;
+  const dateValue = month ? `${year}-${month}` : year;
+  let nextYear = year;
+  let nextMonth = month;
+
+  // Handle month increment with rollover
+  if (month) {
+    nextMonth = ((parseInt(month) % 12) + 1).toString(); // Increment month and handle rollover
+    nextYear = (month === '12' ? parseInt(year) + 1 : year).toString(); // Increment year if month is 12
+  }
+
+  // Format next date with incremented values
+  const dateValuePlus1 = nextMonth ? `${nextYear}-${String(nextMonth).padStart(2, '0')}` : nextYear;
+
+  const baseQuery = sql`SELECT SUM(${jurnalTable.nominal}) as totalNominal FROM ${jurnalTable} WHERE strftime(${dateFormat}, ${jurnalTable.createdAt}) >= ${dateValue} AND strftime(${dateFormat}, ${jurnalTable.createdAt}) <= ${dateValuePlus1}`;
 
   const query = noAkun ? baseQuery.append(sql` AND ${jurnalTable.noAkun} = ${noAkun}`) : baseQuery;
 
