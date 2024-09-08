@@ -1,9 +1,10 @@
-export async function getDaftarTransaksiAkunMonthly(year: number, month: number, noAkun?: string) {}
+export async function getBukuBesarAll() {}
+export async function getBukuBesarAkunMonthly(year: string, month: string, noAkun?: string) {}
 
-export async function getDaftarTransaksiAkunQuarterly(
-  year: number,
-  quarter: number,
-  noAkun?: string
-) {}
+export async function getBukuBesarPeriodly(period: string, noAkun?: string) {}
 
-export async function getDaftarTransaksiAkunYearly(year: number, noAkun?: string) {}
+export async function getBukuBesarAkunYearly(year: string, noAkun?: string) {}
+
+export async function getAllAkun() {
+  return await getAllAkun();
+}
