@@ -37,7 +37,7 @@ export async function getJurnalByDate(year: string, month?: string | null, noAku
 
 export async function getTotalJurnalByDate(year: string, month?: string | null) {
   type resType = {
-    nama: string;
+    nama_akun: string;
     totalNominal: number;
   };
 
