@@ -1,5 +1,7 @@
 <script lang="ts">
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/button';
   import { getDashedDate, tipeAkun } from '$lib/utils';
   import type { PageData } from './$types';
 
@@ -28,7 +30,7 @@
   const totalAktiva = filteredDataAktiva.reduce((a, item) => (a += item.totalNominal), 0);
   const totalPasiva = filteredDataPasiva.reduce((a, item) => (a += item.totalNominal), 0);
 
-  let monthState = '';
+  let method: 'Monthly' | 'Yearly' = 'Monthly';
   let yearState = '';
   async function searchDataJurnal(year: string, month: string) {
     // dataJurnal = await getTotalJurnalByDateUseCase(year, month);
@@ -53,6 +55,22 @@
     </div>
   </div>
   <hr class="border-black" />
+  <div class="flex justify-between rounded-lg border-2 bg-white px-12 py-4">
+    <div>
+      <Select.Root selected={'Monthly'}>
+        <Select.Trigger class="w-[180px]">
+          <Select.Value placeholder="Theme" />
+        </Select.Trigger>
+        <Select.Content>
+          <Select.Item value="Monthly">Monthly</Select.Item>
+          <Select.Item value="Yearly">Yearly</Select.Item>
+        </Select.Content>
+      </Select.Root>
+    </div>
+    <div>month</div>
+    <div>Year</div>
+    <Button>Search</Button>
+  </div>
   <div class="rounded-lg border-2 bg-white px-12 py-4">
     <div class="mb-12 w-full">
       <div class="border-b-2 p-2 text-center">

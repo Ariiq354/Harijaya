@@ -4,7 +4,7 @@ import { getCurrentMonth } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const data = await getTotalJurnalByDateUseCase('2024', '12');
+  const data = await getTotalJurnalByDateUseCase('2024', getCurrentMonth());
   const dataAkun = await getAllAkunUseCase();
 
   return {
