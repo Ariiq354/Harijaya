@@ -105,9 +105,39 @@ export function getCurrentMonth() {
   return (currentDate.getMonth() + 1).toString().padStart(2, '0');
 }
 
+export function getCurrentMonthName() {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+  const currentMonth = new Date().getMonth(); // 0-11
+  return monthNames[currentMonth];
+}
+
 export function getCurrentYear() {
   const currentDate = new Date();
   return currentDate.getFullYear().toString();
+}
+
+export function getYears(startYear: number) {
+  const currentYear = new Date().getFullYear();
+  const yearsArray: number[] = [];
+
+  for (let year = startYear; year <= currentYear; year++) {
+    yearsArray.push(year);
+  }
+
+  return yearsArray.reverse();
 }
 
 export const tipeAkun = [

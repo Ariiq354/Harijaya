@@ -1,8 +1,16 @@
 <script lang="ts">
   import * as Breadcrumb from '$lib/components/ui/breadcrumb';
-  import * as Select from '$lib/components/ui/select';
   import { Button } from '$lib/components/ui/button';
-  import { getDashedDate, tipeAkun } from '$lib/utils';
+  import * as Select from '$lib/components/ui/select';
+  import {
+    getCurrentMonth,
+    getCurrentMonthName,
+    getCurrentYear,
+    getDashedDate,
+    getYears,
+    tipeAkun
+  } from '$lib/utils';
+  import { toast } from 'svelte-sonner';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -24,18 +32,38 @@
     .filter((item) => pasivaItems.includes(item.kategori))
     .map((item) => item.nama);
 
-  const filteredDataAktiva = dataJurnal.filter((item) => namaAkunAktiva.includes(item.nama_akun));
-  const filteredDataPasiva = dataJurnal.filter((item) => namaAkunPasiva.includes(item.nama_akun));
+  $: filteredDataAktiva = dataJurnal.filter((item) => namaAkunAktiva.includes(item.nama_akun));
+  $: filteredDataPasiva = dataJurnal.filter((item) => namaAkunPasiva.includes(item.nama_akun));
 
-  const totalAktiva = filteredDataAktiva.reduce((a, item) => (a += item.totalNominal), 0);
-  const totalPasiva = filteredDataPasiva.reduce((a, item) => (a += item.totalNominal), 0);
+  $: totalAktiva = filteredDataAktiva.reduce((a, item) => (a += item.totalNominal), 0);
+  $: totalPasiva = filteredDataPasiva.reduce((a, item) => (a += item.totalNominal), 0);
 
   let method: string = 'Monthly';
-  let month: string = '01';
-  let year: string = '2024';
+  let month: string = getCurrentMonth();
+  let year: string = getCurrentYear();
+  let isLoading = false;
+  async function searchDataJurnal() {
+    try {
+      const body = {
+        year,
+        month: method === 'Monthly' ? month : null
+      };
 
-  async function searchDataJurnal(year: string, month: string) {
-    // dataJurnal = await getTotalJurnalByDateUseCase(year, month);
+      isLoading = true;
+      const res = await fetch('/api/searchJurnal', {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const dataRes = await res.json();
+      dataJurnal = dataRes;
+      isLoading = false;
+    } catch (error) {
+      toast.error('Something went wrong, please try again');
+    }
   }
 </script>
 
@@ -75,7 +103,7 @@
       </Select.Root>
       {#if method === 'Monthly'}
         <Select.Root
-          selected={{ label: 'January', value: '01' }}
+          selected={{ label: getCurrentMonthName(), value: getCurrentMonth() }}
           onSelectedChange={(v) => {
             v && (month = v.value);
           }}
@@ -100,21 +128,22 @@
         </Select.Root>
       {/if}
       <Select.Root
-        selected={{ label: '2024', value: '2024' }}
+        selected={{ label: getCurrentYear(), value: getCurrentYear() }}
         onSelectedChange={(v) => {
-          v && (method = v.value);
+          v && (year = v.value);
         }}
       >
         <Select.Trigger class="w-[180px]">
           <Select.Value placeholder="Theme" />
         </Select.Trigger>
         <Select.Content>
-          <Select.Item value="2024">2024</Select.Item>
-          <Select.Item value="2023">2023</Select.Item>
+          {#each getYears(2023) as item}
+            <Select.Item value={item.toString()}>{item.toString()}</Select.Item>
+          {/each}
         </Select.Content>
       </Select.Root>
     </div>
-    <Button>Search</Button>
+    <Button disabled={isLoading} on:click={searchDataJurnal}>Search</Button>
   </div>
   <div class="rounded-lg border-2 bg-white px-12 py-4">
     <div class="mb-12 w-full">
@@ -133,22 +162,22 @@
           </td>
         </tr>
         {#each daftarAkun as akun}
-          {@const dataTotalAkun = data.data.find((item) => item.nama_akun === akun.nama)}
+          {@const dataTotalAkun = dataJurnal.find((item) => item.nama_akun === akun.nama)}
           <tr class="border-b-2 odd:bg-gray-100">
             <td class="p-2 indent-10">{akun.nama}</td>
-            <td>{dataTotalAkun ? dataTotalAkun.totalNominal : 0}</td>
+            <td class="pr-10 text-right">{dataTotalAkun ? dataTotalAkun.totalNominal : 0}</td>
           </tr>
         {/each}
         {#if i === stopIndexAktiva}
           <tr class="border-b-2 text-blue-400 odd:bg-gray-100">
             <td class="p-2 font-semibold"> Total Aktiva </td>
-            <td>{totalAktiva}</td>
+            <td class="pr-10 text-right">{totalAktiva}</td>
           </tr>
         {/if}
         {#if i === stopIndexPasiva}
           <tr class="border-b-2 text-blue-400 odd:bg-gray-100">
             <td class="p-2 font-semibold"> Total Pasiva </td>
-            <td>{totalPasiva}</td>
+            <td class="pr-10 text-right">{totalPasiva}</td>
           </tr>
         {/if}
       {/each}
