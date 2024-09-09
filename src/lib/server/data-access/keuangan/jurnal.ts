@@ -17,7 +17,7 @@ export async function getAllJurnal() {
   return data;
 }
 
-type tableJurnalType = {
+export type tableJurnalType = {
   id: string;
   created_at: string | null;
   updated_at: string | null;
