@@ -7,6 +7,7 @@
   import type { PageData } from './$types';
   import { toast } from 'svelte-sonner';
   import { getCurrentMonth, getCurrentMonthName, getCurrentYear } from '$lib/utils';
+  import DataTable from './components/data-table.svelte';
 
   export let data: PageData;
 
@@ -79,6 +80,12 @@
       });
 
       const dataRes = await res.json();
+      data = {
+        jurnalData: dataRes.bukuBesar,
+        totalAwal: dataRes.before,
+        totalAkhir: dataRes.after,
+        akun: data.akun
+      };
       dataJurnal = dataRes.bukuBesar;
       totalAwal = dataRes.before;
       totalAkhir = dataRes.after;
@@ -202,56 +209,8 @@
         </div>
         <Button disabled={isLoading} on:click={searchDataJurnal}>Search</Button>
       </div>
-
+      <DataTable {data} />
       <!-- Display the data in the table -->
-      <table class="mt-4 w-full border-collapse">
-        <thead>
-          <tr>
-            <th class="border p-2">Deskripsi</th>
-            <th class="border p-2">Tanggal</th>
-            <th class="border p-2">Kode</th>
-            <th class="border p-2">Debit</th>
-            <th class="border p-2">Kredit</th>
-            <th class="border p-2">Balance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class=" border p-2 odd:bg-gray-100"
-            ><td class="p-2">Saldo Awal</td>
-            <td class="p-2"></td>
-            <td class="p-2"></td>
-            <td class="p-2"></td>
-            <td class="p-2"></td>
-            <td class="p-2">{totalAwal}</td>
-          </tr>
-          {#each dataJurnal as entry}
-            <tr class=" odd:bg-gray-100">
-              <td class="p-2">{entry.deskripsi}</td>
-              <td class="p-2">{entry.tanggal}</td>
-              <td class="p-2">{entry.kode_transaksi}</td>
-              <td class="p-2">
-                {#if entry.nominal > 0}
-                  {formatNumber(entry.nominal)}
-                {/if}
-              </td>
-              <td class="p-2">
-                {#if entry.nominal < 0}
-                  {formatNumber(Math.abs(entry.nominal))}
-                {/if}
-              </td>
-              <td class="p-2"> </td>
-            </tr>
-          {/each}
-          <tr class=" border p-2 odd:bg-gray-100"
-            ><td class="p-2">Saldo Akhir</td>
-            <td class="p-2"></td>
-            <td class="p-2"></td>
-            <td class="p-2"></td>
-            <td class="p-2"></td>
-            <td class="p-2">{totalAkhir}</td>
-          </tr>
-        </tbody>
-      </table>
     </Card.Content>
   </Card.Root>
 </div>
