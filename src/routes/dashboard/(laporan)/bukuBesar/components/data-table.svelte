@@ -176,7 +176,7 @@
           <Table.Cell></Table.Cell>
           <Table.Cell></Table.Cell>
           <Table.Cell></Table.Cell>
-          <Table.Cell>{data.totalAkhir}</Table.Cell>
+          <Table.Cell>{data.totalAkhir.toLocaleString('id-ID')}</Table.Cell>
           <!-- Display Saldo Akhir in Balance Column -->
         </Table.Row>
       </Table.Body>

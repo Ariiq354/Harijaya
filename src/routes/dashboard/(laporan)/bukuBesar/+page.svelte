@@ -119,7 +119,7 @@
 
   <Card.Root>
     <Card.Content>
-      <div class="flex justify-between rounded-lg border-2 bg-white px-4 py-4">
+      <div class="mb-4 mt-6 flex justify-between rounded-lg border-2 bg-white px-4 py-4">
         <div class="flex gap-4">
           <!-- Select for Akun -->
 
